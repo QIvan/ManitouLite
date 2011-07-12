@@ -1,8 +1,13 @@
 #include <QApplication>
 #include <stdlib.h>
-#include "main.h"
 #include "db.h"
+#ifndef QT_NO_DEBUG
+#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/CompilerOutputter.h>
+#endif
 
+using namespace std;
 
 /* Debugging level, set with --debug-level command like option.
    DBG_PRINTF() macro calls cause a display if their
@@ -62,8 +67,34 @@ usage(const char* progname)
   exit(1);
 }
 
+#ifndef QT_NO_DEBUG
+
+
+
 int main()
 {
-    return 0;
+    // Get the top level suite from the registry
+    CPPUNIT_NS::Test *suite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
+
+    // Adds the test to the list of test to run
+    CPPUNIT_NS::TextUi::TestRunner runner;
+    runner.addTest( suite );
+
+    // Change the default outputter to a compiler error format outputter
+    runner.setOutputter( new CPPUNIT_NS::CompilerOutputter( &runner.result(),
+                                                            CPPUNIT_NS::stdCOut() ) );
+    // Run the test.
+    bool wasSucessful = runner.run();
+
+    // Return error code 1 if the one of test failed.
+    return wasSucessful ? 0 : 1;
+}
+#else
+int main()
+{
+
+
+    return 1;
 }
 
+#endif

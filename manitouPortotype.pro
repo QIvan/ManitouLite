@@ -23,22 +23,31 @@ release {
 TEMPLATE = app
 
 
-SOURCES += main.cpp \
-    sqlstream.cpp \
-    sqlquery.cpp \
+DEBUG {
+    #HEADERS +=  test/main.h
+    #SOURCES +=  test/main.cpp
+}
+RELEASE {
+    HEADERS += main.h
+    SOURCES += main.cpp
+}
+SOURCES +=  \
+    date.cpp \
     db.cpp \
     db_listener.cpp \
-    date.cpp \
+    sqlstream.cpp \
+    sqlquery.cpp \
     addresses.cpp \
 
 HEADERS += \
+    date.h \
+    db.h \
+    db_listener.h \
     sqlstream.h \
     sqlquery.h \
+    addresses.h \
     dbtypes.h \
-    db_listener.h \
-    main.h \
-    db.h \
     config.h \
     database.h \
-    date.h \
-    addresses.h \
+
+
