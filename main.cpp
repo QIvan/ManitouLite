@@ -1,9 +1,11 @@
 #include <QApplication>
-#include <QtTest>
-#include <stdio.h>
-
+#include <stdlib.h>
 #include "db.h"
-
+#ifndef QT_NO_DEBUG
+#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/CompilerOutputter.h>
+#endif
 
 using namespace std;
 
@@ -65,12 +67,34 @@ usage(const char* progname)
   exit(1);
 }
 
+#ifndef QT_NO_DEBUG
 
-#ifdef IS_TEST
-int main(int argc, char *argv[])
+
+
+int main()
 {
-    QApplication a(argc, argv);
+    // Get the top level suite from the registry
+    CPPUNIT_NS::Test *suite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
-    return 0;
+    // Adds the test to the list of test to run
+    CPPUNIT_NS::TextUi::TestRunner runner;
+    runner.addTest( suite );
+
+    // Change the default outputter to a compiler error format outputter
+    runner.setOutputter( new CPPUNIT_NS::CompilerOutputter( &runner.result(),
+                                                            CPPUNIT_NS::stdCOut() ) );
+    // Run the test.
+    bool wasSucessful = runner.run();
+
+    // Return error code 1 if the one of test failed.
+    return wasSucessful ? 0 : 1;
 }
+#else
+int main()
+{
+
+
+    return 1;
+}
+
 #endif

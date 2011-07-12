@@ -30,7 +30,6 @@
 
 #include "config.h"
 #include "dbtypes.h"
-//#include "message.h"
 
 #ifndef CHECK_PTR
 #define CHECK_PTR(p) do { if (!p) abort(); } while(0)
@@ -44,7 +43,6 @@ class QStringList;
 class mail_header;
 
 #include <map>
-//#include <string>
 
 #define DBG_PRINTF(l,...) debug_printf(l,__FILE__,__LINE__, __VA_ARGS__)
 #define ERR_PRINTF(...) err_printf(__FILE__,__LINE__, __VA_ARGS__)

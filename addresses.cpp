@@ -232,7 +232,7 @@ void  // static
 mail_address::join_address_lines(QString& line)
 {
   int pos=0;
-  int lastpos=-1;
+  //int lastpos=-1; GCC Warning: variable «lastpos» set but not used
   int len = line.length();
   QString d; // destination
 
@@ -248,7 +248,7 @@ mail_address::join_address_lines(QString& line)
 
   while (pos<len) {
     if (line.at(pos)=='\n' || line.at(pos)==',') {
-      lastpos=pos;
+      //lastpos=pos;
       while (pos<len && (line.at(pos)=='\n' ||line.at(pos)==','))
 	pos++;
       if (pos<len) {

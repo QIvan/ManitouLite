@@ -4,13 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core, gui, network, testlib
+QT       += core, gui, network
 
 TARGET = manitouPortotype
 CONFIG   += console
-DEFINES  = WITH-PQSQL=1
-DEFINES  += IS_TEST=1, IS_ALL_TEST=0
-LIBS = -L/usr/lib64/ -lpq
+
+LIBS += -L/usr/lib64/ -lpq
+debug {
+    DEFINES  = WITH-PQSQL=1
+    LIBS += -L/usr/lib/ -lcppunit
+}
+release {
+
+}
+
 
 
 TEMPLATE = app
