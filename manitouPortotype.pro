@@ -22,15 +22,18 @@ release {
 
 TEMPLATE = app
 
+CONFIG(debug, debug|release) {
 
-DEBUG {
-    #HEADERS +=  test/main.h
-    #SOURCES +=  test/main.cpp
-}
-RELEASE {
+
+    LIBS += -L/usr/lib/ -lcppunit
+
+    HEADERS +=  test/main.h
+    SOURCES +=  test/main.cpp
+ } else {
     HEADERS += main.h
     SOURCES += main.cpp
-}
+ }
+
 SOURCES +=  \
     date.cpp \
     db.cpp \
