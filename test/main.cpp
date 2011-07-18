@@ -5,63 +5,18 @@
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
-#include "addresses.h"
-#include "config.h"
-#include "database.h"
-#include "date.h"
 #include "db.h"
-#include "db_listener.h"
 #include "main.h"
-#include "dbtypes.h"
-#include "sqlquery.h"
-#include "sqlstream.h"
+
+#include "RegistryTest.h"
 
 
-/* Debugging level, set with --debug-level command like option.
-   DBG_PRINTF() macro calls cause a display if their
-   level (first argument) is lower or equal than global_debug_level.
-   Normally the values should be:
-   1: signal something that reveals an inconsistency inside our code
-
-   2: signal something that shouldn't normally happen but may happen under certain circumstances (for example severe violations of RFC in the data).
-
-   3 and higher: used for actual printf-like debugging. Use higher
-   values for the more mundane messages or those that cause a lot of output
-*/
-int global_debug_level;
+std::string TestNames::db() { return "DB"; }
+std::string TestNames::connect() { return "Connect"; }
 
 
 
-
-void
-debug_printf(int level, const char* file, int line, const char *fmt, ...)
-{
-  if (level<=global_debug_level) {
-    fprintf(stderr, "%s, line %d: ", file, line);
-    va_list ap;
-    va_start(ap,fmt);
-    vfprintf(stderr, fmt, ap);
-    va_end(ap);
-    fprintf(stderr, "\n");
-    fflush(stderr);
-  }
-
-}
-
-void
-err_printf(const char* file, int line, const char *fmt, ...)
-{
-  fprintf(stderr, "%s, line %d: ERR: ", file, line);
-  va_list ap;
-  va_start(ap,fmt);
-  vfprintf(stderr, fmt, ap);
-  va_end(ap);
-  fprintf(stderr, "\n");
-  fflush(stderr);
-}
-
-
-
+CPPUNIT_REGISTRY_ADD_TO_DEFAULT("DB");
 
 int main()
 {

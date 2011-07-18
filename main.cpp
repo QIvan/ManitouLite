@@ -64,6 +64,7 @@ usage(const char* progname)
 
 int main()
 {
+    printf("RELEASE!\n");
     return 0;
 }
 

@@ -23,12 +23,7 @@ release {
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
-
-
-    LIBS += -L/usr/lib/ -lcppunit
-
-    HEADERS +=  test/main.h
-    SOURCES +=  test/main.cpp
+    include (test/test.pri)
  } else {
     HEADERS += main.h
     SOURCES += main.cpp
