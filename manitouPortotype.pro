@@ -4,25 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core, gui, network
+QT       += core, gui, network, sql
 
 TARGET = manitouPortotype
 CONFIG   += console
 
 LIBS += -L/usr/lib64/ -lpq
-debug {
-    DEFINES  = WITH-PQSQL=1
-    LIBS += -L/usr/lib/ -lcppunit
-}
-release {
-
-}
 
 
 
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
+    DEFINES  = WITH-PQSQL=1
+    LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
     HEADERS += main.h

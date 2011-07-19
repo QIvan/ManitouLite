@@ -1,5 +1,4 @@
 #include <QApplication>
-#include <stdlib.h>
 #include <cppunit/TextTestResult.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/BriefTestProgressListener.h>
@@ -7,19 +6,17 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include "db.h"
 #include "main.h"
-
 #include "RegistryTest.h"
 
-
-std::string TestNames::db() { return "DB"; }
-std::string TestNames::connect() { return "Connect"; }
-
+std::string TestNames::db_api() { return "DB_API";}
+CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 
 
-CPPUNIT_REGISTRY_ADD_TO_DEFAULT("DB");
+
 
 int main()
 {
+
     CPPUNIT_NS :: TestResult testresult;
 
     // Listener zum Sammeln der Testergebnisse registrieren
