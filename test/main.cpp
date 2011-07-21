@@ -10,14 +10,22 @@
 #include "RegistryTest.h"
 
 
+
+
 std::string TestNames::db_api() { return "DB_API";}
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 
 
 
-int main()
-{
 
+
+
+
+
+int main(int argn, char** args)
+{
+    QApplication a(argn, args);
+    global_debug_level = 3;
     CPPUNIT_NS :: TestResult testresult;
 
     // Listener zum Sammeln der Testergebnisse registrieren
