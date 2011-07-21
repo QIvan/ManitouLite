@@ -20,7 +20,6 @@
 #ifndef INC_DB_H
 #define INC_DB_H
 
-
 #ifdef WITH_PGSQL
 #include <libpq-fe.h>
 #include <libpq/libpq-fs.h>

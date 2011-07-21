@@ -411,6 +411,19 @@ database::fetchServerDate(QString& date)
 {
   bool result=true;
   db_cnx db;
+  /// @author: i.zemlyansky
+  /// @todo: проверить правильность закоменченной реализации.
+  /** try
+  {
+      sql_stream stream("SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')", db);
+      QString strDate;
+      stream >> strDate;
+  }
+  catch(db_excpt e)
+  {
+      DBEXCPT(e);
+      result=false;
+  }*/
   PGconn* c=db.connection();
   PGresult* res=PQexec(c, "SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')");
   if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {

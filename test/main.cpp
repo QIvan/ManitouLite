@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QDebug>
 #include <cppunit/TextTestResult.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/BriefTestProgressListener.h>
@@ -8,9 +9,9 @@
 #include "main.h"
 #include "RegistryTest.h"
 
+
 std::string TestNames::db_api() { return "DB_API";}
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
-
 
 
 

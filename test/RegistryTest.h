@@ -16,6 +16,7 @@ namespace TestNames
 
 
 
+
 //этот тест должен быть первым в DB
 CPPUNIT_REGISTRY_ADD(TestNames::connect(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::sql_wirte_fields(), TestNames::db_api());

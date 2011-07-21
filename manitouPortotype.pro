@@ -16,7 +16,7 @@ LIBS += -L/usr/lib64/ -lpq
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
-    DEFINES  = WITH-PQSQL=1
+    DEFINES  = WITH_PGSQL=1
     LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
