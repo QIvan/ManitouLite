@@ -118,7 +118,7 @@ private:
   PGconn* m_pgConn;
 };
 
-class db_cnx
+class db_cnx //: public pgConnection
 {
 public:
   db_cnx(bool other_thread=false);
