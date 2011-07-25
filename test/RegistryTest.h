@@ -9,6 +9,7 @@ namespace TestNames
     std::string disconnect();
     std::string sql_wirte_fields();
     std::string listener();
+    std::string transaction();
 };
 
 
@@ -22,8 +23,9 @@ namespace TestNames
 CPPUNIT_REGISTRY_ADD(TestNames::connect(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::sql_wirte_fields(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::listener(), TestNames::db_api());
+CPPUNIT_REGISTRY_ADD(TestNames::transaction(), TestNames::db_api());
 //этот тест должен быть последний DB
-CPPUNIT_REGISTRY_ADD("Disconnect", TestNames::db_api());
+CPPUNIT_REGISTRY_ADD(TestNames::disconnect(), TestNames::db_api());
 
 
 #endif // REGISTRYTEST_H

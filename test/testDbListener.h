@@ -21,16 +21,15 @@ public slots:
 };
 
 
-class test_db_listener :public CppUnit::TestFixture, public QThread
+class test_db_listener :public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(test_db_listener);
-    CPPUNIT_TEST(run);
+    CPPUNIT_TEST(addListener);
     CPPUNIT_TEST_SUITE_END();
 public:
-    void run()
+    void addListener()
     {
-        emit started();
-        db_cnx db;
+        /*db_cnx db;
         db_listener listener(db, "new_message");
         Notifer notifer;
         QObject::connect(&listener, SIGNAL(notified()), &notifer, SLOT(slotNotified()));
@@ -44,9 +43,7 @@ public:
         QString str2 =  QString("INSERT INTO test_table(%1) VALUES(%2)")
                 .arg(fiedls2.fields())
                 .arg(fiedls2.values());
-        sql_stream insert2(str2,db);
-        listener.process_notification();
-        emit finished();
+        sql_stream insert2(str2,db);*/
     }
 
 };

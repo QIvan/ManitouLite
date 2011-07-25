@@ -407,7 +407,7 @@ database::end_transaction()
 
 // fetch the current date and time in DD/MM/YYYY HH:MI:SS format
 bool
-database::fetchServerDate(QString& date)
+database::fetchServerDate(QString& date) /// @todo: сделать CONST!
 {
   bool result=true;
   db_cnx db;
