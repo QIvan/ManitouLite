@@ -17,10 +17,21 @@ void testConnect::connect()
     CPPUNIT_ASSERT (ConnectDb("dbname=test_db_api user=ivan", &errstr));
 }
 
+void testConnect::ping()
+{
+    db_cnx db;
+    CPPUNIT_ASSERT_ASSERTION_PASS(db.ping());
+}
 
 /*============================ testDisconnect ====================================*/
 void testDisconnect::disconnect()
 {
     /// @todo: в этой функции утечка
     DisconnectDb();
+}
+
+void testDisconnect::ping()
+{
+    db_cnx db;
+    CPPUNIT_ASSERT_ASSERTION_FAIL(db.ping());
 }
