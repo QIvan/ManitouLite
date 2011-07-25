@@ -8,24 +8,16 @@
 std::string TestNames::sql_wirte_fields() { return "sql_wirte_fields"; }
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_sql_write_fields, TestNames::sql_wirte_fields());
 
-
-test_sql_write_fields::test_sql_write_fields() : m_DB(new db_cnx)
-{
-}
-
-void test_sql_write_fields::setUp()
-{
-    sql_stream query("DELETE FROM test_table", *m_DB);
-    sql_stream reset_id("ALTER SEQUENCE sequence_id RESTART with 2", *m_DB);
-}
-
 void test_sql_write_fields::insert()
 {
     try{
+        sql_stream reset_id("ALTER SEQUENCE sequence_id RESTART",*m_DB);
         //первый запрос
         sql_write_fields fiedls(*m_DB);
         assertNumerateString (0);
-        fiedls.add("test_id", 1);
+        int next_id;
+        CPPUNIT_ASSERT(m_DB->next_seq_val("sequence_id", &next_id));
+        fiedls.add("test_id", next_id);
         fiedls.add("test_text", "Insert Text 1");
         fiedls.add_if_not_empty("test_char200", "Insert Text 1", 9); //Insert Te
         fiedls.add_no_quote("test_date", "now()");
@@ -35,7 +27,10 @@ void test_sql_write_fields::insert()
                 .arg(fiedls.fields())
                 .arg(fiedls.values());
         sql_stream insert(str,*m_DB);
+        QString dbTime;
+        CPPUNIT_ASSERT(m_DB->datab()->fetchServerDate(dbTime));
         assertNumerateString (1);
+
         //второй запрос
         sql_write_fields fiedls2(*m_DB);
         fiedls2.add_if_not_empty("test_text", "Insert Text 2", 9);//Insert Te
@@ -47,6 +42,8 @@ void test_sql_write_fields::insert()
                 .arg(fiedls2.fields())
                 .arg(fiedls2.values());
         sql_stream insert2(str2,*m_DB);
+        QString dbTime2;
+        CPPUNIT_ASSERT(m_DB->datab()->fetchServerDate(dbTime2));
         assertNumerateString (2);
 
         //проверяем что добавилось
@@ -66,7 +63,11 @@ void test_sql_write_fields::insert()
         CPPUNIT_ASSERT(id == 2);
         CPPUNIT_ASSERT(text == "Insert Te");
         CPPUNIT_ASSERT(char200 == "Insert Text 2");
-        CPPUNIT_ASSERT(dateDate.FullOutput() == dateDate2.FullOutput());
+        /// @todo: если свалится на этом ассерте, то просто запусти тест ещё раз
+        CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
+                               dateDate.FullOutput() == dateDate2.FullOutput());
+        CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
+                               dbTime == dbTime2);
         CPPUNIT_ASSERT(int_not_null == 2);
 
     }
@@ -89,11 +90,6 @@ void test_sql_write_fields::insert_throw()
             .arg(fiedls.fields())
             .arg(fiedls.values());
     sql_stream insert(str,*m_DB);
-}
-
-void test_sql_write_fields::tearDown()
-{
-    sql_stream query("DELETE FROM test_table", *m_DB);
 }
 
 void test_sql_write_fields::assertNumerateString(int num)
