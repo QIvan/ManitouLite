@@ -37,7 +37,6 @@
 #include "database.h"
 #include "sqlstream.h"
 #include "sqlquery.h"
-#include "addresses.h"
 #include "db_listener.h"
 
 #include <QMessageBox>
