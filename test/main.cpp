@@ -8,10 +8,13 @@
 #include "db.h"
 #include "main.h"
 #include "RegistryTest.h"
-//#include "testBaseTestDB.h"
-//#include "sqlstream.h"
 
 std::string TestNames::db_api() { return "DB_API";}
+
+
+
+
+
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 
 /*CPPUNIT_REGISTRY_ADD(TestNames::connect(), "temp");

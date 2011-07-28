@@ -12,7 +12,6 @@ void testTransaction::transactionCommit()
     try
     {
         db.begin_transaction();
-
         InsertString_();
         InsertString_();
         db.commit_transaction();

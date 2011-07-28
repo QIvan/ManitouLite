@@ -49,7 +49,18 @@ db_listener::~db_listener()
 bool
 db_listener::setup_db()
 {
-  PGconn* c = (dynamic_cast<pgConnection*>(m_db))->connection();
+    db_cnx db;
+    QString stmt = QString("LISTEN %1").arg(m_notif_name);
+    try{
+        sql_stream query (stmt, db);
+    }
+    catch (db_excpt)
+    {
+        DBG_PRINTF(3, "LISTEN failed");
+        return false;
+    }
+
+  /*PGconn* c = (dynamic_cast<pgConnection*>(m_db))->connection();
   QString stmt = QString("LISTEN %1").arg(m_notif_name);
   PGresult* res = PQexec(c, stmt.toUtf8().constData());
   DBG_PRINTF(3, "statement '%s' executed", stmt.toUtf8().constData());
@@ -57,7 +68,7 @@ db_listener::setup_db()
     DBG_PRINTF(3, "LISTEN failed");
     return false;
   }
-  PQfreemem(res);
+  PQfreemem(res);*/
   return true;
 }
 

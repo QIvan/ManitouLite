@@ -30,7 +30,6 @@ SOURCES +=  \
     db_listener.cpp \
     sqlstream.cpp \
     sqlquery.cpp \
-    addresses.cpp \
 
 HEADERS += \
     date.h \
@@ -38,9 +37,6 @@ HEADERS += \
     db_listener.h \
     sqlstream.h \
     sqlquery.h \
-    addresses.h \
     dbtypes.h \
     config.h \
     database.h \
-
-
