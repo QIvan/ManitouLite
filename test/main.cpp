@@ -17,13 +17,6 @@ std::string TestNames::db_api() { return "DB_API";}
 
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 
-/*CPPUNIT_REGISTRY_ADD(TestNames::connect(), "temp");
-CPPUNIT_REGISTRY_ADD(TestNames::transaction(), "temp");
-CPPUNIT_REGISTRY_ADD(TestNames::disconnect(), "temp");*/
-
-
-
-
 
 int main(int argn, char** args)
 {
