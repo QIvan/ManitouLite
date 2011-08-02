@@ -118,7 +118,7 @@ private:
   PGconn* m_pgConn;
 };
 
-class db_cnx
+class db_cnx //: public pgConnection
 {
 public:
   db_cnx(bool other_thread=false);
@@ -146,7 +146,7 @@ public:
   static void disconnect_all();
   static bool idle();
 
-  void enable_user_alerts(bool); // return previous state
+  //void enable_user_alerts(bool); // return previous state
 
   bool ping();
   void handle_exception(db_excpt& e);
