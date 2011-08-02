@@ -854,11 +854,13 @@ mail_msg::store()
       qquery=sq.toLocal8Bit();
     query=(const char*)qquery;
     DBG_PRINTF(5, "%s\n", query);
-    res=PQexec(c,query);
+    db_cnx database;
+    sql_stream q(query, database);
+    /*res=PQexec(c,query);
     if (!res || PQresultStatus(res)!=PGRES_COMMAND_OK)
       throw 1;
     if (res)
-      PQclear(res);
+      PQclear(res);*/
 
     msg_status_cache::update(get_id(), statusRead + statusOutgoing);
 
