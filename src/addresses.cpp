@@ -19,7 +19,7 @@
 
 #include "main.h"
 #include "addresses.h"
-#include "db.h"
+//#include "db.h"  данный h-файл здесь нетребовался
 #include "sqlstream.h"
 
 //static
