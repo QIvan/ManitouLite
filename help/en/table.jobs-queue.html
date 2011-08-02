@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">13.  Table: jobs_queue - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.inverted-word-index.html" title="12.  Table: inverted_word_index" /><link rel="next" href="table.mail.html" title="14.  Table: mail" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">13. 
+         Table:
+         
+         <span class="structname">jobs_queue</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.inverted-word-index.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.mail.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.jobs-queue"></a>13. 
+         Table:
+         
+         <span class="structname">jobs_queue</span>
+        </h2></div></div></div><p>This table is used internally by manitou-mdx to maintain a persistant state of jobs that are scheduled for execution. Currently these jobs are related to full text indexing.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">jobs_queue</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>job_id</code></em></span></dt><dd><p>
+                <span class="type">serial</span>
+
+
+
+                <code class="literal">NOT NULL</code>
+
+
+
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+
+
+
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>job_type</code></em></span></dt><dd><p>
+                <span class="type">character varying(4)</span>
+
+
+
+
+
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>job_args</code></em></span></dt><dd><p>
+                <span class="type">text</span>
+
+
+
+
+
+
+
+              </p></dd></dl></div><p>
+
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.inverted-word-index.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.mail.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">12. 
+         Table:
+         
+         <span class="structname">inverted_word_index</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 14. 
+         Table:
+         
+         <span class="structname">mail</span>
+        </td></tr></table></div></body></html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">17.  Table: mail_tags - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.mail-status.html" title="16.  Table: mail_status" /><link rel="next" href="table.mailboxes.html" title="18.  Table: mailboxes" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">17. 
+         Table:
+         
+         <span class="structname">mail_tags</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.mail-status.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.mailboxes.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.mail-tags"></a>17. 
+         Table:
+         
+         <span class="structname">mail_tags</span>
+        </h2></div></div></div><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">mail_tags</span>
+            </b></p><p>Contains the mapping between the mail messages and the tags assigned to them. </p><dl><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>Unique internal identifier of the message.</p><p>
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.mail.html" title="14.  Table: mail">mail</a>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>tag</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>Unique internal identifier of a tag.</p><p>
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.tags.html" title="25.  Table: tags">tags</a>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>agent</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>Unique internal identifier of the operator or agent that assigned the tag to the mail. Generally NULL if the tag was automatically assigned by a filter rule or another automatic way. In the latter case, specific pseudo-users can also be set up as tagging agents if needed.</p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>date_insert</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+                <code class="literal">DEFAULT now()</code>
+</p><p>Date and time of the insertion.</p><p>
+
+              </p></dd></dl></div><p>
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.mail-status.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.mailboxes.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">16. 
+         Table:
+         
+         <span class="structname">mail_status</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 18. 
+         Table:
+         
+         <span class="structname">mailboxes</span>
+        </td></tr></table></div></body></html>

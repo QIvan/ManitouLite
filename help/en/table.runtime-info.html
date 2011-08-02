@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">24.  Table: runtime_info - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.raw-mail.html" title="23.  Table: raw_mail" /><link rel="next" href="table.tags.html" title="25.  Table: tags" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">24. 
+         Table:
+         
+         <span class="structname">runtime_info</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.raw-mail.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.tags.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.runtime-info"></a>24. 
+         Table:
+         
+         <span class="structname">runtime_info</span>
+        </h2></div></div></div><p>Contains (key, values) string pairs that contain runtime information about the mail-database exchanger (manitou-mdx). These information can be used to monitor the process activity (or lack thereof) from the outside. </p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">runtime_info</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>rt_key</code></em></span></dt><dd><p>
+                <span class="type">character varying(100)</span>
+
+                <code class="literal">NOT NULL</code>
+</p><p>The name of the runtime variable. </p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>rt_value</code></em></span></dt><dd><p>
+                <span class="type">character varying(1000)</span>
+
+</p><p>The value of the runtime variable. </p><p>
+
+              </p></dd></dl></div><p>
+
+      </p><p>
+</p><div class="table"><a id="id2690268"></a><p class="title"><b>Table 1. List of runtime variables</b></p><div class="table-contents"><table summary="List of runtime variables" border="1"><colgroup><col /><col /></colgroup><thead><tr><th>Field name</th><th>Field value</th></tr></thead><tbody><tr><td>
+   <em class="structfield"><code>last_alive</code></em>
+</td><td>
+   <p>The last time the exchanger signalled that it was running. By default, this entry is updated every five minutes. The format is an UTC timestamp.</p>
+</td></tr><tr><td>
+   <em class="structfield"><code>last_import</code></em>
+</td><td>
+   <p>The last time a mail has been imported from the spool (MANITOU_MAILFILES_DIR). The format is an UTC timestamp.</p>
+</td></tr><tr><td>
+   <em class="structfield"><code>last_error</code></em>
+</td><td>
+   <p>The last time an error has occurred in importing a mail from the spool. Errors in importing are likely to be due to an incorrect format for a mail file. The format is an UTC timestamp.</p>
+</td></tr><tr><td>
+   <em class="structfield"><code>nb_errors</code></em>
+</td><td>
+   <p>The number of errors in importing mail files that occurred since that number was resetted to zero. Typically an administrator would look from time to time to mailfiles that caused errors and reset that counter once the cause of the error has been spotted and the incorrect file ignored or fixed and re-imported.</p>
+</td></tr></tbody></table></div></div><p><br class="table-break" />
+
+
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.raw-mail.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.tags.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">23. 
+         Table:
+         
+         <span class="structname">raw_mail</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 25. 
+         Table:
+         
+         <span class="structname">tags</span>
+        </td></tr></table></div></body></html>

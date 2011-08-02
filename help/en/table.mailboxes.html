@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">18.  Table: mailboxes - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.mail-tags.html" title="17.  Table: mail_tags" /><link rel="next" href="table.mime-types.html" title="19.  Table: mime_types" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">18. 
+         Table:
+         
+         <span class="structname">mailboxes</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.mail-tags.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.mime-types.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.mailboxes"></a>18. 
+         Table:
+         
+         <span class="structname">mailboxes</span>
+        </h2></div></div></div><p>Names and internal identifiers of mailboxes.</p><p>Each message in a Manitou-Mail database contains a numeric identifier that can relate to a mailbox. When not null, this identifier is a reference to an mbox_id to which a name is assigned through the mailboxes table. Entries in this table are created automatically by manitou-mdx when a mailbox section is found in the configuration file and no matching entry already exists in the table.</p><p>Names of mailboxes should be real recipient email addresses if possible, so that they can be easily related to the incoming mail. On a simple setup, they should be the same as email identities, the former being looked up when receiving and the latter when sending.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">mailboxes</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>mbox_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>Unique identifier of the mailbox.</p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>name</code></em></span></dt><dd><p>
+                <span class="type">text</span>
+</p><p>The unique name of the mailbox.</p><p>
+              </p></dd></dl></div><p>
+
+        </p><div class="itemizedlist"><p class="title"><b>
+            Tables referencing mail via Foreign Key Constraints
+          </b></p><ul type="disc"><li><p>
+              <a class="xref" href="table.mail.html" title="14.  Table: mail">mail</a>
+            </p></li></ul></div><p>
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.mail-tags.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.mime-types.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">17. 
+         Table:
+         
+         <span class="structname">mail_tags</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 19. 
+         Table:
+         
+         <span class="structname">mime_types</span>
+        </td></tr></table></div></body></html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">16.  Table: mail_status - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.mail-addresses.html" title="15.  Table: mail_addresses" /><link rel="next" href="table.mail-tags.html" title="17.  Table: mail_tags" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">16. 
+         Table:
+         
+         <span class="structname">mail_status</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.mail-addresses.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.mail-tags.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.mail-status"></a>16. 
+         Table:
+         
+         <span class="structname">mail_status</span>
+        </h2></div></div></div><p> A table automatically managed by triggers, that contains references to mail messages which are not yet archived (incoming), or not yet sent (outgoing). This table is supposed to be always relatively small and cached by the database server, so this allows to speed up queries that deal with the small subset of messages that is actually current. That is especially true for databases containing very large sets of messages. </p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">mail_status</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>Unique internal identifier of the message.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>status</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+The same as <code class="literal">mail.status</code>, except that only the values that have their bits 8 (Sent) and 5 (Archived) cleared will be found here. 
+              </p></dd></dl></div><p>
+      </p><p>Note: This table exists only for performance reasons and it's use is not encouraged except in the core of Manitou's application code. If possible, use the status field of the mail table instead.</p><p>If parts or all of the contents of mail_status get accidentally deleted, they can be regenerated using the following SQL query:
+
+<code class="literal">
+INSERT INTO mail_status(mail_id,status)
+ SELECT mail_id,status FROM mail
+  WHERE status&amp;32=0 AND status&amp;256=0 
+    AND mail_id NOT IN (SELECT mail_id FROM mail_status)
+</code>
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.mail-addresses.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.mail-tags.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">15. 
+         Table:
+         
+         <span class="structname">mail_addresses</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 17. 
+         Table:
+         
+         <span class="structname">mail_tags</span>
+        </td></tr></table></div></body></html>

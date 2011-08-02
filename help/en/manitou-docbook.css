@@ -1,0 +1,10 @@
+h1.title { 
+  background: url(img/manitou-logo.png) no-repeat left;
+  padding: 25px 0px 10px 60px;
+  margin: 0;
+}
+
+.guimenuitem {
+  background-color: rgb(249,234,243);
+  padding: 2px;
+}

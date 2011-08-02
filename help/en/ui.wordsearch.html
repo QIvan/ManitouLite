@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">4. Global keywords search - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="user-interface.html" title="The User Interface" /><link rel="prev" href="ui.quicksel.html" title="3. The quick selection panel" /><link rel="next" href="ui.tags.html" title="5. Tags" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4. Global keywords search</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ui.quicksel.html">Prev</a> </td><th width="60%" align="center">The User Interface</th><td width="20%" align="right"> <a accesskey="n" href="ui.tags.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ui.wordsearch"></a>4. Global keywords search</h2></div></div></div><p>
+By default, each distinct word belonging to the body of messages is
+put into a global inverted index, so that fast word searches
+can be performed through the entire database.
+</p><p>
+Word search is invoked from the search toolbar:
+</p><div class="screenshot"><div class="mediaobject"><img src="img/wordsearch.png" /><div class="caption"><p>Word search toolbar</p></div></div></div><p>
+When hitting the Enter key or pressing the Find button, all messages whose body
+contain all words of the search box are retrieved and displayed
+in a new results page.
+Also the searched words are highlighted on screen within the body of
+messages, until the user clears the search box input field.
+</p><p>
+The search is case insensitive and will not find numbers and words containing
+only one or two characters, or more than 50.
+It is also possible to specify words that are not to be indexed (and
+will be ignored in word search), commonly called stopwords. They
+have to be put into the <span class="database">non_indexable_words</span> database table.
+<a id="id2683070" class="indexterm"></a>
+</p><p>
+Searching for exact sentences including space or punctuation is
+done by enclosing the sentence inside double-quotes.
+See also the substring search capabilities of the
+Query selection command.
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ui.quicksel.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="user-interface.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ui.tags.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3. The quick selection panel </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 5. Tags</td></tr></table></div></body></html>

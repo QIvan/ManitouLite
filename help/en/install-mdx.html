@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">4. Setting up manitou-mdx - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="installation.html" title="Installation" /><link rel="prev" href="database.html" title="3. Database" /><link rel="next" href="manitou-mdx.html" title="manitou-mdx (Mail Database eXchanger)" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4. Setting up manitou-mdx</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="database.html">Prev</a> </td><th width="60%" align="center">Installation</th><td width="20%" align="right"> <a accesskey="n" href="manitou-mdx.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="install-mdx"></a>4. Setting up manitou-mdx</h2></div></div></div><p>manitou-mdx has a configuration file, whose default location is:
+<code class="literal">/etc/manitou-mdx.conf</code>. The initial contents as set up by <code class="literal">make install</code> contain a series of commented entries with default values.
+
+Before launching manitou-mdx, it is advised to review and edit this
+file. At least, the <a class="xref" href="mdx.config.html#mdx.db_connect_string" title="2.3.3. db_connect_string">Section 2.3.3, “db_connect_string”</a> entry that
+contain the parameters for the connection to the database may be
+changed, and a spool directory may be specified, otherwise no new mail will be automatically imported into the database.
+The configuration options are all documented in <a class="xref" href="manitou-mdx.html" title="manitou-mdx (Mail Database eXchanger)"><i>manitou-mdx (Mail Database eXchanger)</i></a> </p><p>
+<span class="command"><strong>manitou-mdx</strong></span> is launched in daemon mode by
+</p><pre class="screen">
+$ manitou-mdx --fork
+</pre><p>
+Once the program is launched, it logs information about its activity through syslog with the LOG_USER facility, which generally ends up in <code class="filename">/var/log/user.log</code> (otherwise see the syslog configuration).
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="database.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="installation.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="manitou-mdx.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3. Database </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> manitou-mdx (Mail Database eXchanger)</td></tr></table></div></body></html>

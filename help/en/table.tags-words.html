@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">26.  Table: tags_words - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.tags.html" title="25.  Table: tags" /><link rel="next" href="table.user-queries.html" title="27.  Table: user_queries" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">26. 
+         Table:
+         
+         <span class="structname">tags_words</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.tags.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.user-queries.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.tags-words"></a>26. 
+         Table:
+         
+         <span class="structname">tags_words</span>
+        </h2></div></div></div><p>Contains the association between tags and words. Not used by default, by can be used for the bayesian auto-classification.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">tags_words</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>tag_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>The unique identifier of the tag.</p><p>
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.tags.html" title="25.  Table: tags">tags</a>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>word_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>The unique identified of the word.</p><p>
+
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.words.html" title="29.  Table: words">words</a>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>counter</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>The number of times the words <code class="literal">word</code> is associated with the tag <code class="literal">tag_id</code>.</p><p>
+              </p></dd></dl></div><p>
+
+        </p><div class="variablelist"><p class="title"><b>Indexes on tags_words</b></p><dl><dt><span class="term">tags_words_idx</span></dt><dd><p>word_id</p></dd></dl></div><p>
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.tags.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.user-queries.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">25. 
+         Table:
+         
+         <span class="structname">tags</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 27. 
+         Table:
+         
+         <span class="structname">user_queries</span>
+        </td></tr></table></div></body></html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">10. Filter editor - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="user-interface.html" title="The User Interface" /><link rel="prev" href="ui.windows-and-pages.html" title="9. Windows and pages" /><link rel="next" href="ui.preferences.html" title="11. Preferences" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">10. Filter editor</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ui.windows-and-pages.html">Prev</a> </td><th width="60%" align="center">The User Interface</th><td width="20%" align="right"> <a accesskey="n" href="ui.preferences.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ui.filter-editor"></a>10. Filter editor</h2></div></div></div><p>
+Manitou-Mail has a filtering system with rules evaluated when a message is imported into the database, and associated actions that are applied when the rule's condition is met. Typical actions are tagging the mail, giving it a priority, or discarding it.
+</p><p>
+The user interface has an editor for conditions and actions, launched by the <span class="guimenuitem">File-&gt;Filters</span> menu command. Below is a screenshot with some sample rules defined:
+</p><div class="screenshot"><div class="mediaobject" align="center"><img src="img/filters.png" align="middle" /><div class="caption"><p>Filters rule editor</p></div></div></div><p>
+</p><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2683971"></a>10.1. Conditions syntax</h3></div></div></div><p>
+simple: </p><pre class="screen">header("header_name") operator "string"</pre><p>
+where operator can be
+</p><div class="itemizedlist"><ul type="disc"><li><p><code class="literal">eq</code> (equality), ex: header("X-Loop") eq "lists@ml.domain.tld"</p></li><li><p><code class="literal">equals</code>: synonym for eq</p></li><li><p><code class="literal">ne</code>: inverse of eq</p></li><li><p><code class="literal">contains</code>, example: header("From") contains "@domain.tld"</p></li><li><p><code class="literal">regmatches</code>, example: header("Subject") regmatches "^R[eE]: \[GENERAL\]"</p></li></ul></div><p>
+</p><p>Conditions can be combined with NOT, AND, OR, and use the result
+of other conditions. Examples:
+</p><pre class="screen">
+pg_gen: header("Sender") eq "pgsql-general-owner@postgresql.org"
+pg_interf: header("Sender") eq "pgsql-interfaces-owner@postgresql.org"
+pg: pg_gen OR pg_interf
+</pre><p>
+</p><p>
+Arbitrarily complex expressions can be written by combining conditions and operators:
+</p><pre class="screen">
+(pg_gen OR pg_interf) AND NOT (header("From") contains "@mydomain.tld")
+</pre><p>
+Note that the expressions are not tested for syntax or semantic validity when they are entered. If an expression is incorrect, it will only be detected at the time it gets evaluated by the mail-database exchanger (manitou-mdx). This may be improved in a future version.
+
+All the rules that have at least one action connected to them are evaluated, unless the "Stop filters" action gets triggered.
+</p><p>The filter's direction can be <span class="emphasis"><em>Incoming mail</em></span> to test the rule only on incoming messages (imported by manitou-mdx), <span class="emphasis"><em>Outgoing mail</em></span> on messages that are written and sent with Manitou-Mail, or <span class="emphasis"><em>Both</em></span> for, obviously, both kinds of messages.
+</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2684083"></a>10.2. Actions</h3></div></div></div><p>The action panel refers to the currently selected condition. It is disabled when no condition is selected.
+To add an action, select (New action) in the actions list.
+To remove the currently selected action, use the Del key.
+</p><p>The actions that are currently supported are:
+</p><div class="itemizedlist"><ul type="disc"><li><p>Assign tag: assign a tag to the matching messages. Child tags are expressed flattened as parent_tag-&gt;child_tag-&gt;grandchild_tag-&gt;...
+</p></li><li><p>Priority: assign a priority to the matching messages, either as an increment, with the <strong class="userinput"><code>+=X</code></strong> syntax or as an absolute value, with the <strong class="userinput"><code>=X</code></strong> syntax. The priority is an integer number ranging from -32768 to +32767.</p></li><li><p>Set status: the argument is a combination of letters: 'R' for read,'A' for archive, 'D' for discard or delete,'T' for trash, all separated by + signs.
+</p></li><li><p>Redirect: the argument is an email address to which the matching message is immediately resent.</p></li><li><p>Stop filter: this is a control-action that instructs the filtering the system that it shouldn't evaluate any more rule for the current message.
+</p></li></ul></div><p>
+</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ui.windows-and-pages.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="user-interface.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ui.preferences.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">9. Windows and pages </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 11. Preferences</td></tr></table></div></body></html>

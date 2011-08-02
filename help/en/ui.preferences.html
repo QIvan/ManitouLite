@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">11. Preferences - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="user-interface.html" title="The User Interface" /><link rel="prev" href="ui.filter-editor.html" title="10. Filter editor" /><link rel="next" href="database-schema.html" title="Database schema" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">11. Preferences</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ui.filter-editor.html">Prev</a> </td><th width="60%" align="center">The User Interface</th><td width="20%" align="right"> <a accesskey="n" href="database-schema.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ui.preferences"></a>11. Preferences</h2></div></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="ui.preferences.display"></a>11.1. Display</h3></div></div></div><p>Various options control how the messages are shown and how the
+display is organized.</p><div class="itemizedlist"><ul type="disc"><li>Show tags panel:
+<p>The default value for the Display/Tags menu entry.
+When set to "Yes", a panel with a button for each tag is shown, each button
+being set when the corresponding tag is assigned to the message
+currently selected.</p></li><li>Show headers:
+<p>The default value for the Display/Headers menu
+entry.  "None" means not to display any message header at all, "Most"
+means the most useful (From, To, Cc, Date...), and "All" means the full headers
+text.
+</p></li><li>Display sender as: 
+<p>Tells what should displayed in the "From" column
+of message lists: either the name of the sender (when known), or the email address.
+</p></li><li>Preferred display format:
+<p>When a message has both HTML and Text alternative representations, this
+option indicates which format should be shown first in the message pane.
+Text is the most secure choice.</p></li><li>Clickable URLs in body
+<p> when set to Yes, URLs in the body
+panel appear as clickable links. The browser may need to be configured
+in the Paths sections.
+</p></li><li>Threaded display: 
+<p>The default value for the Display/Threaded menu
+entry. When set to "Yes", the messages that belong to a same thread are shown
+in tree-like representation, and the threads can be opened and closed.
+</p></li><li>Date format:
+<p>How the dates are displayed in the message
+lists.  Choose DD/MM/YYYY HH:MI or YYYY/MM/DD HH:MI depending on what you
+find the more easy to read.
+</p></li><li>N in 'last N messages'
+<p>The contextual popup menu of a
+message on display has a command fetching the last messages of the
+same sender than the mail currently shown. This setting tells how
+much of these messages this command should retrieve in one go.
+</p></li><li>Style:
+<p>The Qt library has several builtin styles (the actual
+list depends on the platform the interface is running on). The style
+controls the overall look of the interface as well as some usability
+tips, such as the function of the middle mouse button. Just try different
+styles and keep the one you like the most.
+</p></li></ul></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="ui.preferences.identities"></a>11.2. Identities</h3></div></div></div><p>An identity is the set of characteristics that define a sender. Multiple identities can be declared, and one of them only is the default. Once an identity is defined in the preferences, it can be choosen in the mail composer.</p><div class="itemizedlist"><ul type="disc"><li>Email address:
+<p>Only the email should be entered here, without any additional
+comment (example: john.doe@company.com). That field is required to be able
+to send mail messages with manitou-mail.
+</p></li><li>Name:
+<p> The full name of the user that goes along the email
+address. (example: John Doe)
+</p></li><li>Use as default:
+<p> The identity to use by default when a new outgoing message is started with the composer (menu command: <span class="guimenuitem">Message-&gt;New</span>).
+</p></li><li>Signature:
+<p>A multi-line piece of text that will be appended to an outgoing
+message before editing takes place.</p><p>The text can contain references to certain fields that will be dynamically replaced by their current values at compose time. The fields refer to the sender's identity and the person currently using the interface to compose the message, or in the case of a message generated by a script, a pseudo-user that has a entry in the <code class="literal">users</code> table whose login matches the database login used to connect. Field names need to be enclosed inside angle brackets to be recognized as such.
+
+</p><p>The fields available in the signature are:
+</p><div class="itemizedlist"><ul type="circle"><li><code class="literal">{operator_login}</code>: the operator's database login of the person who composes the messages</li><li><code class="literal">{operator_firstname}</code>: the operator's first name</li><li><code class="literal">{operator_fullname}</code>: the operator's first name and name</li><li><code class="literal">{operator_email}</code>: the operator's email address</li><li><code class="literal">{sender_email}</code>: the sender's email address for the outgoing message, corresponding to the sender's identity</li><li><code class="literal">{sender_name}</code>: the name associated to the identity of the outgoing message</li><li><code class="literal">{operator_custom_field1}</code>: the value for the operator's custom_field1 database field.</li><li><code class="literal">{operator_custom_field2}</code>: the value for the operator's custom_field2 database field.</li><li><code class="literal">{operator_custom_field3}</code>: the value for the operator's custom_field3 database field.</li></ul></div><p>
+</p><p>
+</p></li><li>X-Face:
+<p>An optional string consisting of ASCII characters
+that are supposed to represent the face of the user, encoded in a
+black and white 48x48 bitmap. Manitou-mail can decode this string and
+display it graphically along the headers; other mail programs such as
+XEmacs VM or Sylpheed do this as well. To encode a picture in X-Face
+format, you may want to check out <a class="ulink" href="http://www.dairiki.org/xface" target="_top">
+http://www.dairiki.org/xface</a>
+</p></li></ul></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="ui.preferences.mimeviewers"></a>11.3. MIME viewers</h3></div></div></div><p>The list of programs that should be used to view attachments, each
+corresponding to a MIME type (a MIME type is a string like
+'image/jpeg', 'application/x-tar' that defines the type of data
+contained in an attached file).
+</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="ui.preferences.composer"></a>11.4. Composer</h3></div></div></div><div class="itemizedlist"><ul type="disc"><li>Format for new messages:
+<p>Plain text or HTML. In the case of HTML, an alternative plain text version
+of the body is automatically created and attached to the outgoing message,
+as expected by contacts who can't or don't want to use an HTML-capable program to read their mail.
+</p></li><li>Format for replies:
+<p>Replies can be initiated in plain text, HTML, or the same format than the original message, the latter being assumed to be the best choice in general. In any case, the format can be changed manually inside the composer during the edition of the reply.
+</p></li></ul></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="ui.preferences.paths"></a>11.5. Paths</h3></div></div></div><p>The paths used by the user interface</p><div class="itemizedlist"><ul type="disc"><li>Attachments (temporary):
+<p>the directory where attachments
+are written just before launching the application that is associated
+with their MIME type.
+</p></li><li>Bitmaps:
+<p> the directory where manitou icons files are to be
+found. The path set at install time is used by default, but it can be
+changed later, if for example, icons should be read from a shared
+network drive.
+</p></li><li>Help files: 
+<p>the directory where help files reside.
+The default value is empty and means that they're looked up
+in a location depending on the installation and the current
+language defined by the OS environment.
+</p></li><li>Browser:
+<p>A command that will be launched when an URL
+is clicked. If it contains $1, that will be replaced by the URL to be opened,
+otherwise the URL will be appended at the end of the command.
+Examples:
+</p><pre class="screen">
+mozilla-xremote-client 'openurl($1,new-window)'
+kfmclient openURL
+</pre><p>
+Note that it can be different from the
+program used to open 'text/html' attachments.
+</p></li></ul></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="ui.preferences.fetching"></a>11.6. Fetching</h3></div></div></div><p>Options about database fetch.</p><div class="itemizedlist"><ul type="disc"><li>Max fetch ahead:
+<p> when a list of messages is displayed,
+the program can pre-fetch to memory the bodies of messages not
+yet read and that are immediately below in the list.
+That may save some time when later going through the list, especially when
+connected remotely through a slow network link.
+</p></li><li>Max database connexions:
+<p> the program may use more than
+one connexion to perform simultaneous tasks. This number is
+the maximum number of such connexions.
+</p></li><li>Automatically refresh results every X minutes:
+<p> When set to a non-zero value, this parameter gives the time interval
+to wait between two automatic refreshs of the currently selected messages list.
+When set to zero, automatic refresh is disabled.
+</p><p>The database configuration key for this setting is <code class="literal">fetch/auto_refresh_messages_list</code></p></li><li>Auto-incorporate new messages into list:
+<p>This setting is only effective when the automatic refresh interval is not zero. When checked on, it means that the contents of the list will automatically show new messages following an automatic refresh, without the need for any user interaction.</p><p>
+When checked off, new messages will not appear until the user refreshes the selection by using the <span class="guimenuitem">Selection-&gt;Refresh</span> command or by clicking on the "New mail" button at the bottom right of the main window.
+</p><p>The contents of the quick selection panel are updated in both cases.</p><p>The database configuration key for this setting is <code class="literal">fetch/auto_incorporate_new_results</code></p></li></ul></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ui.filter-editor.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="user-interface.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="database-schema.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">10. Filter editor </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Database schema</td></tr></table></div></body></html>

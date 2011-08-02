@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">3.  Table: attachments - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.attachment-contents.html" title="2.  Table: attachment_contents" /><link rel="next" href="table.body.html" title="4.  Table: body" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. 
+         Table:
+         
+         <span class="structname">attachments</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.attachment-contents.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.body.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.attachments"></a>3. 
+         Table:
+         
+         <span class="structname">attachments</span>
+        </h2></div></div></div><p>Contains one entry for each attachment. The actual attachments contents are stored in a dedicated table: attachment_contents.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">attachments</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>attachment_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+                <code class="literal">PRIMARY KEY</code>
+
+</p><p>Unique internal identifier for the attachment. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>The internal unique ID of the mail message to which the attachment belongs.</p><p>
+
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.mail.html" title="14.  Table: mail">mail</a>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>content_type</code></em></span></dt><dd><p>
+                <span class="type">character varying(300)</span>
+
+</p><p>The mime type of the attachment such as 'image/jpeg', 'text/plain', 'message/rfc822'... </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>content_size</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>The attachment's size in bytes.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>filename</code></em></span></dt><dd><p>
+                <span class="type">character varying(300)</span>
+
+</p><p>The attachment's filename, if present. </p><p>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>charset</code></em></span></dt><dd><p>
+                <span class="type">character varying(30)</span>
+
+</p><p>The character set for text contents (when content_type starts with 'text/'). Typical values are 'utf-8', 'iso-8859-1', 'us-ascii', ... </p><p>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>mime_content_id</code></em></span></dt><dd><p>
+                <span class="type">text</span>
+
+</p><p>A string identifying the MIME part's content_id for the attachment. Other attachments may refer to this ID. For example HTML parts use &lt;img src="cid:content_id_of_part"&gt; to embed an attached picture.
+The use and syntax of content-ID is described in <a class="ulink" href="http://www.rfc-editor.org/rfc/rfc2392.txt" target="_top">RFC 2392</a>.</p><p>
+
+           </p></dd></dl></div><p>
+
+
+
+        </p><div class="variablelist"><p class="title"><b>Indexes on attachments</b></p><dl><dt><span class="term">idx_attachments_mail_id</span></dt><dd><p>mail_id</p></dd></dl></div><p>
+
+
+        </p><div class="itemizedlist"><p class="title"><b>
+            Tables referencing attachment_contents via Foreign Key Constraints
+          </b></p><ul type="disc"><li><p>
+              <a class="xref" href="table.attachment-contents.html" title="2.  Table: attachment_contents">attachment_contents</a>
+            </p></li></ul></div><p>
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.attachment-contents.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.body.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2. 
+         Table:
+         
+         <span class="structname">attachment_contents</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 4. 
+         Table:
+         
+         <span class="structname">body</span>
+        </td></tr></table></div></body></html>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">Manitou-Mail 1.0.2 User Manual - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="next" href="introduction.html" title="What is Manitou-Mail?" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Manitou-Mail 1.0.2 User Manual</th></tr><tr><td width="20%" align="left"> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="introduction.html">Next</a></td></tr></table><hr /></div><div class="book" lang="en" xml:lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="manitou"></a>Manitou-Mail 1.0.2 User Manual</h1></div><div><p class="copyright">Copyright © 2010 Daniel Vérité</p></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="introduction.html">What is Manitou-Mail?</a></span></dt><dt><span class="chapter"><a href="installation.html">Installation</a></span></dt><dd><dl><dt><span class="sect1"><a href="requirements.html">1. Requirements</a></span></dt><dt><span class="sect1"><a href="building-from-source.html">2. Building from source</a></span></dt><dd><dl><dt><span class="sect2"><a href="building-from-source.html#building-mdx">2.1. Building manitou-mdx and manitou-mgr</a></span></dt><dt><span class="sect2"><a href="building-from-source.html#building-ui">2.2. Building manitou (the user interface)</a></span></dt></dl></dd><dt><span class="sect1"><a href="database.html">3. Database</a></span></dt><dd><dl><dt><span class="sect2"><a href="database.html#database.creation">3.1. Database creation</a></span></dt><dt><span class="sect2"><a href="database.html#database.schema-upgrade">3.2. Database schema upgrade</a></span></dt></dl></dd><dt><span class="sect1"><a href="install-mdx.html">4. Setting up manitou-mdx</a></span></dt></dl></dd><dt><span class="chapter"><a href="manitou-mdx.html">manitou-mdx (Mail Database eXchanger)</a></span></dt><dd><dl><dt><span class="sect1"><a href="manitou-mdx-intro.html">1. Usage</a></span></dt><dt><span class="sect1"><a href="mdx.config.html">2. Configuration file</a></span></dt><dd><dl><dt><span class="sect2"><a href="mdx.config.html#id2677316">2.1. Location</a></span></dt><dt><span class="sect2"><a href="mdx.config.html#mdx.config.struct">2.2. Structure</a></span></dt><dt><span class="sect2"><a href="mdx.config.html#mdx.config.options">2.3. Alphabetical list of options</a></span></dt></dl></dd><dt><span class="sect1"><a href="mdx.importing-mbox.html">3. Importing an existing mailbox in mbox format</a></span></dt><dt><span class="sect1"><a href="mdx.delivery.html">4. Delivering incoming mail into files</a></span></dt><dd><dl><dt><span class="sect2"><a href="mdx.delivery.html#mdx.delivery.global">4.1. System-wide installation</a></span></dt><dt><span class="sect2"><a href="mdx.delivery.html#mdx.delivery.private">4.2. User-private installation (using procmail)</a></span></dt></dl></dd><dt><span class="sect1"><a href="mdx.monitoring.html">5. Monitoring</a></span></dt><dt><span class="sect1"><a href="mdx.plugins.html">6. mdx plugins</a></span></dt><dd><dl><dt><span class="sect2"><a href="mdx.plugins.html#mdx.plugins.developement">6.1. Developer information</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="manitou-mgr.html">manitou-mgr</a></span></dt><dd><dl><dt><span class="sect1"><a href="manitou-mgr.create-database.html">1. Creating a new database</a></span></dt><dt><span class="sect1"><a href="manitou-mgr.create-schema.html">2. Creating objects in an existing database</a></span></dt><dt><span class="sect1"><a href="manitou-mgr.upgrade-schema.html">3. Upgrading a database schema to a newer version</a></span></dt><dt><span class="sect1"><a href="manitou-mgr.db-admin.html">4. Database administration commands</a></span></dt><dt><span class="sect1"><a href="manitou-mgr.reporting.html">5. Reporting commands</a></span></dt></dl></dd><dt><span class="chapter"><a href="user-interface.html">The User Interface</a></span></dt><dd><dl><dt><span class="sect1"><a href="ui.invocation.html">1. Invocation</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.invocation.html#id2682619">1.1. Without arguments</a></span></dt><dt><span class="sect2"><a href="ui.invocation.html#id2682660">1.2. Optional arguments</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.configurations.html">2. Configurations</a></span></dt><dt><span class="sect1"><a href="ui.quicksel.html">3. The quick selection panel</a></span></dt><dt><span class="sect1"><a href="ui.wordsearch.html">4. Global keywords search</a></span></dt><dt><span class="sect1"><a href="ui.tags.html">5. Tags</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.tags.html#id2683101">5.1. Managing the list of tags</a></span></dt><dt><span class="sect2"><a href="ui.tags.html#id2683160">5.2. Assigning tags to messages</a></span></dt><dt><span class="sect2"><a href="ui.tags.html#id2683178">5.3. Automatic assignment</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.query-form.html">6. The query form</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.query-form.html#id2683261">6.1. Fields</a></span></dt><dt><span class="sect2"><a href="ui.query-form.html#id2683441">6.2. Refining queries</a></span></dt><dt><span class="sect2"><a href="ui.query-form.html#id2683459">6.3. Refreshing results</a></span></dt><dt><span class="sect2"><a href="ui.query-form.html#id2683498">6.4. Saving search criteria</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.attachments.html">7. Attachments</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.attachments.html#id2683549">7.1. Saving attachments</a></span></dt><dt><span class="sect2"><a href="ui.attachments.html#id2683572">7.2. Viewing attachments with a helper program</a></span></dt><dt><span class="sect2"><a href="ui.attachments.html#id2682467">7.3. Viewing the attachments as text</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.message-notes.html">8. Message notes</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.message-notes.html#id2682541">8.1. Adding or updating a note</a></span></dt><dt><span class="sect2"><a href="ui.message-notes.html#id2682578">8.2. Deleting a note</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.windows-and-pages.html">9. Windows and pages</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.windows-and-pages.html#id2683861">9.1. Pages</a></span></dt><dt><span class="sect2"><a href="ui.windows-and-pages.html#id2683906">9.2. Windows</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.filter-editor.html">10. Filter editor</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.filter-editor.html#id2683971">10.1. Conditions syntax</a></span></dt><dt><span class="sect2"><a href="ui.filter-editor.html#id2684083">10.2. Actions</a></span></dt></dl></dd><dt><span class="sect1"><a href="ui.preferences.html">11. Preferences</a></span></dt><dd><dl><dt><span class="sect2"><a href="ui.preferences.html#ui.preferences.display">11.1. Display</a></span></dt><dt><span class="sect2"><a href="ui.preferences.html#ui.preferences.identities">11.2. Identities</a></span></dt><dt><span class="sect2"><a href="ui.preferences.html#ui.preferences.mimeviewers">11.3. MIME viewers</a></span></dt><dt><span class="sect2"><a href="ui.preferences.html#ui.preferences.composer">11.4. Composer</a></span></dt><dt><span class="sect2"><a href="ui.preferences.html#ui.preferences.paths">11.5. Paths</a></span></dt><dt><span class="sect2"><a href="ui.preferences.html#ui.preferences.fetching">11.6. Fetching</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="database-schema.html">Database schema</a></span></dt><dd><dl><dt><span class="section"><a href="table.addresses.html">1. 
+         Table:
+         
+         <span class="structname">addresses</span>
+        </a></span></dt><dt><span class="section"><a href="table.attachment-contents.html">2. 
+         Table:
+         
+         <span class="structname">attachment_contents</span>
+        </a></span></dt><dt><span class="section"><a href="table.attachments.html">3. 
+         Table:
+         
+         <span class="structname">attachments</span>
+        </a></span></dt><dt><span class="section"><a href="table.body.html">4. 
+         Table:
+         
+         <span class="structname">body</span>
+        </a></span></dt><dt><span class="section"><a href="table.config.html">5. 
+         Table:
+         
+         <span class="structname">config</span>
+        </a></span></dt><dt><span class="section"><a href="table.files.html">6. 
+         Table:
+         
+         <span class="structname">files</span>
+        </a></span></dt><dt><span class="section"><a href="table.filter-action.html">7. 
+         Table:
+         
+         <span class="structname">filter_action</span>
+        </a></span></dt><dt><span class="section"><a href="table.filter-expr.html">8. 
+         Table:
+         
+         <span class="structname">filter_expr</span>
+        </a></span></dt><dt><span class="section"><a href="table.filter-log.html">9. 
+         Table:
+         
+         <span class="structname">filter_log</span>
+        </a></span></dt><dt><span class="section"><a href="table.header.html">10. 
+         Table:
+         
+         <span class="structname">header</span>
+        </a></span></dt><dt><span class="section"><a href="table.identities.html">11. 
+         Table:
+         
+         <span class="structname">identities</span>
+        </a></span></dt><dt><span class="section"><a href="table.inverted-word-index.html">12. 
+         Table:
+         
+         <span class="structname">inverted_word_index</span>
+        </a></span></dt><dt><span class="section"><a href="table.jobs-queue.html">13. 
+         Table:
+         
+         <span class="structname">jobs_queue</span>
+        </a></span></dt><dt><span class="section"><a href="table.mail.html">14. 
+         Table:
+         
+         <span class="structname">mail</span>
+        </a></span></dt><dt><span class="section"><a href="table.mail-addresses.html">15. 
+         Table:
+         
+         <span class="structname">mail_addresses</span>
+        </a></span></dt><dt><span class="section"><a href="table.mail-status.html">16. 
+         Table:
+         
+         <span class="structname">mail_status</span>
+        </a></span></dt><dt><span class="section"><a href="table.mail-tags.html">17. 
+         Table:
+         
+         <span class="structname">mail_tags</span>
+        </a></span></dt><dt><span class="section"><a href="table.mailboxes.html">18. 
+         Table:
+         
+         <span class="structname">mailboxes</span>
+        </a></span></dt><dt><span class="section"><a href="table.mime-types.html">19. 
+         Table:
+         
+         <span class="structname">mime_types</span>
+        </a></span></dt><dt><span class="section"><a href="table.non-indexable-words.html">20. 
+         Table:
+         
+         <span class="structname">non_indexable_words</span>
+        </a></span></dt><dt><span class="section"><a href="table.notes.html">21. 
+         Table:
+         
+         <span class="structname">notes</span>
+        </a></span></dt><dt><span class="section"><a href="table.programs.html">22. 
+         Table:
+         
+         <span class="structname">programs</span>
+        </a></span></dt><dt><span class="section"><a href="table.raw-mail.html">23. 
+         Table:
+         
+         <span class="structname">raw_mail</span>
+        </a></span></dt><dt><span class="section"><a href="table.runtime-info.html">24. 
+         Table:
+         
+         <span class="structname">runtime_info</span>
+        </a></span></dt><dt><span class="section"><a href="table.tags.html">25. 
+         Table:
+         
+         <span class="structname">tags</span>
+        </a></span></dt><dt><span class="section"><a href="table.tags-words.html">26. 
+         Table:
+         
+         <span class="structname">tags_words</span>
+        </a></span></dt><dt><span class="section"><a href="table.user-queries.html">27. 
+         Table:
+         
+         <span class="structname">user_queries</span>
+        </a></span></dt><dt><span class="section"><a href="table.users.html">28. 
+         Table:
+         
+         <span class="structname">users</span>
+        </a></span></dt><dt><span class="section"><a href="table.words.html">29. 
+         Table:
+         
+         <span class="structname">words</span>
+        </a></span></dt></dl></dd><dt><span class="chapter"><a href="administration.html">Administration</a></span></dt><dd><dl><dt><span class="sect1"><a href="database-backup.html">1. Database backups</a></span></dt></dl></dd></dl></div><div class="list-of-tables"><p><b>List of Tables</b></p><dl><dt>1. <a href="table.runtime-info.html#id2690268">List of runtime variables</a></dt></dl></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="introduction.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top"> </td><td width="20%" align="center"> </td><td width="40%" align="right" valign="top"> What is Manitou-Mail?</td></tr></table></div></body></html>
