@@ -125,7 +125,7 @@ msgs_filter::add_address_selection (sql_query& q,
   return 1;
 }
 
-
+/// @todo Реализовать эту функцию без использования PGresult
 //static
 void
 msgs_filter::load_result_list(PGresult* res, std::list<mail_result>* l)
@@ -199,6 +199,24 @@ fetch_thread::run()
   }
   if (res)
     PQclear(res);
+  /// @todo проверить закоменченную реализацию и заменить верний код ею
+  /*try {
+    QTime start = QTime::currentTime();
+    //PGresult* res = PQexec(c, qb.constData());
+    sql_stream query (qb);
+    m_exec_time = start.elapsed();
+  }
+  catch (db_excpt err) {
+    m_errstr = QObject::tr("Unspecified postgreSQL error");
+    QString pg_status = err.errcode();
+    if (!pg_status.isEmpty())
+      m_errstr = QObject::tr("status: ")+pg_status+"\n";
+    m_errstr += err.errmsg();
+    DBG_PRINTF(5, "sql_stream error");
+  }
+  msgs_filter::load_result_list(res, m_results);
+*/
+
 }
 
 // stop the fetch

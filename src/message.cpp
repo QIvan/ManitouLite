@@ -799,7 +799,6 @@ bool
 mail_msg::store()
 {
   bool result=false;
-  PGresult* res;
   db_cnx db;
   PGconn* c=db.connection();
   try {

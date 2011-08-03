@@ -86,6 +86,9 @@ public:
 
   /** send the query to the server */
   void execute();
+  /// @todo: эта функция будет заменена на void execute();
+  /// Сделана для упрощения дальнейшей модификации.
+  void exec() {}
 
   /** returns true if there are no more results to read from the stream,
       or false otherwise */
