@@ -447,17 +447,26 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
       QStringList::Iterator it = m_words.begin();
       int i=0;
       wordsearch_resultset ws_rs;
+      q.add_table("header h");
+      q.add_table("body b");
       for (; it!=m_words.end(); ++it) {
+        /// @todo этот поиск нужно переписать
+        /*
 	if (!db_word::is_non_indexable(*it)) {
 	  db_word word;
 	  word.set_text(*it);
 	  word.fetch_vectors();
-	  if (i++==0)
+          if (i++==0)
 	    ws_rs.insert_word(word);
 	  else
-	    ws_rs.and_word(word);
+            ws_rs.and_word(word);
 	}
+        */
+        q.add_clause(QString(" (h.lines like '%1' OR b.bodytext like '%1') ").arg(quote_like_arg(*it)));
+        q.add_clause("m.mail_id=b.mail_id");
+        q.add_clause("m.mail_id=h.mail_id");
       }
+      /*
       std::list<uint> mlist;
       QString in_list="m.mail_id in (";
 
@@ -500,7 +509,7 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
 	q.add_table("body b");
       for (; it!=m_substrs.end(); ++it) {
 	q.add_clause("bodytext ilike '" + quote_like_arg(*it) + "' AND m.mail_id=b.mail_id");
-      }
+      }*/
     }
 
     if (m_mailId) {
@@ -609,6 +618,7 @@ msgs_filter::asynchronous_fetch(fetch_thread* t)
       }
     }
     t->m_query = q.get();
+    DBG_PRINTF(3, q.get().toLocal8Bit().constData());
     m_start_time = QTime::currentTime();
     t->start();
   }
