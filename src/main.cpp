@@ -193,6 +193,7 @@ main(int argc, char **argv)
     }
   }
 
+  global_debug_level = 5;
   const char* cnx_string=NULL;
   QString conf_name;
   bool explicit_config=false;
