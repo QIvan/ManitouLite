@@ -446,11 +446,11 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
     if (!m_words.empty()) {
       QStringList::Iterator it = m_words.begin();
       int i=0;
-      wordsearch_resultset ws_rs;
+      //wordsearch_resultset ws_rs;
       q.add_table("header h");
       q.add_table("body b");
+      QString query_search_word="";
       for (; it!=m_words.end(); ++it) {
-        /// @todo этот поиск нужно переписать
         /*
 	if (!db_word::is_non_indexable(*it)) {
 	  db_word word;
@@ -462,10 +462,16 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
             ws_rs.and_word(word);
 	}
         */
-        q.add_clause(QString(" (h.lines like '%1' OR b.bodytext like '%1') ").arg(quote_like_arg(*it)));
-        q.add_clause("m.mail_id=b.mail_id");
-        q.add_clause("m.mail_id=h.mail_id");
+        /// @todo уточнить про поиск по тексту сообщений.
+        query_search_word += QString(" h.lines like '%1' OR b.bodytext like '%1' OR ").arg(quote_like_arg(*it));
       }
+      // delete end OR
+      query_search_word.truncate(query_search_word.size()-3);
+      query_search_word.prepend('(');
+      query_search_word.append(')');
+      q.add_clause(query_search_word);
+      q.add_clause("m.mail_id=h.mail_id");
+      q.add_clause("m.mail_id=b.mail_id");
       /*
       std::list<uint> mlist;
       QString in_list="m.mail_id in (";
@@ -618,7 +624,7 @@ msgs_filter::asynchronous_fetch(fetch_thread* t)
       }
     }
     t->m_query = q.get();
-    DBG_PRINTF(3, q.get().toLocal8Bit().constData());
+    //DBG_PRINTF(3, q.get().toLocal8Bit().constData());
     m_start_time = QTime::currentTime();
     t->start();
   }

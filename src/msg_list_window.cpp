@@ -93,10 +93,10 @@ msg_list_window::search_db()
     QMessageBox::information(NULL, tr("Search"), tr("Please enter a string containing at least 3 characters"));
     return;
   }
-  if (db_word::is_non_indexable(txt)) {
+  /*if (db_word::is_non_indexable(txt)) {
     QMessageBox::information(NULL, tr("Search"), tr("The word '%1' is excluded from the index.").arg(txt));
     return;
-  }
+  }*/
   msgs_filter f;
   f.m_max_results=200;
   f.parse_search_string(txt, f.m_words, f.m_substrs);
