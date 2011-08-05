@@ -2946,7 +2946,9 @@ msg_list_window::check_new_mail()
     DBG_PRINTF(5,"%s", query);
     PGresult* res = PQexec(c, query);
     m_auto_refresh_results.clear();
-    m_filter->load_result_list(res, &m_auto_refresh_results);
+    db_cnx db;
+    sql_stream query_stream(q.get(), db);
+    m_filter->load_result_list(query_stream, res, &m_auto_refresh_results);
     if (res) PQclear(res);
 #endif // WITH_PGSQL
     if (!m_auto_refresh_results.empty()) {

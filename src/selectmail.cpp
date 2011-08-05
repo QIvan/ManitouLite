@@ -128,7 +128,7 @@ msgs_filter::add_address_selection (sql_query& q,
 /// @todo Реализовать эту функцию без использования PGresult
 //static
 void
-msgs_filter::load_result_list(PGresult* res, std::list<mail_result>* l)
+msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list<mail_result>* l)
 {
   if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
     DBG_PRINTF(5,"load_result_list %d results", PQntuples(res));
@@ -187,8 +187,10 @@ fetch_thread::run()
     m_errstr = QObject::tr("Unspecified postgreSQL error");
   }
   else {
+    db_cnx db;
+    sql_stream query(m_query, db);
     if (PQresultStatus(res)==PGRES_TUPLES_OK)
-      msgs_filter::load_result_list(res, m_results);
+      msgs_filter::load_result_list(query, res, m_results);
     else {
       QString pg_status=QString(PQresStatus(PQresultStatus(res)));
       if (!pg_status.isEmpty())
@@ -674,12 +676,13 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
       if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
 	m_exec_time = m_start_time.elapsed();
 	m_fetch_results = new std::list<mail_result>;
-	if (m_fetch_results) {
-	  load_result_list(res, m_fetch_results);
-	  make_list(qlv);
-	  delete m_fetch_results;
-	  m_fetch_results=NULL;
-	}
+        db_cnx db;
+        sql_stream query(q.get(), db);
+        load_result_list(query, res, m_fetch_results);
+        make_list(qlv);
+        delete m_fetch_results;
+        m_fetch_results=NULL;
+
       }
       else {
 	DBG_PRINTF(2, "PQexec error");
