@@ -25,6 +25,10 @@
 #include "bitvector.h"
 #include "dbtypes.h"
 
+/**
+@author i.zemlyansky
+@todo Данный код уже не нужен
+@deprecated
 class db_word
 {
 public:
@@ -55,7 +59,7 @@ private:
   /* vector of mails containing this word, fetchable from the inverted index
      the map index is the partno column (number of partition) of
      inverted_word_index */
-  std::map<uint,bit_vector*> m_vectors;
+  /** std::map<uint,bit_vector*> m_vectors;
 
   // wordtext.word_id
   uint m_word_id;
@@ -80,5 +84,5 @@ private:
   std::map<uint,bit_vector*> m_vect;
   static int m_partsize;
 };
-
+*/
 #endif

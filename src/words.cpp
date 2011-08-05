@@ -17,7 +17,7 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include "main.h"
+/*#include "main.h"
 #include "words.h"
 #include "db.h"
 #include "sqlstream.h"
@@ -95,7 +95,7 @@ db_word::fetch_id()
 
 /* Return the vector of bits related to 'part_no' partition, or NULL
  if that part of the vector if empty */
-const bit_vector*
+/*const bit_vector*
 db_word::vector_part(uint part_no) const
 {
   std::map<uint,bit_vector*>::const_iterator it;
@@ -142,7 +142,7 @@ db_word::fetch_vectors()
       /* (word_id,partno) tuples should be unique. TODO: check
 	 the existence of a m_vectors[part] entry before assigning
 	 it as a consistency test */
-      m_vectors[part] = v;
+/*      m_vectors[part] = v;
     }
   }
   else if (res) {
@@ -211,7 +211,7 @@ wordsearch_resultset::clear()
  if direction==1, include only messages for which mail_id > limit
  if direction==0, limit is ignored
 */
-void
+/*void
 wordsearch_resultset::get_result_bits(std::list<mail_id_t>& l,
 				      mail_id_t limit,
 				      int direction,
@@ -257,3 +257,4 @@ wordsearch_resultset::get_result_bits(std::list<mail_id_t>& l,
     }
   }
 }
+*/

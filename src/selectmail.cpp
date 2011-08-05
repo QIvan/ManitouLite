@@ -320,6 +320,7 @@ msgs_filter::quote_like_arg(const QString& s)
   (think "next page") based on the lower/higher (msg_date,mail_id) previously
   retrieved
 */
+/// @todo провести рефакторинг данной функции. Она ооочень большая и не очень понятная.
 int
 msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
 {
