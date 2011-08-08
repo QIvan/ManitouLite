@@ -149,7 +149,7 @@ public:
   std::list<mail_result>* m_fetch_results;
   int build_query (sql_query&, bool fetch_more=false);
   //  mail_msg* in_list(mail_id_t id);
-  static void load_result_list(sql_stream& query_result,PGresult* res, std::list<mail_result>* l);
+  static void load_result_list(sql_stream& query_result/*,PGresult* res*/, std::list<mail_result>* l);
 
   QTime m_start_time;
   int m_exec_time;

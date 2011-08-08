@@ -129,7 +129,7 @@ msgs_filter::add_address_selection (sql_query& q,
 /// @todo Реализовать эту функцию без использования PGresult
 //static
 void
-msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list<mail_result>* l)
+msgs_filter::load_result_list(sql_stream& query_result, /*PGresult* res,*/ std::list<mail_result>* l)
 {
     bool utf8=false;
     db_cnx db;
@@ -166,7 +166,7 @@ msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list
       l->push_back(r2);
     }
 
-  mail_result r;
+  /*mail_result r;
   if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
     DBG_PRINTF(5,"load_result_list %d results", PQntuples(res));
     bool utf8=false;
@@ -209,8 +209,8 @@ msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list
     if (check)
         qDebug("OK");
     else
-        qWarning("Error!");*/
-  }
+        qWarning("Error!");
+  }*/
 }
 
 fetch_thread::fetch_thread()
@@ -243,7 +243,7 @@ fetch_thread::run()
     db_cnx db;
     sql_stream query(m_query, db);
     if (PQresultStatus(res)==PGRES_TUPLES_OK)
-      msgs_filter::load_result_list(query, res, m_results);
+      msgs_filter::load_result_list(query/*, res*/, m_results);
     else {
       QString pg_status=QString(PQresStatus(PQresultStatus(res)));
       if (!pg_status.isEmpty())
@@ -731,7 +731,7 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
 	m_fetch_results = new std::list<mail_result>;
         db_cnx db;
         sql_stream query_res(q.get(), db);
-        load_result_list(query_res, res, m_fetch_results);
+        load_result_list(query_res, /*res,*/ m_fetch_results);
         make_list(qlv);
         delete m_fetch_results;
         m_fetch_results=NULL;
