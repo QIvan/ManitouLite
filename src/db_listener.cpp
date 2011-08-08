@@ -113,11 +113,12 @@ db_listener::process_notification()
   }
   else {
     PGnotify* n;
-    while ((n=PQnotifies(c))!=NULL) {
+    /// @todo из-за этого бесконечного цикла приложение иногда виснет.
+    /*while ((n=PQnotifies(c))!=NULL) {
       if (n->relname == m_notif_name) {
 	emit notified();
 	PQfreemem(n);
       }
-    }
+    }*/
   }
 }
