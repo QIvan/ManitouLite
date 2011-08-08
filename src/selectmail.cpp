@@ -225,7 +225,7 @@ fetch_thread::run()
   if (!m_cnx) return;
   DBG_PRINTF(5,"fetch_thread::run()");
   m_errstr=QString::null;
-  PGconn* c = m_cnx->connection();
+  //PGconn* c = m_cnx->connection();
   QByteArray qb;
   if (m_cnx->datab()->encoding()=="UTF8") {
     qb = m_query.toUtf8();
@@ -233,7 +233,7 @@ fetch_thread::run()
   else {
     qb = m_query.toLocal8Bit();
   }
-  QTime start = QTime::currentTime();
+  /*QTime start = QTime::currentTime();
   PGresult* res = PQexec(c, qb.constData());
   m_exec_time = start.elapsed();
   if (!res) {
@@ -243,7 +243,7 @@ fetch_thread::run()
     db_cnx db;
     sql_stream query(m_query, db);
     if (PQresultStatus(res)==PGRES_TUPLES_OK)
-      msgs_filter::load_result_list(query/*, res*/, m_results);
+      msgs_filter::load_result_list(query/*, res*//*, m_results);
     else {
       QString pg_status=QString(PQresStatus(PQresultStatus(res)));
       if (!pg_status.isEmpty())
@@ -253,13 +253,15 @@ fetch_thread::run()
     }
   }
   if (res)
-    PQclear(res);
+    PQclear(res);*/
   /// @todo проверить закоменченную реализацию и заменить верний код ею
-  /*try {
+  try {
+    db_cnx db;
     QTime start = QTime::currentTime();
     //PGresult* res = PQexec(c, qb.constData());
-    sql_stream query (qb);
+    sql_stream query (m_query, db);
     m_exec_time = start.elapsed();
+    msgs_filter::load_result_list(query, m_results);
   }
   catch (db_excpt err) {
     m_errstr = QObject::tr("Unspecified postgreSQL error");
@@ -269,8 +271,7 @@ fetch_thread::run()
     m_errstr += err.errmsg();
     DBG_PRINTF(5, "sql_stream error");
   }
-  msgs_filter::load_result_list(res, m_results);
-*/
+
 
 }
 
@@ -501,7 +502,6 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
 
     if (!m_words.empty()) {
       QStringList::Iterator it = m_words.begin();
-      int i=0;
       //wordsearch_resultset ws_rs;
       q.add_table("header h");
       q.add_table("body b");
@@ -710,42 +710,42 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
     r=build_query(q, fetch_more);
     if (r==1) {
       db_cnx db;
-      QString s=q.get();
-      const char* query;
+      QString query=q.get();
+/*
       QByteArray qb;
       if (db.datab()->encoding()=="UTF8") {
-	qb = s.toUtf8();
+        s = QString(s.toUtf8().constData());
       }
       else {
-	qb = s.toLocal8Bit();
-      }
-      query = qb.constData();
-      DBG_PRINTF(5,"%s", query);
+        qb = s.toLocal8Bit();
+      }*/
+      DBG_PRINTF(5,"%s", query.toLocal8Bit().constData());
+
+//#ifdef WITH_PGSQL
+      //PGconn* c=GETDB();
+      //PGresult* res = PQexec(c, query); // TODO: check for pgsql errors here
       m_exec_time=0;
-      m_start_time = QTime::currentTime();
-#ifdef WITH_PGSQL
-      PGconn* c=GETDB();
-      PGresult* res = PQexec(c, query); // TODO: check for pgsql errors here
-      if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
-	m_exec_time = m_start_time.elapsed();
-	m_fetch_results = new std::list<mail_result>;
-        db_cnx db;
-        sql_stream query_res(q.get(), db);
+      m_fetch_results = new std::list<mail_result>;
+      try {
+        m_start_time = QTime::currentTime();
+        sql_stream query_res(query, db);
+        m_exec_time = m_start_time.elapsed();
+        //db_cnx db;
         load_result_list(query_res, /*res,*/ m_fetch_results);
         make_list(qlv);
         delete m_fetch_results;
         m_fetch_results=NULL;
 
       }
-      else {
+      catch(db_excpt e) {
 	DBG_PRINTF(2, "PQexec error");
 	m_exec_time=-1;
-	m_errmsg = PQerrorMessage(c);
+        m_errmsg = e.errmsg();
 	QMessageBox::warning(NULL, APP_NAME, QObject::tr("Unable to execute query.") + QString("\n")+ m_errmsg);
       }
-      if (res)
-	PQclear(res);
-#endif
+      /*if (res)
+        PQclear(res);*/
+//#endif
     }
     else if (r==0) {
       QMessageBox::information(NULL, APP_NAME, QObject::tr("Fetch error"));

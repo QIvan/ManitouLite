@@ -3,3 +3,5 @@ src
 /usr/include
 /usr/include/c++/4.4.4
 /usr/include/QtCore
+/usr/include/QtGui
+/usr/include/QtNetwork
