@@ -38,6 +38,7 @@
 #include <QSpinBox>
 #include <QMessageBox>
 #include <QApplication>
+#include <QDebug>
 #include <QCursor>
 #include <QPushButton>
 #include <QToolButton>
@@ -130,6 +131,42 @@ msgs_filter::add_address_selection (sql_query& q,
 void
 msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list<mail_result>* l)
 {
+    bool utf8=false;
+    db_cnx db;
+    mail_result r2;
+    if (db.datab()->encoding()=="UTF8")
+      utf8=true;
+    while (!query_result.eof()){
+      mail_id_t id;
+      int thread_id, status, in_replyto, pri;
+      uint flags;
+      QString from, subject, date, sender_name;
+      query_result >> id >> from >> subject >> date >> thread_id >> status
+                >> in_replyto >> sender_name >> pri >> flags;
+      r2.m_id = id;
+      r2.m_from = from;
+      if (!utf8)
+        r2.m_subject = subject;
+      else
+        r2.m_subject = subject;
+      r2.m_date = date;
+      r2.m_thread_id = thread_id;
+      r2.m_status = status;
+      msg_status_cache::update(r2.m_id, r2.m_status);
+      r2.m_in_replyto = in_replyto;
+      if (!utf8)
+        r2.m_sender_name = sender_name;
+      else
+        r2.m_sender_name = sender_name;
+      r2.m_pri = pri;
+      r2.m_flags = flags;
+      qDebug() << endl << (uint)r2.m_id << r2.m_from << r2.m_subject << r2.m_date
+               << r2.m_thread_id << r2.m_status << r2.m_in_replyto << r2.m_sender_name
+               << r2.m_pri << (uint)r2.m_flags << endl;
+      l->push_back(r2);
+    }
+
+  mail_result r;
   if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
     DBG_PRINTF(5,"load_result_list %d results", PQntuples(res));
     bool utf8=false;
@@ -137,7 +174,6 @@ msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list
     if (db.datab()->encoding()=="UTF8")
       utf8=true;
     for (int i=0; i < PQntuples(res); i++) {
-      mail_result r;
       r.m_id = atoi(PQgetvalue(res, i , 0));
       r.m_from = PQgetvalue(res, i, 1);
       if (!utf8)
@@ -155,8 +191,25 @@ msgs_filter::load_result_list(sql_stream& query_result, PGresult* res, std::list
 	r.m_sender_name = QString::fromUtf8(PQgetvalue(res, i, 7));
       r.m_pri = atoi(PQgetvalue(res, i, 8));
       r.m_flags = (uint)atoi(PQgetvalue(res, i, 9));
-      l->push_back(r);
+
+      qDebug() << endl << (uint)r.m_id << r.m_from << r.m_subject << r.m_date
+               << r.m_thread_id << r.m_status << r.m_in_replyto << r.m_sender_name
+               << r.m_pri << (uint)r.m_flags << endl;
     }
+    /*bool check =     r.m_id == r2.m_id;
+    check = check && r.m_from == r2.m_from;
+    check = check && r.m_subject == r2.m_subject;
+    check = check && r.m_date == r2.m_date;
+    check = check && r.m_thread_id == r2.m_thread_id;
+    check = check && r.m_status == r2.m_status;
+    check = check && r.m_in_replyto == r2.m_in_replyto;
+    check = check && r.m_sender_name == r2.m_sender_name;
+    check = check && r.m_pri == r2.m_pri;
+    check = check && r.m_flags == r2.m_flags;
+    if (check)
+        qDebug("OK");
+    else
+        qWarning("Error!");*/
   }
 }
 
@@ -677,8 +730,8 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
 	m_exec_time = m_start_time.elapsed();
 	m_fetch_results = new std::list<mail_result>;
         db_cnx db;
-        sql_stream query(q.get(), db);
-        load_result_list(query, res, m_fetch_results);
+        sql_stream query_res(q.get(), db);
+        load_result_list(query_res, res, m_fetch_results);
         make_list(qlv);
         delete m_fetch_results;
         m_fetch_results=NULL;
