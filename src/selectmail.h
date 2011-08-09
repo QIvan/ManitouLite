@@ -167,8 +167,6 @@ private:
   /* escape % and _ for LIKE clauses and add % at the start and end */
   QString quote_like_arg(const QString&);
 
-  PGresult* res;
-
   /* the part of the query that's made visible to the user: it
      includes a select-list that retrieves only the mail_id column,
      and also  shouldn't have ORDER BY or LIMIT clauses. Typically,

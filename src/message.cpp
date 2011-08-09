@@ -898,12 +898,13 @@ mail_msg::store()
     DBEXCPT(p);
     result=false;
   }
+  /** @todo разобраться с этим catch
   catch(int errcode) {
     DBG_PRINTF(2, "rollback caused by other reason (%d)", errcode);
     db.rollback_transaction();
     DBEXCPT(c);
     result=false;
-  }
+  }*/
   return result;
 }
 

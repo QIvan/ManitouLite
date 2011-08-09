@@ -81,7 +81,6 @@
 #include "mime_msg_viewer.h"
 
 #include "icons.h"
-#include "words.h"
 
 #define STACKED_LV
 

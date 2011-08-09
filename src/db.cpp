@@ -46,19 +46,6 @@
 //static PGconn *pgconn;
 pgConnection pgDb;
 
-PGconn* GETDB()
-{
-  //  return pgconn;
-  return pgDb.connection();
-}
-
-void DBEXCPT(PGconn* c)
-{
-  //  std::cerr << PQerrorMessage(c);
-  QString err=PQerrorMessage(c);
-  QMessageBox::warning(NULL, QObject::tr("Database error"), err);
-}
-
 void DBEXCPT(db_excpt& p)
 {
   //  std::cerr << p.query() << ":" << p.errmsg() << std::endl;
@@ -410,18 +397,15 @@ bool
 database::fetchServerDate(QString& date)
 {
   bool result=true;
+  try {
   db_cnx db;
-  PGconn* c=db.connection();
-  PGresult* res=PQexec(c, "SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')");
-  if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
-    date=(const char*)PQgetvalue(res,0,0);
+  sql_stream query("SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')", db);
+  query >> date;
   }
-  else {
-    DBEXCPT(c);
+  catch (db_excpt e) {
+    DBEXCPT(e);
     result=false;
   }
-  if (res)
-    PQclear(res);
   return result;
 }
 
