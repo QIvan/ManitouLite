@@ -99,8 +99,9 @@ db_listener::setup_notification()
 void
 db_listener::process_notification()
 {
+  /// @todo из-за этой функции приложение иногда виснет.
   DBG_PRINTF(3, "process_notification()");
-  pgConnection* cnx = dynamic_cast<pgConnection*>(m_db);
+  /*pgConnection* cnx = dynamic_cast<pgConnection*>(m_db);
   PGconn* c = cnx->connection();
   int r=PQconsumeInput(c);
   if (r==0) {
@@ -113,12 +114,11 @@ db_listener::process_notification()
   }
   else {
     PGnotify* n;
-    /// @todo из-за этого бесконечного цикла приложение иногда виснет.
-    /*while ((n=PQnotifies(c))!=NULL) {
+    while ((n=PQnotifies(c))!=NULL) {
       if (n->relname == m_notif_name) {
 	emit notified();
 	PQfreemem(n);
       }
-    }*/
-  }
+    }
+  }*/
 }
