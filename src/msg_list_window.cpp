@@ -2938,19 +2938,12 @@ msg_list_window::check_new_mail()
     statusBar()->showMessage(tr("Checking for new mail..."));
     sql_query q;
     m_filter->build_query(q);
-//#ifdef WITH_PGSQL
-    /*PGconn* c=GETDB();
-    QString s=q.get();
-    QByteArray qb = s.toLatin1();
-    const char* query=qb.constData();
-    DBG_PRINTF(5,"%s", query);*/
-    //PGresult* res = PQexec(c, query);
-    m_auto_refresh_results.clear();
+    QString query = service_f::toCodingDb(q.get());
     db_cnx db;
-    sql_stream query_stream(q.get(), db);
-    m_filter->load_result_list(query_stream, /*res,*/ &m_auto_refresh_results);
-    //if (res) PQclear(res);
-//#endif // WITH_PGSQL
+    sql_stream query_stream(query, db);
+
+    m_auto_refresh_results.clear();
+    m_filter->load_result_list(query_stream, &m_auto_refresh_results);
     if (!m_auto_refresh_results.empty()) {
       DBG_PRINTF(5, "non empty refresh result list");
       // check if any of these results is new

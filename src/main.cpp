@@ -331,3 +331,17 @@ main(int argc, char **argv)
   DisconnectDb();
   return 0;
 }
+
+QString service_f::toCodingDb(const QString &s)
+{
+    /// @todo разобраться с кодировкой
+    /*QByteArray qb;
+    db_cnx db;
+    if (db.cdatab()->encoding()=="UTF8") {
+      qb = s.toUtf8();
+    }
+    else {
+      qb = s.toLocal8Bit();
+    }*/
+    return s;
+}

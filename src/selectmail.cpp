@@ -131,86 +131,21 @@ msgs_filter::add_address_selection (sql_query& q,
 void
 msgs_filter::load_result_list(sql_stream& query_result, /*PGresult* res,*/ std::list<mail_result>* l)
 {
-    bool utf8=false;
-    db_cnx db;
-    mail_result r2;
-    if (db.datab()->encoding()=="UTF8")
-      utf8=true;
     while (!query_result.eof()){
-      mail_id_t id;
-      int thread_id, status, in_replyto, pri;
-      uint flags;
-      QString from, subject, date, sender_name;
-      query_result >> id >> from >> subject >> date >> thread_id >> status
-                >> in_replyto >> sender_name >> pri >> flags;
-      r2.m_id = id;
-      r2.m_from = from;
-      if (!utf8)
-        r2.m_subject = subject;
-      else
-        r2.m_subject = subject;
-      r2.m_date = date;
-      r2.m_thread_id = thread_id;
-      r2.m_status = status;
-      msg_status_cache::update(r2.m_id, r2.m_status);
-      r2.m_in_replyto = in_replyto;
-      if (!utf8)
-        r2.m_sender_name = sender_name;
-      else
-        r2.m_sender_name = sender_name;
-      r2.m_pri = pri;
-      r2.m_flags = flags;
-      qDebug() << endl << (uint)r2.m_id << r2.m_from << r2.m_subject << r2.m_date
-               << r2.m_thread_id << r2.m_status << r2.m_in_replyto << r2.m_sender_name
-               << r2.m_pri << (uint)r2.m_flags << endl;
-      l->push_back(r2);
-    }
-
-  /*mail_result r;
-  if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
-    DBG_PRINTF(5,"load_result_list %d results", PQntuples(res));
-    bool utf8=false;
-    db_cnx db;
-    if (db.datab()->encoding()=="UTF8")
-      utf8=true;
-    for (int i=0; i < PQntuples(res); i++) {
-      r.m_id = atoi(PQgetvalue(res, i , 0));
-      r.m_from = PQgetvalue(res, i, 1);
-      if (!utf8)
-	r.m_subject = PQgetvalue(res, i, 2);
-      else
-	r.m_subject = QString::fromUtf8(PQgetvalue(res, i, 2));
-      r.m_date = PQgetvalue(res, i, 3);
-      r.m_thread_id = atoi(PQgetvalue(res, i , 4));
-      r.m_status = atoi(PQgetvalue(res, i, 5));
+      mail_result r;
+      QString subject, sender_name;
+      query_result >> r.m_id >> r.m_from >> subject >> r.m_date >> r.m_thread_id
+                   >> r.m_status >> r.m_in_replyto >> sender_name >> r.m_pri
+                   >> r.m_flags;
       msg_status_cache::update(r.m_id, r.m_status);
-      r.m_in_replyto = atoi(PQgetvalue(res, i, 6));
-      if (!utf8)
-	r.m_sender_name = PQgetvalue(res, i, 7);
-      else
-	r.m_sender_name = QString::fromUtf8(PQgetvalue(res, i, 7));
-      r.m_pri = atoi(PQgetvalue(res, i, 8));
-      r.m_flags = (uint)atoi(PQgetvalue(res, i, 9));
-
+      r.m_subject = service_f::toCodingDb(subject);
+      r.m_sender_name = service_f::toCodingDb(sender_name);
+      /** @date 9.09.2011
       qDebug() << endl << (uint)r.m_id << r.m_from << r.m_subject << r.m_date
                << r.m_thread_id << r.m_status << r.m_in_replyto << r.m_sender_name
-               << r.m_pri << (uint)r.m_flags << endl;
+               << r.m_pri << (uint)r.m_flags << endl;*/
+      l->push_back(r);
     }
-    /*bool check =     r.m_id == r2.m_id;
-    check = check && r.m_from == r2.m_from;
-    check = check && r.m_subject == r2.m_subject;
-    check = check && r.m_date == r2.m_date;
-    check = check && r.m_thread_id == r2.m_thread_id;
-    check = check && r.m_status == r2.m_status;
-    check = check && r.m_in_replyto == r2.m_in_replyto;
-    check = check && r.m_sender_name == r2.m_sender_name;
-    check = check && r.m_pri == r2.m_pri;
-    check = check && r.m_flags == r2.m_flags;
-    if (check)
-        qDebug("OK");
-    else
-        qWarning("Error!");
-  }*/
 }
 
 fetch_thread::fetch_thread()
@@ -224,55 +159,22 @@ fetch_thread::run()
 {
   if (!m_cnx) return;
   DBG_PRINTF(5,"fetch_thread::run()");
-  m_errstr=QString::null;
-  //PGconn* c = m_cnx->connection();
-  QByteArray qb;
-  if (m_cnx->datab()->encoding()=="UTF8") {
-    qb = m_query.toUtf8();
-  }
-  else {
-    qb = m_query.toLocal8Bit();
-  }
-  /*QTime start = QTime::currentTime();
-  PGresult* res = PQexec(c, qb.constData());
-  m_exec_time = start.elapsed();
-  if (!res) {
-    m_errstr = QObject::tr("Unspecified postgreSQL error");
-  }
-  else {
-    db_cnx db;
-    sql_stream query(m_query, db);
-    if (PQresultStatus(res)==PGRES_TUPLES_OK)
-      msgs_filter::load_result_list(query/*, res*//*, m_results);
-    else {
-      QString pg_status=QString(PQresStatus(PQresultStatus(res)));
-      if (!pg_status.isEmpty())
-	m_errstr = QObject::tr("status: ")+pg_status+"\n";
-      m_errstr += QString(PQresultErrorMessage(res));
-      DBG_PRINTF(5, "PQexec error");
-    }
-  }
-  if (res)
-    PQclear(res);*/
-  /// @todo проверить закоменченную реализацию и заменить верний код ею
+  m_errstr = QString::null;
+  m_query = service_f::toCodingDb(m_query);
   try {
     db_cnx db;
     QTime start = QTime::currentTime();
-    //PGresult* res = PQexec(c, qb.constData());
     sql_stream query (m_query, db);
     m_exec_time = start.elapsed();
     msgs_filter::load_result_list(query, m_results);
   }
   catch (db_excpt err) {
     m_errstr = QObject::tr("Unspecified postgreSQL error");
-    QString pg_status = err.errcode();
-    if (!pg_status.isEmpty())
-      m_errstr = QObject::tr("status: ")+pg_status+"\n";
+    if (!err.errcode().isEmpty())
+      m_errstr = QObject::tr("status: ") + err.errcode() + "\n";
     m_errstr += err.errmsg();
     DBG_PRINTF(5, "sql_stream error");
   }
-
-
 }
 
 // stop the fetch
@@ -507,17 +409,6 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
       q.add_table("body b");
       QString query_search_word="";
       for (; it!=m_words.end(); ++it) {
-        /*
-	if (!db_word::is_non_indexable(*it)) {
-	  db_word word;
-	  word.set_text(*it);
-	  word.fetch_vectors();
-          if (i++==0)
-	    ws_rs.insert_word(word);
-	  else
-            ws_rs.and_word(word);
-	}
-        */
         /// @todo уточнить про поиск по тексту сообщений.
         query_search_word += QString(" h.lines like '%1' OR b.bodytext like '%1' OR ").arg(quote_like_arg(*it));
       }
@@ -528,50 +419,6 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
       q.add_clause(query_search_word);
       q.add_clause("m.mail_id=h.mail_id");
       q.add_clause("m.mail_id=b.mail_id");
-      /*
-      std::list<uint> mlist;
-      QString in_list="m.mail_id in (";
-
-      // get the list of mail_id corresponding to the words vectors
-      // FIXME: using m_max_results is OK only if there are no other criteria
-      // besides the wordsearch. Otherwise we can't know how much mail_id we should
-      // extract from the word vector.
-      // A possible way out would be to choose a reasonable fixed size and
-      // issue several times the main SELECT until the maximum number results is reached
-      // or there is no new result to expect, and then UNION all the results together
-      if (fetch_more && m_mail_id_bound>0) {
-	ws_rs.get_result_bits(mlist, m_mail_id_bound, (m_order>0 ? 1 : -1), m_max_results);
-      }
-      else {
-	ws_rs.get_result_bits(mlist, 0, 0, m_max_results);
-      }
-
-      if (!mlist.empty()) {
-	char b[11];
-	std::list<uint>::iterator iit=mlist.begin();
-	for (int cnt=0; iit!=mlist.end(); ++iit, ++cnt) {
-	  if (cnt!=0)
-	    in_list.append(',');
-	  sprintf(b, "%u", *iit);
-	  in_list.append(b);
-	}
-      }
-      else {
-	in_list.append('0');	// force no result
-      }
-      in_list.append(')');
-//      DBG_PRINTF(4, "%s", in_list.latin1());
-      q.add_clause(in_list);
-      //unique=true;		// the DISTINCT clause will be needed
-    }
-
-    if (!m_substrs.empty()) {
-      QStringList::Iterator it = m_substrs.begin();
-      if (it!=m_substrs.end())
-	q.add_table("body b");
-      for (; it!=m_substrs.end(); ++it) {
-	q.add_clause("bodytext ilike '" + quote_like_arg(*it) + "' AND m.mail_id=b.mail_id");
-      }*/
     }
 
     if (m_mailId) {
@@ -707,35 +554,22 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
   int r=1;
   try {
     sql_query q;
-    r=build_query(q, fetch_more);
+    r = build_query(q, fetch_more);
     if (r==1) {
-      db_cnx db;
-      QString query=q.get();
-/*
-      QByteArray qb;
-      if (db.datab()->encoding()=="UTF8") {
-        s = QString(s.toUtf8().constData());
-      }
-      else {
-        qb = s.toLocal8Bit();
-      }*/
-      DBG_PRINTF(5,"%s", query.toLocal8Bit().constData());
-
-//#ifdef WITH_PGSQL
-      //PGconn* c=GETDB();
-      //PGresult* res = PQexec(c, query); // TODO: check for pgsql errors here
-      m_exec_time=0;
+      QString query = service_f::toCodingDb(q.get());
+      DBG_PRINTF(5, "%s", query.toLocal8Bit().constData());
       m_fetch_results = new std::list<mail_result>;
       try {
+        m_exec_time=0;
+        db_cnx db;
         m_start_time = QTime::currentTime();
         sql_stream query_res(query, db);
         m_exec_time = m_start_time.elapsed();
-        //db_cnx db;
-        load_result_list(query_res, /*res,*/ m_fetch_results);
+
+        load_result_list(query_res, m_fetch_results);
         make_list(qlv);
         delete m_fetch_results;
         m_fetch_results=NULL;
-
       }
       catch(db_excpt e) {
 	DBG_PRINTF(2, "PQexec error");
@@ -743,9 +577,6 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
         m_errmsg = e.errmsg();
 	QMessageBox::warning(NULL, APP_NAME, QObject::tr("Unable to execute query.") + QString("\n")+ m_errmsg);
       }
-      /*if (res)
-        PQclear(res);*/
-//#endif
     }
     else if (r==0) {
       QMessageBox::information(NULL, APP_NAME, QObject::tr("Fetch error"));

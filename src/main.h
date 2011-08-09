@@ -100,7 +100,11 @@ private:
   QString default_style_name;
 };
 
-
 extern manitou_application* gl_pApplication;
+
+namespace service_f
+{
+    QString toCodingDb(const QString &s);
+}
 
 #endif // INC_MAIN_H
