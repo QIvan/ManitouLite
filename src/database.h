@@ -132,6 +132,7 @@ public:
   const database* cdatab() const {
     return m_cnx;
   }
+  void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);
   // overrides database's methods

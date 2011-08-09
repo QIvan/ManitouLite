@@ -149,14 +149,14 @@ msgs_filter::load_result_list(sql_stream& query_result, /*PGresult* res,*/ std::
 
 fetch_thread::fetch_thread()
 {
-  m_cnx=NULL;
+  m_pDb=NULL;
 }
 
 // start the fetch. Overrides QThread::run()
 void
 fetch_thread::run()
 {
-  if (!m_cnx) return;
+  if (!m_pDb) return;
   DBG_PRINTF(5,"fetch_thread::run()");
   m_errstr = QString::null;
   m_query = service_f::toCodingDb(m_query);
@@ -180,18 +180,17 @@ fetch_thread::run()
 void
 fetch_thread::cancel()
 {
-  if (m_cnx) {
+  if (m_pDb) {
     DBG_PRINTF(5, "fetch_thread::cancel()");
-    PGconn* c = m_cnx->connection();
-    PQrequestCancel(c);
+    m_pDb->cancelRequest();
   }
 }
 
 void fetch_thread::release()
 {
-  if (m_cnx) {
-    delete m_cnx;
-    m_cnx=NULL;
+  if (m_pDb) {
+    delete m_pDb;
+    m_pDb=NULL;
   }
 }
 
@@ -516,10 +515,10 @@ msgs_filter::asynchronous_fetch(fetch_thread* t)
       delete m_fetch_results;
     m_fetch_results = new std::list<mail_result>;
     t->m_results = m_fetch_results;
-    t->m_cnx = new db_cnx(true);
-    if (!t->m_cnx->ping()) {
+    t->m_pDb = new db_cnx(true);
+    if (!t->m_pDb->ping()) {
       DBG_PRINTF(3, "Connection to database lost. Trying to reconnect");
-      if (!t->m_cnx->datab()->reconnect()) {
+      if (!t->m_pDb->datab()->reconnect()) {
 	DBG_PRINTF(3, "Failed to reconnect to the database");
 	m_errmsg = QObject::tr("No connection to the database.");
 	return 0;

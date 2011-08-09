@@ -800,7 +800,6 @@ mail_msg::store()
 {
   bool result=false;
   db_cnx db;
-  PGconn* c=db.connection();
   try {
     db.begin_transaction();
     if (!m_nMailId) {
@@ -855,11 +854,6 @@ mail_msg::store()
     DBG_PRINTF(5, "%s\n", query);
     db_cnx database;
     sql_stream q(query, database);
-    /*res=PQexec(c,query);
-    if (!res || PQresultStatus(res)!=PGRES_COMMAND_OK)
-      throw 1;
-    if (res)
-      PQclear(res);*/
 
     msg_status_cache::update(get_id(), statusRead + statusOutgoing);
 

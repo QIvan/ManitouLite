@@ -409,6 +409,12 @@ database::fetchServerDate(QString& date)
   return result;
 }
 
+void
+db_cnx::cancelRequest()
+{
+    PQrequestCancel(m_cnx->connection());
+}
+
 bool
 db_cnx::next_seq_val(const char* seqName, int* id)
 {

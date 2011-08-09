@@ -65,7 +65,7 @@ public:
   virtual void run();
   void release();
   void cancel();
-  db_cnx* m_cnx;
+  db_cnx* m_pDb;
   std::list<mail_result>* m_results;
   QString m_query;
   QString m_errstr;
