@@ -133,6 +133,7 @@ public:
     return m_cnx;
   }
   int lo_open(Oid lobjId, int mode);
+  int lo_read(int fd, char *buf, size_t len);
   void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);

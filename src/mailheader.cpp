@@ -476,7 +476,7 @@ mail_header::fetch_raw()
     bool has_8_bit=false;
     data[sizeof(data)-1]='\0';
     do {
-      nread = lo_read(c, lobj_fd, (char*)data, sizeof(data)-1);
+      nread = db.lo_read(lobj_fd, (char*)data, sizeof(data)-1);
       // check if the contents are 8 bit clean
       char lastc=0;
       unsigned int j;

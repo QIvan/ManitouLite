@@ -415,6 +415,12 @@ db_cnx::lo_open(Oid lobjId, int mode)
     return ::lo_open(m_cnx->connection(), lobjId, mode);
 }
 
+int
+db_cnx::lo_read(int fd, char *buf, size_t len)
+{
+    return ::lo_read(m_cnx->connection(), fd, buf, len);
+}
+
 void
 db_cnx::cancelRequest()
 {

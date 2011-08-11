@@ -302,7 +302,7 @@ attachment::get_contents()
       DBG_PRINTF(2, "failed to open large object %u", (uint)lobjId);
       throw db_excpt("lo_open", db);
     }
-    lo_read(c, lobj_fd, m_data, size());
+    db.lo_read(lobj_fd, m_data, size());
     lo_close(c, lobj_fd);
     db.commit_transaction();
 
@@ -353,7 +353,7 @@ attachment::streamout_content(std::ofstream& of)
     char data[8192];
     unsigned int nread;
     do {
-      nread = lo_read(c, lobj_fd, data, sizeof(data));
+      nread = db.lo_read(lobj_fd, data, sizeof(data));
       of.write(data, nread);
     } while (nread==sizeof(data));
     lo_close(c, lobj_fd);
@@ -411,8 +411,7 @@ attachment::streamout_chunk(struct lo_ctxt* slo, std::ofstream& of)
 {
   char data[8192];
   unsigned int nread;
-  PGconn* c = slo->db->connection();
-  nread = lo_read(c, slo->lfd, data, sizeof(data));
+  nread = slo->db->lo_read(slo->lfd, data, sizeof(data));
   of.write(data, nread);
   return (nread==sizeof(data));	// true if not done yet
 }
@@ -734,8 +733,7 @@ qint64
 attachment::read(qint64 size, char* buf)
 {
   if (size==0) return 0;
-  PGconn* c = m_lo.db->connection();
-  int r = lo_read(c, m_lo.lfd, buf, (size_t)size);
+  int r = m_lo.db->lo_read(m_lo.lfd, buf, (size_t)size);
   if (r<size || r==0) {
     m_lo.eof=true;
     return r;
