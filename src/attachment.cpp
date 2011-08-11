@@ -590,8 +590,8 @@ attachment::import_file_content()
     else if (m_size>0 && m_data!=NULL) {
       if (lobjId==0) {
 	lobjId = lo_creat(db.connection(), INV_READ | INV_WRITE);
-	int lobjFd = lo_open (db.connection(), lobjId, INV_WRITE);
-	lo_write(db.connection(), lobjFd, m_data, m_size);
+        int lobjFd = db.lo_open (lobjId, INV_WRITE);
+        db.lo_write(lobjFd, m_data, m_size);
         db.lo_close(lobjFd);
       }
     }

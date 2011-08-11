@@ -422,6 +422,12 @@ db_cnx::lo_read(int fd, char *buf, size_t len)
 }
 
 int
+db_cnx::lo_write(int fd, const char *buf, size_t len)
+{
+    ::lo_write(m_cnx->connection(), fd, buf, len);
+}
+
+int
 db_cnx::lo_close(int fd)
 {
     ::lo_close(m_cnx->connection(), fd);
