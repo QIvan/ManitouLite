@@ -132,6 +132,13 @@ public:
   const database* cdatab() const {
     return m_cnx;
   }
+  int lo_creat(int mode);
+  int lo_open(Oid lobjId, int mode);
+  int lo_read(int fd, char *buf, size_t len);
+  int lo_write(int fd, const char *buf, size_t len);
+  int lo_import(const char *filename);
+  int lo_close(int fd);
+  void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);
   // overrides database's methods

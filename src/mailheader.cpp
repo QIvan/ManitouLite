@@ -465,8 +465,7 @@ mail_header::fetch_raw()
     else
       return false;
 
-    PGconn* c=db.connection();
-    int lobj_fd = lo_open(c, lobjId, INV_READ);
+    int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       return false;
     }
@@ -476,7 +475,7 @@ mail_header::fetch_raw()
     bool has_8_bit=false;
     data[sizeof(data)-1]='\0';
     do {
-      nread = lo_read(c, lobj_fd, (char*)data, sizeof(data)-1);
+      nread = db.lo_read(lobj_fd, (char*)data, sizeof(data)-1);
       // check if the contents are 8 bit clean
       char lastc=0;
       unsigned int j;
@@ -504,7 +503,7 @@ mail_header::fetch_raw()
 	m_raw.append((char*)data);
       }
     } while (!end_header && nread==sizeof(data));
-    lo_close(c, lobj_fd);
+    db.lo_close(lobj_fd);
     db.commit_transaction();
   }
   catch(db_excpt& p) {

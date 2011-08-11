@@ -409,6 +409,48 @@ database::fetchServerDate(QString& date)
   return result;
 }
 
+int
+db_cnx::lo_creat(int mode)
+{
+    return ::lo_creat(m_cnx->connection(), mode);
+}
+
+int
+db_cnx::lo_open(Oid lobjId, int mode)
+{
+    return ::lo_open(m_cnx->connection(), lobjId, mode);
+}
+
+int
+db_cnx::lo_read(int fd, char *buf, size_t len)
+{
+    return ::lo_read(m_cnx->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_write(int fd, const char *buf, size_t len)
+{
+    return ::lo_write(m_cnx->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_import(const char *filename)
+{
+    return ::lo_import(m_cnx->connection(), filename);
+}
+
+int
+db_cnx::lo_close(int fd)
+{
+    return ::lo_close(m_cnx->connection(), fd);
+}
+
+void
+db_cnx::cancelRequest()
+{
+    PQrequestCancel(m_cnx->connection());
+}
+
 bool
 db_cnx::next_seq_val(const char* seqName, int* id)
 {
