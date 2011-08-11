@@ -26,6 +26,7 @@
 #include <QMutex>
 #include <QList>
 #include <list>
+#include "creatorConnection.h"
 
 // PostgreSQL implementation
 #include <libpq-fe.h>
@@ -132,6 +133,7 @@ public:
   const database* cdatab() const {
     return m_cnx;
   }
+  creatorConnection getConnCreator();
   int lo_creat(int mode);
   int lo_open(Oid lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
@@ -160,6 +162,7 @@ public:
 
   static const QString& dbname();
 private:
+  creatorConnection m_creator;
   pgConnection* m_cnx;
 //  QList<db_listener*> m_listeners;
   bool m_alerts_enabled;
