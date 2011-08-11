@@ -409,6 +409,12 @@ database::fetchServerDate(QString& date)
   return result;
 }
 
+int
+db_cnx::lo_open(Oid lobjId, int mode)
+{
+    return ::lo_open(m_cnx->connection(), lobjId, mode);
+}
+
 void
 db_cnx::cancelRequest()
 {

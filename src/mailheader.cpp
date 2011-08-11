@@ -466,7 +466,7 @@ mail_header::fetch_raw()
       return false;
 
     PGconn* c=db.connection();
-    int lobj_fd = lo_open(c, lobjId, INV_READ);
+    int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       return false;
     }

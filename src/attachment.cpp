@@ -297,7 +297,7 @@ attachment::get_contents()
 
     db.begin_transaction();
     PGconn* c=db.connection();
-    int lobj_fd = lo_open(c, lobjId, INV_READ);
+    int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       DBG_PRINTF(2, "failed to open large object %u", (uint)lobjId);
       throw db_excpt("lo_open", db);
@@ -345,7 +345,7 @@ attachment::streamout_content(std::ofstream& of)
 
     db.begin_transaction();
     PGconn* c=db.connection();
-    int lobj_fd = lo_open(c, lobjId, INV_READ);
+    int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       DBG_PRINTF(4, "lo_open returns %d", lobj_fd);
       throw db_excpt("lo_open", db);
@@ -372,7 +372,6 @@ attachment::open_lo(struct lo_ctxt* slo)
      because we'll need it through all the use of the 'slo' context */
   db_cnx* db = new db_cnx();
   slo->db=db;
-  PGconn* c=db->connection();
   try {
     sql_stream s("SELECT content FROM attachment_contents WHERE attachment_id=:p1", *db);
     s << m_Id;
@@ -385,7 +384,7 @@ attachment::open_lo(struct lo_ctxt* slo)
       return 0;
     }
     db->begin_transaction();
-    int lobj_fd = lo_open(c, lobjId, INV_READ);
+    int lobj_fd = db->lo_open(lobjId, INV_READ);
     DBG_PRINTF(4, "lo_open returns %d", lobj_fd);
     if (lobj_fd < 0) {
       slo->lfd=-1;
