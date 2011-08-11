@@ -579,7 +579,7 @@ attachment::import_file_content()
     if (m_filename.length()>0) {
       QByteArray qb_fname = QFile::encodeName(m_filename);
       if (lobjId==0) {
-	lobjId = lo_import(db.connection(), qb_fname.constData());
+        lobjId = db.lo_import(qb_fname.constData());
 	if (lobjId==0) {
 	  DBG_PRINTF(2, "Error lo_import filename=%s", qb_fname.constData());
 	  db.rollback_transaction();
@@ -589,7 +589,7 @@ attachment::import_file_content()
     }
     else if (m_size>0 && m_data!=NULL) {
       if (lobjId==0) {
-	lobjId = lo_creat(db.connection(), INV_READ | INV_WRITE);
+        lobjId = db.lo_creat(INV_READ | INV_WRITE);
         int lobjFd = db.lo_open (lobjId, INV_WRITE);
         db.lo_write(lobjFd, m_data, m_size);
         db.lo_close(lobjFd);

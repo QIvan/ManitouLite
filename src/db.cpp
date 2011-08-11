@@ -410,6 +410,12 @@ database::fetchServerDate(QString& date)
 }
 
 int
+db_cnx::lo_creat(int mode)
+{
+    return ::lo_creat(m_cnx->connection(), mode);
+}
+
+int
 db_cnx::lo_open(Oid lobjId, int mode)
 {
     return ::lo_open(m_cnx->connection(), lobjId, mode);
@@ -424,13 +430,19 @@ db_cnx::lo_read(int fd, char *buf, size_t len)
 int
 db_cnx::lo_write(int fd, const char *buf, size_t len)
 {
-    ::lo_write(m_cnx->connection(), fd, buf, len);
+    return ::lo_write(m_cnx->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_import(const char *filename)
+{
+    return ::lo_import(m_cnx->connection(), filename);
 }
 
 int
 db_cnx::lo_close(int fd)
 {
-    ::lo_close(m_cnx->connection(), fd);
+    return ::lo_close(m_cnx->connection(), fd);
 }
 
 void
