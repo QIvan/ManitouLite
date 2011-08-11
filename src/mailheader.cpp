@@ -465,7 +465,6 @@ mail_header::fetch_raw()
     else
       return false;
 
-    PGconn* c=db.connection();
     int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       return false;
@@ -504,7 +503,7 @@ mail_header::fetch_raw()
 	m_raw.append((char*)data);
       }
     } while (!end_header && nread==sizeof(data));
-    lo_close(c, lobj_fd);
+    db.lo_close(lobj_fd);
     db.commit_transaction();
   }
   catch(db_excpt& p) {

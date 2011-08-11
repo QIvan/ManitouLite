@@ -134,6 +134,7 @@ public:
   }
   int lo_open(Oid lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
+  int lo_close(int fd);
   void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);

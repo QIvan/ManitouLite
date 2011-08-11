@@ -296,14 +296,13 @@ attachment::get_contents()
       return NULL;
 
     db.begin_transaction();
-    PGconn* c=db.connection();
     int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       DBG_PRINTF(2, "failed to open large object %u", (uint)lobjId);
       throw db_excpt("lo_open", db);
     }
     db.lo_read(lobj_fd, m_data, size());
-    lo_close(c, lobj_fd);
+    db.lo_close(lobj_fd);
     db.commit_transaction();
 
     m_data[size()]='\0';
@@ -344,7 +343,6 @@ attachment::streamout_content(std::ofstream& of)
       return;  // nothing to read from
 
     db.begin_transaction();
-    PGconn* c=db.connection();
     int lobj_fd = db.lo_open(lobjId, INV_READ);
     if (lobj_fd < 0) {
       DBG_PRINTF(4, "lo_open returns %d", lobj_fd);
@@ -356,7 +354,7 @@ attachment::streamout_content(std::ofstream& of)
       nread = db.lo_read(lobj_fd, data, sizeof(data));
       of.write(data, nread);
     } while (nread==sizeof(data));
-    lo_close(c, lobj_fd);
+    db.lo_close(lobj_fd);
     db.commit_transaction();
   }
   catch(db_excpt& p) {
@@ -423,9 +421,8 @@ void
 attachment::close_lo(struct lo_ctxt* slo)
 {
   if (slo->lfd>=0) {
-    PGconn* c = slo->db->connection();
     DBG_PRINTF(4, "lo_close(%d)", slo->lfd);
-    lo_close(c, slo->lfd);
+    slo->db->lo_close(slo->lfd);
     slo->db->commit_transaction();
   }
   delete slo->db;
@@ -595,7 +592,7 @@ attachment::import_file_content()
 	lobjId = lo_creat(db.connection(), INV_READ | INV_WRITE);
 	int lobjFd = lo_open (db.connection(), lobjId, INV_WRITE);
 	lo_write(db.connection(), lobjFd, m_data, m_size);
-	lo_close(db.connection(), lobjFd);
+        db.lo_close(lobjFd);
       }
     }
     else {

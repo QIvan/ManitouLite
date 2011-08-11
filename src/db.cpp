@@ -421,6 +421,12 @@ db_cnx::lo_read(int fd, char *buf, size_t len)
     return ::lo_read(m_cnx->connection(), fd, buf, len);
 }
 
+int
+db_cnx::lo_close(int fd)
+{
+    ::lo_close(m_cnx->connection(), fd);
+}
+
 void
 db_cnx::cancelRequest()
 {
