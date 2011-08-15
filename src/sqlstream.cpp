@@ -356,6 +356,7 @@ sql_stream::execute()
   int returns_rows=(strncasecmp(m_queryBuf,"SELECT",6)==0);
 
   DBG_PRINTF(5,"execute: %s", m_queryBuf);
+  pgConnection *pg = creatorConnection::connection();
   m_pgRes=PQexec(m_db.connection(), m_queryBuf);
   if (!m_pgRes)
     throw db_excpt(m_queryBuf, PQerrorMessage(m_db.connection()));

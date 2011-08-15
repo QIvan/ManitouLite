@@ -3,14 +3,12 @@
 
 #include "database.h"
 
+class pgConnection;
 class creatorConnection
 {
 public:
 #ifdef WITH_PGSQL
-    static pgConnection* connection()
-    {
-        return new pgConnection;
-    }
+    static pgConnection* connection();
 
 #endif
 };
