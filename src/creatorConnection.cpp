@@ -1,10 +1,9 @@
 #include "creatorConnection.h"
-#include "database.h"
 
-#ifdef WITH_PGSQL
-pgConnection*
+//#ifdef WITH_PGSQL
+/*int
 creatorConnection::connection()
 {
-    return new pgConnection;
-}
-#endif
+    return 10;
+}*/
+//#endif

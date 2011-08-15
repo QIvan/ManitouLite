@@ -1,13 +1,17 @@
 #ifndef CREATECONNECTION_H
 #define CREATECONNECTION_H
 
-class pgConnection;
+#include "database.h"
 
 class creatorConnection
 {
 public:
 #ifdef WITH_PGSQL
-    pgConnection* connection();
+    static pgConnection* connection()
+    {
+        return new pgConnection;
+    }
+
 #endif
 };
 

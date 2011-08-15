@@ -409,11 +409,11 @@ database::fetchServerDate(QString& date)
   return result;
 }
 
-creatorConnection
+/*creatorConnection
 db_cnx::getConnCreator()
 {
     return m_creator;
-}
+}*/
 
 int
 db_cnx::lo_creat(int mode)
