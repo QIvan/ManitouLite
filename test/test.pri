@@ -6,10 +6,12 @@
     test/testSqlWriteFields.h \
     test/testDbListener.h \
     test/testBaseTestDB.h \
-    test/testTransaction.h
+    test/testTransaction.h \
+    test/testMaxCnx.h
     SOURCES +=  test/main.cpp \
     test/testConnectDisconnect.cpp \
     test/testSqlWriteFields.cpp \
     test/testDbListener.cpp \
     test/testBaseTestDB.cpp \
-    test/testTransaction.cpp
+    test/testTransaction.cpp \
+    test/testMaxCnx.cpp

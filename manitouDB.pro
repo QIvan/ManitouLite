@@ -7,10 +7,9 @@
 QT       += core, gui, network, sql
 
 TARGET = manitouPortotype
-CONFIG   += console
 
 LIBS += -L/usr/lib64/ -lpq
-
+INCLUDEPATH = /usr/include/ , /usr/include/c++/4.4.4/
 
 
 TEMPLATE = app
@@ -30,6 +29,7 @@ SOURCES +=  \
     db_listener.cpp \
     sqlstream.cpp \
     sqlquery.cpp \
+    creatorConnection.cpp
 
 HEADERS += \
     date.h \
@@ -40,3 +40,4 @@ HEADERS += \
     dbtypes.h \
     config.h \
     database.h \
+    creatorConnection.h
