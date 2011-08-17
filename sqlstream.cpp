@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2008 Daniel Vrit
+/* Copyright (C) 2004-2008 Daniel Vérité
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -26,6 +26,7 @@
 #include "main.h"
 #include "sqlstream.h"
 #include "db.h"
+#include "creatorConnection.h"
 
 sql_stream::sql_stream (const QString query, db_cnx& db) :
   m_db(db)

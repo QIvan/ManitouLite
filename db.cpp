@@ -38,25 +38,13 @@
 #include "sqlstream.h"
 #include "sqlquery.h"
 #include "db_listener.h"
+#include "creatorConnection.h"
 
 #include <QMessageBox>
 #include <QTextCodec>
 
 //static PGconn *pgconn;
 pgConnection pgDb;
-
-PGconn* GETDB()
-{
-  //  return pgconn;
-  return pgDb.connection();
-}
-
-void DBEXCPT(PGconn* c)
-{
-  //  std::cerr << PQerrorMessage(c);
-  QString err=PQerrorMessage(c);
-  QMessageBox::warning(NULL, QObject::tr("Database error"), err);
-}
 
 void DBEXCPT(db_excpt& p)
 {
@@ -89,6 +77,7 @@ int
 ConnectDb(const char* cnx_string, QString* errstr)
 {
   try {
+    creatorConnection::initialled(cnx_string, errstr);
     pgDb.logon(cnx_string);
     db_cnx::set_connect_string(cnx_string);
     db_cnx db;
@@ -212,6 +201,7 @@ db_cnx::idle()
 
 db_cnx::~db_cnx()
 {
+  m_elt && (m_elt->m_available = true);
   if (m_cnx) {
     std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
     for (; it!=m_cnx_list.end(); it++) {
@@ -222,14 +212,29 @@ db_cnx::~db_cnx()
   }
 }
 
-db_cnx::db_cnx(bool other_thread)
+db_cnx::db_cnx(bool other_thread) : m_elt(NULL)
 {
   if (!other_thread) {
     // just use the main connection for the main thread
-    m_cnx=&pgDb;
+    try{
+      m_cnx = creatorConnection::getMainConnection();
+    }
+    catch(std::exception)
+    {
+      DBG_PRINTF(1, "Not initialled creatorConnection!");
+    }
     return;
   }
 
+  try{
+    m_elt = creatorConnection::getInstance().getNewConnection();
+    m_cnx = (pgConnection*)m_elt->m_db;
+  }
+  catch(std::exception)
+  {
+    DBG_PRINTF(1, "Not initialled creatorConnection!");
+  }
+/*
   const int max_cnx=5;
   m_mutex.lock();
   if (!m_initialized) {
@@ -276,7 +281,7 @@ db_cnx::db_cnx(bool other_thread)
   if (it==m_cnx_list.end()) {
     DBG_PRINTF(2, "No database connection found");
     throw db_excpt(NULL, QObject::tr("The %1 database connections are already in use.").arg(max_cnx));
-  }
+  }*/
 }
 
 
@@ -406,35 +411,67 @@ database::end_transaction()
 
 // fetch the current date and time in DD/MM/YYYY HH:MI:SS format
 bool
-database::fetchServerDate(QString& date) /// @todo: сделать CONST!
+database::fetchServerDate(QString& date)
 {
   bool result=true;
+  try {
   db_cnx db;
-  /// @author: i.zemlyansky
-  /// @todo: проверить правильность закоменченной реализации.
-  /** try
-  {
-      sql_stream stream("SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')", db);
-      QString strDate;
-      stream >> strDate;
+  sql_stream query("SELECT to_char(now(),\'DD/MM/YYYY HH24::MI::SS\')", db);
+  query >> date;
   }
-  catch(db_excpt e)
-  {
-      DBEXCPT(e);
-      result=false;
-  }*/
-  PGconn* c=db.connection();
-  PGresult* res=PQexec(c, "SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')");
-  if (res && PQresultStatus(res)==PGRES_TUPLES_OK) {
-    date=(const char*)PQgetvalue(res,0,0);
-  }
-  else {
-    DBEXCPT(c);
+  catch (db_excpt e) {
+    DBEXCPT(e);
     result=false;
   }
-  if (res)
-    PQclear(res);
   return result;
+}
+
+/*creatorConnection
+db_cnx::getConnCreator()
+{
+    return m_creator;
+}*/
+
+int
+db_cnx::lo_creat(int mode)
+{
+    return ::lo_creat(m_cnx->connection(), mode);
+}
+
+int
+db_cnx::lo_open(Oid lobjId, int mode)
+{
+    return ::lo_open(m_cnx->connection(), lobjId, mode);
+}
+
+int
+db_cnx::lo_read(int fd, char *buf, size_t len)
+{
+    return ::lo_read(m_cnx->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_write(int fd, const char *buf, size_t len)
+{
+    return ::lo_write(m_cnx->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_import(const char *filename)
+{
+    return ::lo_import(m_cnx->connection(), filename);
+}
+
+int
+db_cnx::lo_close(int fd)
+{
+    return ::lo_close(m_cnx->connection(), fd);
+}
+
+void
+db_cnx::cancelRequest()
+{
+    PQrequestCancel(m_cnx->connection());
 }
 
 bool

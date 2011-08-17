@@ -26,6 +26,7 @@
 #include <QMutex>
 #include <QList>
 #include <list>
+//#include "creatorConnection.h"
 
 // PostgreSQL implementation
 #include <libpq-fe.h>
@@ -118,7 +119,19 @@ private:
   PGconn* m_pgConn;
 };
 
-class db_cnx //: public pgConnection
+template <class TypeConnection, class TypeDB>
+class context
+{
+private:
+  TypeConnection* m_cnx;
+public:
+  TypeDB* connection() {
+    return m_cnx->connection();
+  }
+};
+
+
+class db_cnx //: public context<pgConnection, PGconn>
 {
 public:
   db_cnx(bool other_thread=false);
@@ -132,6 +145,14 @@ public:
   const database* cdatab() const {
     return m_cnx;
   }
+  //creatorConnection getConnCreator();
+  int lo_creat(int mode);
+  int lo_open(Oid lobjId, int mode);
+  int lo_read(int fd, char *buf, size_t len);
+  int lo_write(int fd, const char *buf, size_t len);
+  int lo_import(const char *filename);
+  int lo_close(int fd);
+  void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);
   // overrides database's methods
@@ -146,14 +167,16 @@ public:
   static void disconnect_all();
   static bool idle();
 
-  void enable_user_alerts(bool); // return previous state
+  //void enable_user_alerts(bool); // return previous state
 
   bool ping();
   void handle_exception(db_excpt& e);
 
   static const QString& dbname();
 private:
+  //creatorConnection m_creator;
   pgConnection* m_cnx;
+  db_cnx_elt* m_elt;
 //  QList<db_listener*> m_listeners;
   bool m_alerts_enabled;
 
