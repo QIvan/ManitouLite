@@ -2,10 +2,10 @@
 #include "RegistryTest.h"
 
 std::string TestNames::transaction() { return "Transaction";}
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(testTransaction, TestNames::transaction());
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_Transaction, TestNames::transaction());
 
 
-void testTransaction::transactionCommit()
+void test_Transaction::transactionCommit()
 {
     CPPUNIT_ASSERT(TableIsEmpty_());
     db_cnx db;
@@ -28,7 +28,7 @@ void testTransaction::transactionCommit()
     }
 }
 
-void testTransaction::transactionRollback()
+void test_Transaction::transactionRollback()
 {
     CPPUNIT_ASSERT(TableIsEmpty_());
     db_cnx db;

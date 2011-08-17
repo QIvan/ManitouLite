@@ -29,7 +29,7 @@ class test_db_listener :public CppUnit::TestFixture
 public:
     void addListener()
     {
-        db_cnx db;
+        /*db_cnx db;
         QString listener_name = "foo";
         db_listener listener(db, listener_name);
         Notifer notifer;
@@ -43,7 +43,7 @@ public:
             qDebug() << e.query();
             qDebug() << e.errmsg();
             CPPUNIT_FAIL("Database Exept!");
-        }
+        }*/
     }
 
 };

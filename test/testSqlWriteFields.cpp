@@ -32,7 +32,8 @@ void test_sql_write_fields::insert()
         assertNumerateString (1);
 
         //второй запрос
-        sql_write_fields fiedls2(*m_DB);
+        db_cnx db(true);
+        sql_write_fields fiedls2(db);
         fiedls2.add_if_not_empty("test_text", "Insert Text 2", 9);//Insert Te
         fiedls2.add("test_char200", "Insert Text 2");
         fiedls2.add_no_quote("test_date", "now()");
@@ -94,6 +95,8 @@ void test_sql_write_fields::insert_throw()
 
 void test_sql_write_fields::assertNumerateString(int num)
 {
-    sql_stream query_count("Select * From test_table", *m_DB);
-    CPPUNIT_ASSERT(query_count.affected_rows() == num);
+    sql_stream query_count("Select count(*) From test_table", *m_DB);
+    int count = 0;
+    query_count >> count;
+    CPPUNIT_ASSERT(count == num);
 }
