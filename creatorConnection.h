@@ -8,10 +8,9 @@
 #endif
 
 
-class pgConnection;
-
 class creatorConnection
 {
+  friend class db_cnx;
 private:
   static creatorConnection* m_impl;
   creatorConnection(const char* connect_string);
@@ -22,16 +21,16 @@ private:
   QString m_connect_string;
   QMutex m_mutex;
 
-  static pgConnection pgDb;
+  static db_cnx_elt m_main_cnx;
 public:
   static int initialled(const char* connect_string, QString* errstr);
   static creatorConnection& getInstance();
   static void unInstance();
 
-#ifdef WITH_PGSQL
-  static pgConnection* getMainConnection();
-#endif
+private:
+  static db_cnx_elt* getMainConnection();
   db_cnx_elt* getNewConnection();
+  bool idle();
 
 };
 

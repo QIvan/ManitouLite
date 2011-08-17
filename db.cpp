@@ -189,30 +189,23 @@ db_cnx::dbname()
 bool
 db_cnx::idle()
 {
+  return creatorConnection::getInstance().idle();
   // TODO: do we need to use m_mutex here?
-  std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
+  /*std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
   for (; it!=m_cnx_list.end(); it++) {
     if (!(*it)->m_available)
       return false;
   }
-  return true;
+  return true;*/
 }
 
 
 db_cnx::~db_cnx()
 {
-  m_elt && (m_elt->m_available = true);
-  if (m_cnx) {
-    std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
-    for (; it!=m_cnx_list.end(); it++) {
-      if ((*it)->m_db == m_cnx) {
-	(*it)->m_available=true;
-      }
-    }
-  }
+  m_cnx && (m_cnx->m_available = true);
 }
 
-db_cnx::db_cnx(bool other_thread) : m_elt(NULL)
+db_cnx::db_cnx(bool other_thread) : m_cnx(NULL)
 {
   if (!other_thread) {
     // just use the main connection for the main thread
@@ -227,8 +220,7 @@ db_cnx::db_cnx(bool other_thread) : m_elt(NULL)
   }
 
   try{
-    m_elt = creatorConnection::getInstance().getNewConnection();
-    m_cnx = (pgConnection*)m_elt->m_db;
+    m_cnx = creatorConnection::getInstance().getNewConnection();
   }
   catch(std::exception)
   {
@@ -435,43 +427,43 @@ db_cnx::getConnCreator()
 int
 db_cnx::lo_creat(int mode)
 {
-    return ::lo_creat(m_cnx->connection(), mode);
+    return ::lo_creat(this->connection(), mode);
 }
 
 int
 db_cnx::lo_open(Oid lobjId, int mode)
 {
-    return ::lo_open(m_cnx->connection(), lobjId, mode);
+    return ::lo_open(this->connection(), lobjId, mode);
 }
 
 int
 db_cnx::lo_read(int fd, char *buf, size_t len)
 {
-    return ::lo_read(m_cnx->connection(), fd, buf, len);
+    return ::lo_read(this->connection(), fd, buf, len);
 }
 
 int
 db_cnx::lo_write(int fd, const char *buf, size_t len)
 {
-    return ::lo_write(m_cnx->connection(), fd, buf, len);
+    return ::lo_write(this->connection(), fd, buf, len);
 }
 
 int
 db_cnx::lo_import(const char *filename)
 {
-    return ::lo_import(m_cnx->connection(), filename);
+    return ::lo_import(this->connection(), filename);
 }
 
 int
 db_cnx::lo_close(int fd)
 {
-    return ::lo_close(m_cnx->connection(), fd);
+    return ::lo_close(this->connection(), fd);
 }
 
 void
 db_cnx::cancelRequest()
 {
-    PQrequestCancel(m_cnx->connection());
+    PQrequestCancel(this->connection());
 }
 
 bool
@@ -507,7 +499,7 @@ db_cnx::next_seq_val(const char* seqName, unsigned int* id)
 void
 db_cnx::begin_transaction()
 {
-  m_cnx->begin_transaction();
+  m_cnx->m_db->begin_transaction();
   // don't use nested transactions
   DBG_PRINTF(5,"open_transactions_count()=%d", datab()->open_transactions_count());
   if (datab()->open_transactions_count()==1) {
@@ -544,7 +536,7 @@ db_cnx::handle_exception(db_excpt& e)
 bool
 db_cnx::ping()
 {
-  return m_cnx->ping();
+  return dynamic_cast<pgConnection*>(m_cnx->m_db)->ping();
 }
 
 std::list<QString>

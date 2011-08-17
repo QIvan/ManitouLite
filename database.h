@@ -87,20 +87,6 @@ private:
 };
 
 
-/// Connection class
-
-class db_cnx_elt
-{
-public:
-  db_cnx_elt() {
-    m_available=true;
-    m_connected=false;
-  }
-  database* m_db;
-  bool m_available;
-  bool m_connected;
-};
-
 class pgConnection : public database
 {
 public:
@@ -130,6 +116,20 @@ public:
   }
 };
 
+/// Connection class
+class db_cnx_elt
+{
+public:
+  db_cnx_elt() {
+    m_available=true;
+    m_connected=false;
+    m_db = new pgConnection;
+  }
+  database* m_db;
+  bool m_available;
+  bool m_connected;
+};
+
 
 class db_cnx //: public context<pgConnection, PGconn>
 {
@@ -137,13 +137,13 @@ public:
   db_cnx(bool other_thread=false);
   virtual ~db_cnx();
   PGconn* connection() {
-    return m_cnx->connection();
+    return dynamic_cast<pgConnection*>(m_cnx->m_db)->connection();
   }
   database* datab() {
-    return m_cnx;
+    return m_cnx->m_db;
   }
   const database* cdatab() const {
-    return m_cnx;
+    return m_cnx->m_db;
   }
   //creatorConnection getConnCreator();
   int lo_creat(int mode);
@@ -160,7 +160,7 @@ public:
   void commit_transaction();
   void rollback_transaction();
   void end_transaction() {
-    m_cnx->end_transaction();
+    m_cnx->m_db->end_transaction();
   }
   static void set_connect_string(const char* cnx);
   static void set_dbname(const QString dbname);
@@ -175,8 +175,7 @@ public:
   static const QString& dbname();
 private:
   //creatorConnection m_creator;
-  pgConnection* m_cnx;
-  db_cnx_elt* m_elt;
+  db_cnx_elt* m_cnx;
 //  QList<db_listener*> m_listeners;
   bool m_alerts_enabled;
 
