@@ -19,19 +19,11 @@
 
 #ifndef INC_DATABASE_H
 #define INC_DATABASE_H
-
-
 #include <QString>
 #include <QThread>
 #include <QMutex>
 #include <QList>
 #include <list>
-//#include "creatorConnection.h"
-
-// PostgreSQL implementation
-#include <libpq-fe.h>
-#include <libpq/libpq-fs.h>
-
 
 class db_cnx;
 class db_excpt;
@@ -43,7 +35,6 @@ class db_listener;
   override the appropriate functions depending on the database
   capabilities and API
 */
-
 class database
 {
 public:
@@ -88,89 +79,6 @@ private:
 };
 
 
-class pgConnection : public database
-{
-public:
-  pgConnection(): m_pgConn(NULL) {}
-  virtual ~pgConnection() {
-    logoff();
-  }
-  int logon(const char* conninfo);
-  void logoff();
-  bool reconnect();
-  bool ping();
-  PGconn* connection() {
-    return m_pgConn;
-  }
-private:
-  PGconn* m_pgConn;
-};
-
-template <class T>
-class connection
-{
-protected:
-  typedef T typeDB;
-};
-
-/// Connection class
-class db_cnx_elt : public connection<pgConnection>
-{
-public:
-  db_cnx_elt() {
-    m_available=true;
-    m_connected=false;
-    m_db = new typeDB();
-  }
-  typeDB* m_db;
-  bool m_available;
-  bool m_connected;
-};
-
-
-class db_cnx //: public context<pgConnection, PGconn>
-{
-public:
-  db_cnx(bool other_thread=false);
-  virtual ~db_cnx();
-  db_cnx_elt* connection() {
-    return m_cnx;
-  }
-  database* datab() {
-    return m_cnx->m_db;
-  }
-  const database* cdatab() const {
-    return m_cnx->m_db;
-  }
-  int lo_creat(int mode);
-  int lo_open(Oid lobjId, int mode);
-  int lo_read(int fd, char *buf, size_t len);
-  int lo_write(int fd, const char *buf, size_t len);
-  int lo_import(const char *filename);
-  int lo_close(int fd);
-  void cancelRequest();
-  bool next_seq_val(const char*, int*);
-  bool next_seq_val(const char*, unsigned int*);
-  // overrides database's methods
-  void begin_transaction();
-  void commit_transaction();
-  void rollback_transaction();
-  void end_transaction() {
-    m_cnx->m_db->end_transaction();
-  }
-  //void enable_user_alerts(bool); // return previous state
-  bool ping();
-  void handle_exception(db_excpt& e);
-
-  static bool idle();
-  static const QString& dbname();
-private:
-  db_cnx_elt* m_cnx;
-  bool m_other_thread;
-  bool m_alerts_enabled;
-};
-
-
 /// sql Exception class
 class db_excpt
 {
@@ -199,7 +107,7 @@ void DBEXCPT(db_excpt& p);	// db.cpp
 
 
 
-
+//---------------------------- NOT IN USE CLASS ------------------------------//
 
 
 // Transaction object. The destructor issues a rollback if commit has

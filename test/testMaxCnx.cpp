@@ -1,6 +1,6 @@
 #include "testMaxCnx.h"
 #include "RegistryTest.h"
-#include "database.h"
+#include "db.h"
 #include "sqlstream.h"
 
 

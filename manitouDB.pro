@@ -29,7 +29,8 @@ SOURCES +=  \
     db_listener.cpp \
     sqlstream.cpp \
     sqlquery.cpp \
-    creatorConnection.cpp
+    creatorConnection.cpp \
+    pgConnection.cpp
 
 HEADERS += \
     date.h \
@@ -40,4 +41,5 @@ HEADERS += \
     dbtypes.h \
     config.h \
     database.h \
-    creatorConnection.h
+    creatorConnection.h \
+    pgConnection.h

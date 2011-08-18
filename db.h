@@ -31,10 +31,76 @@
 #include <list>
 
 //#include "date.h"
+#include "pgConnection.h"
 #include "database.h"
 
 int ConnectDb(const char*, QString*);
 void DisconnectDb();
+
+
+template <class T>
+class connection
+{
+protected:
+  typedef T typeDB;
+};
+
+/// Connection class
+class db_cnx_elt : public connection<pgConnection>
+{
+public:
+  db_cnx_elt() {
+    m_available=true;
+    m_connected=false;
+    m_db = new typeDB();
+  }
+  typeDB* m_db;
+  bool m_available;
+  bool m_connected;
+};
+
+
+class db_cnx
+{
+public:
+  db_cnx(bool other_thread=false);
+  virtual ~db_cnx();
+  db_cnx_elt* connection() {
+    return m_cnx;
+  }
+  database* datab() {
+    return m_cnx->m_db;
+  }
+  const database* cdatab() const {
+    return m_cnx->m_db;
+  }
+  int lo_creat(int mode);
+  int lo_open(Oid lobjId, int mode);
+  int lo_read(int fd, char *buf, size_t len);
+  int lo_write(int fd, const char *buf, size_t len);
+  int lo_import(const char *filename);
+  int lo_close(int fd);
+  void cancelRequest();
+  bool next_seq_val(const char*, int*);
+  bool next_seq_val(const char*, unsigned int*);
+  // overrides database's methods
+  void begin_transaction();
+  void commit_transaction();
+  void rollback_transaction();
+  void end_transaction() {
+    m_cnx->m_db->end_transaction();
+  }
+  //void enable_user_alerts(bool); // return previous state
+  bool ping();
+  void handle_exception(db_excpt& e);
+
+  static bool idle();
+  static const QString& dbname();
+private:
+  db_cnx_elt* m_cnx;
+  bool m_other_thread;
+  bool m_alerts_enabled;
+};
 
 
 #endif // INC_DB_H

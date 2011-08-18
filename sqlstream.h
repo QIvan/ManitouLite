@@ -25,6 +25,9 @@
 #include "database.h"
 #include "sqlquery.h"
 #include <qstring.h>
+// PostgreSQL implementation
+#include <libpq-fe.h>
+#include <libpq/libpq-fs.h>
 
 /// sql_bind_param class. To be used for sql_stream internal purposes
 class sql_bind_param

@@ -1,5 +1,6 @@
 #include "testBaseTestDB.h"
 #include "sqlstream.h"
+#include "db.h"
 
 testBaseTestDB::testBaseTestDB(): m_DB(new db_cnx)
 {

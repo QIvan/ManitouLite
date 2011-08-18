@@ -19,6 +19,7 @@
 
 #include "sqlquery.h"
 #include "main.h"
+#include "db.h"
 #include <stdio.h>
 #include <stdlib.h>
 

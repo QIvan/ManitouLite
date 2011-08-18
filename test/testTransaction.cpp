@@ -1,5 +1,8 @@
+#include <QDebug>
 #include "testTransaction.h"
 #include "RegistryTest.h"
+#include "sqlstream.h"
+#include "db.h"
 
 std::string TestNames::transaction() { return "Transaction";}
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_Transaction, TestNames::transaction());

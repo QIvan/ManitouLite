@@ -3,9 +3,6 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "testBaseTestDB.h"
-#include <QDebug>
-#include "sqlstream.h"
-
 
 class test_Transaction : public testBaseTestDB
 {

@@ -4,7 +4,7 @@
 #include <list>
 #include <QMutex>
 #ifdef WITH_PGSQL
-#include "database.h"
+#include "db.h"
 #endif
 
 
