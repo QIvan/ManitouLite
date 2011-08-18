@@ -68,7 +68,7 @@ db_excpt::db_excpt(const QString query,
 db_excpt::db_excpt(const QString query, db_cnx& d)
 {
   m_query=query;
-  char* pg_msg = PQerrorMessage(d.connection());
+  char* pg_msg = PQerrorMessage(d.connection()->m_db->connection());
   if (pg_msg!=NULL)
     m_err_msg = QString::fromUtf8(pg_msg);
 }
@@ -418,12 +418,7 @@ database::fetchServerDate(QString& date)
   return result;
 }
 
-/*creatorConnection
-db_cnx::getConnCreator()
-{
-    return m_creator;
-}*/
-
+/*
 int
 db_cnx::lo_creat(int mode)
 {
@@ -465,7 +460,7 @@ db_cnx::cancelRequest()
 {
     PQrequestCancel(this->connection());
 }
-
+*/
 bool
 db_cnx::next_seq_val(const char* seqName, int* id)
 {
@@ -536,7 +531,7 @@ db_cnx::handle_exception(db_excpt& e)
 bool
 db_cnx::ping()
 {
-  return dynamic_cast<pgConnection*>(m_cnx->m_db)->ping();
+  return m_cnx->m_db->ping();
 }
 
 std::list<QString>

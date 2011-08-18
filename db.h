@@ -36,10 +36,5 @@
 int ConnectDb(const char*, QString*);
 void DisconnectDb();
 
-#ifdef WITH_PGSQL
-PGconn* GETDB();
-void DBEXCPT(PGconn*);
-#endif
-
 
 #endif // INC_DB_H

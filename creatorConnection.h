@@ -22,12 +22,13 @@ private:
   QMutex m_mutex;
 
   static db_cnx_elt m_main_cnx;
+
 public:
   static int initialled(const char* connect_string, QString* errstr);
+private:
   static creatorConnection& getInstance();
   static void unInstance();
 
-private:
   static db_cnx_elt* getMainConnection();
   db_cnx_elt* getNewConnection();
   bool idle();

@@ -57,6 +57,7 @@ public:
   virtual int logon(const char* conninfo)=0;
   virtual void logoff()=0;
   virtual bool reconnect()=0;
+  //virtual bool ping();
   void end_transaction();
   int open_transactions_count() const;
   const QString& encoding() const {
@@ -116,16 +117,23 @@ public:
   }
 };
 
+template <class T>
+class connection
+{
+protected:
+  typedef T typeDB;
+};
+
 /// Connection class
-class db_cnx_elt
+class db_cnx_elt : public connection<pgConnection>
 {
 public:
   db_cnx_elt() {
     m_available=true;
     m_connected=false;
-    m_db = new pgConnection;
+    m_db = new typeDB();
   }
-  database* m_db;
+  typeDB* m_db;
   bool m_available;
   bool m_connected;
 };
@@ -136,8 +144,8 @@ class db_cnx //: public context<pgConnection, PGconn>
 public:
   db_cnx(bool other_thread=false);
   virtual ~db_cnx();
-  PGconn* connection() {
-    return dynamic_cast<pgConnection*>(m_cnx->m_db)->connection();
+  db_cnx_elt* connection() {
+    return m_cnx;
   }
   database* datab() {
     return m_cnx->m_db;
@@ -146,13 +154,13 @@ public:
     return m_cnx->m_db;
   }
   //creatorConnection getConnCreator();
-  int lo_creat(int mode);
+  /*int lo_creat(int mode);
   int lo_open(Oid lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
   int lo_write(int fd, const char *buf, size_t len);
   int lo_import(const char *filename);
   int lo_close(int fd);
-  void cancelRequest();
+  void cancelRequest();*/
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);
   // overrides database's methods

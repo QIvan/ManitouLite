@@ -356,9 +356,10 @@ sql_stream::execute()
   int returns_rows=(strncasecmp(m_queryBuf,"SELECT",6)==0);
 
   DBG_PRINTF(5,"execute: %s", m_queryBuf);
-  m_pgRes=PQexec(m_db.connection(), m_queryBuf);
+
+  m_pgRes=PQexec(m_db.connection()->m_db->connection(), m_queryBuf);
   if (!m_pgRes)
-    throw db_excpt(m_queryBuf, PQerrorMessage(m_db.connection()));
+    throw db_excpt(m_queryBuf, PQerrorMessage(m_db.connection()->m_db->connection()));
   if ((returns_rows && PQresultStatus(m_pgRes)!=PGRES_TUPLES_OK)
       || (!returns_rows && PQresultStatus(m_pgRes)!=PGRES_COMMAND_OK)) {
     throw db_excpt(m_queryBuf, PQresultErrorMessage(m_pgRes),
