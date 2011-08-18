@@ -109,3 +109,10 @@ creatorConnection::idle()
   }
   return true;
 }
+
+
+void
+creatorConnection::disconnect_all()
+{
+
+}

@@ -57,7 +57,7 @@ public:
   virtual int logon(const char* conninfo)=0;
   virtual void logoff()=0;
   virtual bool reconnect()=0;
-  //virtual bool ping();
+  virtual bool ping()=0;
   void end_transaction();
   int open_transactions_count() const;
   const QString& encoding() const {
@@ -106,17 +106,6 @@ private:
   PGconn* m_pgConn;
 };
 
-template <class TypeConnection, class TypeDB>
-class context
-{
-private:
-  TypeConnection* m_cnx;
-public:
-  TypeDB* connection() {
-    return m_cnx->connection();
-  }
-};
-
 template <class T>
 class connection
 {
@@ -153,7 +142,6 @@ public:
   const database* cdatab() const {
     return m_cnx->m_db;
   }
-  //creatorConnection getConnCreator();
   /*int lo_creat(int mode);
   int lo_open(Oid lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
@@ -172,24 +160,18 @@ public:
   }
   static void set_connect_string(const char* cnx);
   static void set_dbname(const QString dbname);
-  static void disconnect_all();
   static bool idle();
 
   //void enable_user_alerts(bool); // return previous state
-
   bool ping();
   void handle_exception(db_excpt& e);
 
   static const QString& dbname();
 private:
-  //creatorConnection m_creator;
   db_cnx_elt* m_cnx;
-//  QList<db_listener*> m_listeners;
+  bool m_other_thread;
   bool m_alerts_enabled;
 
-  static std::list<db_cnx_elt*> m_cnx_list;
-  static QMutex m_mutex;
-  static bool m_initialized;
   static QString m_connect_string;
   static QString m_dbname;
 };

@@ -43,8 +43,6 @@
 #include <QMessageBox>
 #include <QTextCodec>
 
-//static PGconn *pgconn;
-pgConnection pgDb;
 
 void DBEXCPT(db_excpt& p)
 {
@@ -78,7 +76,6 @@ ConnectDb(const char* cnx_string, QString* errstr)
 {
   try {
     creatorConnection::initialled(cnx_string, errstr);
-    pgDb.logon(cnx_string);
     db_cnx::set_connect_string(cnx_string);
     db_cnx db;
     sql_stream s("SELECT current_database()", db);
@@ -98,25 +95,12 @@ ConnectDb(const char* cnx_string, QString* errstr)
   return 1;
 }
 
-void // static
-db_cnx::disconnect_all()
-{
-  // close secondary connections
-  std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
-  for (; it!=m_cnx_list.end(); it++) {
-    if ((*it)->m_connected) {
-      (*it)->m_db->logoff();
-      (*it)->m_connected=false;
-    }
-  }
-}
 
 void
 DisconnectDb()
 {
   // close primary connection
-  pgDb.logoff();
-  db_cnx::disconnect_all();
+  creatorConnection::getInstance().disconnect_all();
 }
 
 database::database() : m_open_trans_count(0)
@@ -154,9 +138,6 @@ database::add_listener(db_listener* listener)
 
 
 // static data members
-bool db_cnx::m_initialized;
-std::list<db_cnx_elt*> db_cnx::m_cnx_list;
-QMutex db_cnx::m_mutex;
 QString db_cnx::m_connect_string;
 QString db_cnx::m_dbname;
 
@@ -202,78 +183,32 @@ db_cnx::idle()
 
 db_cnx::~db_cnx()
 {
-  m_cnx && (m_cnx->m_available = true);
+  if (m_other_thread)
+    if (m_cnx)
+    {
+      m_cnx->m_available = true;
+      m_cnx->m_db->logoff();
+      m_cnx->m_connected = false;
+    }
+
 }
 
-db_cnx::db_cnx(bool other_thread) : m_cnx(NULL)
+db_cnx::db_cnx(bool other_thread) : m_cnx(NULL), m_other_thread(other_thread)
 {
-  if (!other_thread) {
-    // just use the main connection for the main thread
-    try{
-      m_cnx = creatorConnection::getMainConnection();
-    }
-    catch(std::exception)
-    {
-      DBG_PRINTF(1, "Not initialled creatorConnection!");
-    }
-    return;
-  }
-
   try{
-    m_cnx = creatorConnection::getInstance().getNewConnection();
+    if (!other_thread) {
+      // just use the main connection for the main thread
+      m_cnx = creatorConnection::getMainConnection();
+      return;
+    }
+    else {
+      m_cnx = creatorConnection::getInstance().getNewConnection();
+    }
   }
   catch(std::exception)
   {
     DBG_PRINTF(1, "Not initialled creatorConnection!");
   }
-/*
-  const int max_cnx=5;
-  m_mutex.lock();
-  if (!m_initialized) {
-    for (int i=0; i<max_cnx; i++) {
-      db_cnx_elt* p = new db_cnx_elt;
-      m_cnx_list.push_back(p);
-    }
-    m_initialized=true;
-  }
-
-  std::list<db_cnx_elt*>::iterator it = m_cnx_list.begin();
-  for (; it!=m_cnx_list.end(); it++) {
-    if ((*it)->m_available) {
-      pgConnection* p;
-      if (!(*it)->m_connected) {
-	p = new pgConnection;
-	(*it)->m_db = p;
-	p->logon(m_connect_string.toLocal8Bit().constData());
-	DBG_PRINTF(3, "Opening a new database connection");
-	(*it)->m_connected=true;
-      }
-      (*it)->m_available=false;
-      m_cnx = dynamic_cast<pgConnection*>((*it)->m_db); // FIXME??
-      break;
-    }
-  }
-  m_mutex.unlock();
-
-  m_alerts_enabled=true;
-
-#if 0
-  {
-    // DEBUG
-    QString state;
-    int i=0;
-    std::list<db_cnx_elt*>::iterator it2 = m_cnx_list.begin();
-    for (; it2!=m_cnx_list.end(); ++it2,++i) {
-      state.append(QString("\nconnection %1 connected:%2 available:%3").arg(i).arg((*it2)->m_connected).arg((*it2)->m_available));
-    }
-    DBG_PRINTF(3, "Connections: %s", state.toLocal8Bit().constData());
-  }
-#endif
-
-  if (it==m_cnx_list.end()) {
-    DBG_PRINTF(2, "No database connection found");
-    throw db_excpt(NULL, QObject::tr("The %1 database connections are already in use.").arg(max_cnx));
-  }*/
 }
 
 

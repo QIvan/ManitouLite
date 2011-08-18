@@ -11,6 +11,7 @@
 class creatorConnection
 {
   friend class db_cnx;
+  friend void DisconnectDb();
 private:
   static creatorConnection* m_impl;
   creatorConnection(const char* connect_string);
@@ -31,6 +32,7 @@ private:
 
   static db_cnx_elt* getMainConnection();
   db_cnx_elt* getNewConnection();
+  void disconnect_all();
   bool idle();
 
 };
