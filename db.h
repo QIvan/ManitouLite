@@ -19,24 +19,16 @@
 
 #ifndef INC_DB_H
 #define INC_DB_H
-
-#ifdef WITH_PGSQL
-#include <libpq-fe.h>
-#include <libpq/libpq-fs.h>
-#endif
-
 #include <QString>
 #include <QVariant>
-
 #include <list>
-
-//#include "date.h"
 #include "pgConnection.h"
-#include "database.h"
+
+
+class database;
 
 int ConnectDb(const char*, QString*);
 void DisconnectDb();
-
 
 template <class T>
 class connection
@@ -54,6 +46,7 @@ public:
     m_connected=false;
     m_db = new typeDB();
   }
+  /// @todo: подумать над закрытым деструктором!
   typeDB* m_db;
   bool m_available;
   bool m_connected;
@@ -75,7 +68,7 @@ public:
     return m_cnx->m_db;
   }
   int lo_creat(int mode);
-  int lo_open(Oid lobjId, int mode);
+  int lo_open(uint lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
   int lo_write(int fd, const char *buf, size_t len);
   int lo_import(const char *filename);

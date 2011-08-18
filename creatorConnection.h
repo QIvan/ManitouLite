@@ -3,9 +3,7 @@
 
 #include <list>
 #include <QMutex>
-#ifdef WITH_PGSQL
 #include "db.h"
-#endif
 
 
 class creatorConnection

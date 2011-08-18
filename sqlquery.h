@@ -22,7 +22,7 @@
 
 #include <QString>
 #include <set>
-#include "database.h"
+#include "db.h"
 
 class sql_null
 {

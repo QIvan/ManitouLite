@@ -1,10 +1,8 @@
 #ifndef PGCONNECTION_H
 #define PGCONNECTION_H
 #include "database.h"
-// PostgreSQL implementation
 #include <libpq-fe.h>
 #include <libpq/libpq-fs.h>
-
 
 class pgConnection : public database
 {

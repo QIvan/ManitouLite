@@ -168,7 +168,7 @@ db_cnx::lo_creat(int mode)
 }
 
 int
-db_cnx::lo_open(Oid lobjId, int mode)
+db_cnx::lo_open(uint lobjId, int mode)
 {
     return ::lo_open(this->connection()->m_db->connection(), lobjId, mode);
 }
