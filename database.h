@@ -142,13 +142,13 @@ public:
   const database* cdatab() const {
     return m_cnx->m_db;
   }
-  /*int lo_creat(int mode);
+  int lo_creat(int mode);
   int lo_open(Oid lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
   int lo_write(int fd, const char *buf, size_t len);
   int lo_import(const char *filename);
   int lo_close(int fd);
-  void cancelRequest();*/
+  void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);
   // overrides database's methods
@@ -158,41 +158,18 @@ public:
   void end_transaction() {
     m_cnx->m_db->end_transaction();
   }
-  static void set_connect_string(const char* cnx);
-  static void set_dbname(const QString dbname);
-  static bool idle();
-
   //void enable_user_alerts(bool); // return previous state
   bool ping();
   void handle_exception(db_excpt& e);
 
+  static bool idle();
   static const QString& dbname();
 private:
   db_cnx_elt* m_cnx;
   bool m_other_thread;
   bool m_alerts_enabled;
-
-  static QString m_connect_string;
-  static QString m_dbname;
 };
 
-// Transaction object. The destructor issues a rollback if commit has
-// not been called and we're a top level transaction within our
-// connection
-class db_transaction
-{
-public:
-//  db_transaction(database& db);
-  db_transaction(db_cnx& d);
-  virtual ~db_transaction();
-  void commit();
-  void rollback();
-private:
-  db_cnx* m_pDb;
-  bool m_commit_done;
-};
-
-//#define db_cnx pgConnect
 
 /// sql Exception class
 class db_excpt
@@ -216,5 +193,29 @@ private:
 };
 
 void DBEXCPT(db_excpt& p);	// db.cpp
+
+
+
+
+
+
+
+
+
+// Transaction object. The destructor issues a rollback if commit has
+// not been called and we're a top level transaction within our
+// connection
+class db_transaction
+{
+public:
+//  db_transaction(database& db);
+  db_transaction(db_cnx& d);
+  virtual ~db_transaction();
+  void commit();
+  void rollback();
+private:
+  db_cnx* m_pDb;
+  bool m_commit_done;
+};
 
 #endif // INC_DATABASE_H

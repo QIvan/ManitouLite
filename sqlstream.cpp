@@ -26,7 +26,6 @@
 #include "main.h"
 #include "sqlstream.h"
 #include "db.h"
-#include "creatorConnection.h"
 
 sql_stream::sql_stream (const QString query, db_cnx& db) :
   m_db(db)

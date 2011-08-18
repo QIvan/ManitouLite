@@ -2,20 +2,22 @@
 #include "iostream"
 #include "stdexcept"
 #include "main.h"
-#include <tr1/memory>
+#include "sqlstream.h"
 
 creatorConnection* creatorConnection::m_impl = NULL;
 db_cnx_elt creatorConnection::m_main_cnx;
 ///bool creatorConnection::m_initialized = false;
 
 //========================= Private =================================//
-creatorConnection::creatorConnection(const char* connect_string) :
-  m_connect_string (connect_string)
+creatorConnection::creatorConnection(const char *connect_string, QString dbname) :
+  m_connect_string (connect_string),
+  m_dbname(dbname)
 {
   for (int i=0; i<MAX_CNX; i++) {
     db_cnx_elt p;
     m_cnx_list.push_back(p);
   }
+
 }
 
 creatorConnection::~creatorConnection()
@@ -30,7 +32,12 @@ creatorConnection::initialled(const char* connect_string, QString* errstr)
 {
   try{
     m_main_cnx.m_db->logon(connect_string);
-    m_impl = new creatorConnection(connect_string);
+    db_cnx db;
+    sql_stream s("SELECT current_database()", db);
+    QString dbname = "";
+    if (!s.eos())
+      s >> dbname;
+    m_impl = new creatorConnection(connect_string, dbname);
   }
   catch(db_excpt& p) {
     QByteArray errmsg_bytes = p.errmsg().toLocal8Bit();
@@ -102,11 +109,16 @@ creatorConnection::getNewConnection()
 bool
 creatorConnection::idle()
 {
+  m_mutex.lock();
   std::list<db_cnx_elt>::iterator it=m_cnx_list.begin();
   for (; it!=m_cnx_list.end(); it++) {
     if (!(*it).m_available)
+    {
+      m_mutex.unlock();
       return false;
+    }
   }
+  m_mutex.unlock();
   return true;
 }
 
@@ -114,5 +126,12 @@ creatorConnection::idle()
 void
 creatorConnection::disconnect_all()
 {
-
+  // close secondary connections
+  std::list<db_cnx_elt>::iterator it=m_cnx_list.begin();
+  for (; it!=m_cnx_list.end(); it++) {
+    if ((*it).m_connected) {
+      (*it).m_db->logoff();
+      (*it).m_connected=false;
+    }
+  }
 }

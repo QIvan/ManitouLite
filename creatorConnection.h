@@ -14,12 +14,13 @@ class creatorConnection
   friend void DisconnectDb();
 private:
   static creatorConnection* m_impl;
-  creatorConnection(const char* connect_string);
+  creatorConnection(const char* connect_string, QString dbname);
   ~creatorConnection();
 
   static const int MAX_CNX=5;
   std::list<db_cnx_elt> m_cnx_list;
   QString m_connect_string;
+  QString m_dbname;
   QMutex m_mutex;
 
   static db_cnx_elt m_main_cnx;

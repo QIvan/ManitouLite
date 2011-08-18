@@ -4,7 +4,7 @@
 #include "sqlstream.h"
 
 
-std::string TestNames::max_db_cnx() { return "Query Thread";}
+std::string TestNames::max_db_cnx() { return "Max Connection";}
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_max_db_cnx, TestNames::max_db_cnx());
 
 void test_max_db_cnx::run()
