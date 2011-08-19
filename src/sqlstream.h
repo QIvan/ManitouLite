@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2008 Daniel Vйritй
+/* Copyright (C) 2004-2008 Daniel Vrit
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -20,11 +20,12 @@
 #ifndef INC_SQLSTREAM_H
 #define INC_SQLSTREAM_H
 
+#include <libpq-fe.h>
+#include <libpq/libpq-fs.h>
 #include <vector>
-
-#include "database.h"
-#include "sqlquery.h"
 #include <qstring.h>
+#include "sqlquery.h"
+#include "db.h"
 
 /// sql_bind_param class. To be used for sql_stream internal purposes
 class sql_bind_param
@@ -86,10 +87,8 @@ public:
 
   /** send the query to the server */
   void execute();
-  /// @todo: эта функция будет заменена на void execute();
-  /// Сделана для упрощения дальнейшей модификации.
-  void exec() {}
-
+  /// @todo: сделать вызовфункции execute не в конструкторе
+  void exec(){}
   /** returns true if there are no more results to read from the stream,
       or false otherwise */
   int eof();

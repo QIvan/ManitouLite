@@ -26,6 +26,7 @@
 #include <QMutex>
 #include <QList>
 #include <list>
+#include <tr1/memory>
 //#include "creatorConnection.h"
 
 // PostgreSQL implementation
@@ -57,6 +58,7 @@ public:
   virtual int logon(const char* conninfo)=0;
   virtual void logoff()=0;
   virtual bool reconnect()=0;
+  virtual bool ping()=0;
   void end_transaction();
   int open_transactions_count() const;
   const QString& encoding() const {
@@ -86,21 +88,6 @@ private:
   QString m_encoding;
 };
 
-
-/// Connection class
-
-class db_cnx_elt
-{
-public:
-  db_cnx_elt() {
-    m_available=true;
-    m_connected=false;
-  }
-  database* m_db;
-  bool m_available;
-  bool m_connected;
-};
-
 class pgConnection : public database
 {
 public:
@@ -118,24 +105,49 @@ public:
 private:
   PGconn* m_pgConn;
 };
+template <class T>
+class connection
+{
+protected:
+  typedef T typeDB;
+  virtual ~connection(){}
+};
 
-class db_cnx //: public pgConnection
+/// Connection class
+class db_cnx_elt : public connection<pgConnection>
+{
+public:
+  db_cnx_elt() :
+    m_db(new typeDB),
+    m_available(true),
+    m_connected(false)
+  {  }
+  virtual ~db_cnx_elt() {
+    m_available=false;
+    m_connected=false;
+  }
+  std::tr1::shared_ptr<typeDB> m_db;
+  bool m_available;
+  bool m_connected;
+};
+
+
+class db_cnx
 {
 public:
   db_cnx(bool other_thread=false);
   virtual ~db_cnx();
-  PGconn* connection() {
-    return m_cnx->connection();
+  db_cnx_elt* connection() {
+    return m_cnx;
   }
   database* datab() {
-    return m_cnx;
+    return m_cnx->m_db.get();
   }
   const database* cdatab() const {
-    return m_cnx;
+    return m_cnx->m_db.get();
   }
-  //creatorConnection getConnCreator();
   int lo_creat(int mode);
-  int lo_open(Oid lobjId, int mode);
+  int lo_open(uint lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
   int lo_write(int fd, const char *buf, size_t len);
   int lo_import(const char *filename);
@@ -148,31 +160,21 @@ public:
   void commit_transaction();
   void rollback_transaction();
   void end_transaction() {
-    m_cnx->end_transaction();
+    m_cnx->m_db->end_transaction();
   }
-  static void set_connect_string(const char* cnx);
-  static void set_dbname(const QString dbname);
-  static void disconnect_all();
-  static bool idle();
-
   //void enable_user_alerts(bool); // return previous state
-
   bool ping();
   void handle_exception(db_excpt& e);
 
+  static bool idle();
   static const QString& dbname();
 private:
-  //creatorConnection m_creator;
-  pgConnection* m_cnx;
-//  QList<db_listener*> m_listeners;
+  db_cnx_elt* m_cnx;
+  bool m_other_thread;
   bool m_alerts_enabled;
-
-  static std::list<db_cnx_elt*> m_cnx_list;
-  static QMutex m_mutex;
-  static bool m_initialized;
-  static QString m_connect_string;
-  static QString m_dbname;
 };
+
+
 
 // Transaction object. The destructor issues a rollback if commit has
 // not been called and we're a top level transaction within our

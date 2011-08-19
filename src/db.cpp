@@ -30,21 +30,19 @@
 #include <locale.h>
 #include <iostream>
 
+#include <QByteArray>
+#include <QMessageBox>
 #include <QRegExp>
 #include <QStringList>
-#include <QByteArray>
-
-#include "database.h"
-#include "sqlstream.h"
-#include "sqlquery.h"
-#include "addresses.h"
-#include "db_listener.h"
-
-#include <QMessageBox>
 #include <QTextCodec>
 
-//static PGconn *pgconn;
-pgConnection pgDb;
+#include "database.h"
+#include "db_listener.h"
+#include "creatorConnection.h"
+#include "sqlstream.h"
+#include "sqlquery.h"
+
+
 
 void DBEXCPT(db_excpt& p)
 {
@@ -55,69 +53,20 @@ void DBEXCPT(db_excpt& p)
   QMessageBox::warning(NULL, QObject::tr("Database error"), err);
 }
 
-db_excpt::db_excpt(const QString query,
-		   const QString msg,
-		   QString code/*=QString::null*/)
-{
-  m_query=query;
-  m_err_msg=msg;
-  m_err_code=code;
-  DBG_PRINTF(3, "db_excpt: query='%s', err='%s'", m_query.toLocal8Bit().constData(), m_err_msg.toLocal8Bit().constData());
-}
-
-db_excpt::db_excpt(const QString query, db_cnx& d)
-{
-  m_query=query;
-  char* pg_msg = PQerrorMessage(d.connection());
-  if (pg_msg!=NULL)
-    m_err_msg = QString::fromUtf8(pg_msg);
-}
-
 int
 ConnectDb(const char* cnx_string, QString* errstr)
 {
-  try {
-    pgDb.logon(cnx_string);
-    db_cnx::set_connect_string(cnx_string);
-    db_cnx db;
-    sql_stream s("SELECT current_database()", db);
-    if (!s.eos()) {
-      QString dbname;
-      s >> dbname;
-      db_cnx::set_dbname(dbname);
-    }
-  }
-  catch(db_excpt& p) {
-    QByteArray errmsg_bytes = p.errmsg().toLocal8Bit();    
-    std::cerr << errmsg_bytes.constData() << std::endl;
-    if (errstr)
-      *errstr = p.errmsg();
-    return 0;
-  }
-  return 1;
-}
-
-void // static
-db_cnx::disconnect_all()
-{
-  // close secondary connections
-  std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
-  for (; it!=m_cnx_list.end(); it++) {
-    if ((*it)->m_connected) {
-      (*it)->m_db->logoff();
-      (*it)->m_connected=false;
-    }
-  }
+  return creatorConnection::ConnectDb(cnx_string, errstr);
 }
 
 void
 DisconnectDb()
 {
   // close primary connection
-  pgDb.logoff();
-  db_cnx::disconnect_all();
+  creatorConnection::DisconnectDb();
 }
 
+//============================== database =======================================//
 database::database() : m_open_trans_count(0)
 {
 }
@@ -139,7 +88,6 @@ void database::rollback_transaction()
 {
 }
 
-
 int database::open_transactions_count() const
 {
   return m_open_trans_count;
@@ -151,33 +99,182 @@ database::add_listener(db_listener* listener)
   m_listeners.append(listener);
 }
 
-
-// static data members
-bool db_cnx::m_initialized;
-std::list<db_cnx_elt*> db_cnx::m_cnx_list;
-QMutex db_cnx::m_mutex;
-QString db_cnx::m_connect_string;
-QString db_cnx::m_dbname;
-
-// static
 void
-db_cnx::set_connect_string(const char* cnx)
+database::end_transaction()
 {
-  m_connect_string = cnx;
+  m_open_trans_count--;
+  DBG_PRINTF(4, "new m_open_trans_count=%d", m_open_trans_count);
+  if (m_open_trans_count<0) {
+    fprintf(stderr, "Fatal error: m_open_trans_count<0\n");
+    exit(1);
+  }
 }
 
-// static
-void
-db_cnx::set_dbname(const QString dbname)
+// fetch the current date and time in DD/MM/YYYY HH:MI:SS format
+//static
+bool
+database::fetchServerDate(QString& date)
 {
-  m_dbname = dbname;
+  bool result=true;
+  try {
+  db_cnx db;
+  sql_stream query("SELECT to_char(now(),\'DD/MM/YYYY HH24::MI::SS\')", db);
+  query >> date;
+  }
+  catch (db_excpt e) {
+    DBEXCPT(e);
+    result=false;
+  }
+  return result;
+}
+//_______________________________database____________________________________________//
+
+
+
+//=============================== db_cnx ============================================//
+db_cnx::db_cnx(bool other_thread) : m_cnx(NULL), m_other_thread(other_thread)
+{
+  try{
+    if (!other_thread) {
+      // just use the main connection for the main thread
+      m_cnx = creatorConnection::getMainConnection();
+      return;
+    }
+    else {
+      m_cnx = creatorConnection::getInstance().getNewConnection();
+    }
+  }
+  catch(std::exception)
+  {
+    DBG_PRINTF(1, "Not initialled creatorConnection!");
+  }
 }
 
-// static
-const QString&
-db_cnx::dbname()
+db_cnx::~db_cnx()
 {
-  return m_dbname;
+  if (m_other_thread)
+    if (m_cnx)
+    {
+      m_cnx->m_available = true;
+      m_cnx->m_db->logoff();
+      m_cnx->m_connected = false;
+    }
+}
+
+int
+db_cnx::lo_creat(int mode)
+{
+    return ::lo_creat(this->connection()->m_db->connection(), mode);
+}
+
+int
+db_cnx::lo_open(uint lobjId, int mode)
+{
+    return ::lo_open(this->connection()->m_db->connection(), lobjId, mode);
+}
+
+int
+db_cnx::lo_read(int fd, char *buf, size_t len)
+{
+    return ::lo_read(this->connection()->m_db->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_write(int fd, const char *buf, size_t len)
+{
+    return ::lo_write(this->connection()->m_db->connection(), fd, buf, len);
+}
+
+int
+db_cnx::lo_import(const char *filename)
+{
+    return ::lo_import(this->connection()->m_db->connection(), filename);
+}
+
+int
+db_cnx::lo_close(int fd)
+{
+    return ::lo_close(this->connection()->m_db->connection(), fd);
+}
+
+void
+db_cnx::cancelRequest()
+{
+    PQrequestCancel(this->connection()->m_db->connection());
+}
+
+bool
+db_cnx::next_seq_val(const char* seqName, int* id)
+{
+  try {
+    QString query = QString("SELECT nextval('%1')").arg(seqName);
+    sql_stream s(query, *this);
+    s >> *id;
+  }
+  catch(db_excpt& p) {
+    DBEXCPT(p);
+    return false;
+  }
+  return true;
+}
+
+bool
+db_cnx::next_seq_val(const char* seqName, unsigned int* id)
+{
+  try {
+    QString query = QString("SELECT nextval('%1')").arg(seqName);
+    sql_stream s(query, *this);
+    s >> *id;
+  }
+  catch(db_excpt& p) {
+    DBEXCPT(p);
+    return false;
+  }
+  return true;
+}
+
+void
+db_cnx::begin_transaction()
+{
+  m_cnx->m_db->begin_transaction();
+  // don't use nested transactions
+  DBG_PRINTF(5,"open_transactions_count()=%d", datab()->open_transactions_count());
+  if (datab()->open_transactions_count()==1) {
+    sql_stream s("BEGIN", *this);
+  }
+}
+
+void
+db_cnx::commit_transaction()
+{
+  end_transaction();
+  if (datab()->open_transactions_count()==0) {
+    sql_stream s("COMMIT", *this);
+  }
+}
+
+void
+db_cnx::rollback_transaction()
+{
+  end_transaction();
+  if (datab()->open_transactions_count()==0) {
+    sql_stream s("ROLLBACK", *this);
+  }
+}
+
+void
+db_cnx::handle_exception(db_excpt& e)
+{
+  if (m_alerts_enabled) {
+    DBEXCPT(e);
+  }
+}
+
+bool
+db_cnx::ping()
+{
+  if (!m_cnx) return false;
+  return m_cnx->m_db->ping();
 }
 
 /* idle(): Return false if at least one non-primary connection is in
@@ -188,84 +285,68 @@ db_cnx::dbname()
 bool
 db_cnx::idle()
 {
-  // TODO: do we need to use m_mutex here?
-  std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
-  for (; it!=m_cnx_list.end(); it++) {
-    if (!(*it)->m_available)
-      return false;
-  }
-  return true;
+  return creatorConnection::getInstance().idle();
 }
 
-
-db_cnx::~db_cnx()
+// static
+const QString&
+db_cnx::dbname()
 {
-  if (m_cnx) {
-    std::list<db_cnx_elt*>::iterator it=m_cnx_list.begin();
-    for (; it!=m_cnx_list.end(); it++) {
-      if ((*it)->m_db == m_cnx) {
-	(*it)->m_available=true;
-      }
-    }
-  }
+	return creatorConnection::getInstance().m_dbname;
 }
+//___________________________________db_cnx______________________________________//
 
-db_cnx::db_cnx(bool other_thread)
+//================================== db_excpt ====================================//
+db_excpt::db_excpt(const QString query,
+			 const QString msg,
+			 QString code/*=QString::null*/)
 {
-  if (!other_thread) {
-    // just use the main connection for the main thread
-    m_cnx=&pgDb;
-    return;
-  }
+  m_query=query;
+  m_err_msg=msg;
+  m_err_code=code;
+  DBG_PRINTF(3, "db_excpt: query='%s', err='%s'", m_query.toLocal8Bit().constData(), m_err_msg.toLocal8Bit().constData());
+}
 
-  const int max_cnx=5;
-  m_mutex.lock();
-  if (!m_initialized) {
-    for (int i=0; i<max_cnx; i++) {
-      db_cnx_elt* p = new db_cnx_elt;
-      m_cnx_list.push_back(p);
-    }
-    m_initialized=true;
-  }
+db_excpt::db_excpt(const QString query, db_cnx& d)
+{
+  m_query=query;
+  char* pg_msg = PQerrorMessage(d.connection()->m_db->connection());
+  if (pg_msg!=NULL)
+    m_err_msg = QString::fromUtf8(pg_msg);
+}
+//___________________________________db_excpt______________________________________//
 
-  std::list<db_cnx_elt*>::iterator it = m_cnx_list.begin();
-  for (; it!=m_cnx_list.end(); it++) {
-    if ((*it)->m_available) {
-      pgConnection* p;
-      if (!(*it)->m_connected) {
-	p = new pgConnection;
-	(*it)->m_db = p;
-	p->logon(m_connect_string.toLocal8Bit().constData());
-	DBG_PRINTF(3, "Opening a new database connection");
-	(*it)->m_connected=true;
-      }
-      (*it)->m_available=false;
-      m_cnx = dynamic_cast<pgConnection*>((*it)->m_db); // FIXME??
-      break;
-    }
-  }
-  m_mutex.unlock();
 
-  m_alerts_enabled=true;
+db_transaction::db_transaction(db_cnx& db): m_commit_done(false)
+{
+  m_pDb=&db;
+  db.begin_transaction();
+}
 
-#if 0
-  {
-    // DEBUG
-    QString state;
-    int i=0;
-    std::list<db_cnx_elt*>::iterator it2 = m_cnx_list.begin();
-    for (; it2!=m_cnx_list.end(); ++it2,++i) {
-      state.append(QString("\nconnection %1 connected:%2 available:%3").arg(i).arg((*it2)->m_connected).arg((*it2)->m_available));
-    }
-    DBG_PRINTF(3, "Connections: %s", state.toLocal8Bit().constData());
-  }
-#endif
+db_transaction::~db_transaction()
+{
+  if (m_pDb->datab()->open_transactions_count()==1 && !m_commit_done)
+    m_pDb->rollback_transaction();
+//  m_pDb->datab()->end_transaction();
+}
 
-  if (it==m_cnx_list.end()) {
-    DBG_PRINTF(2, "No database connection found");
-    throw db_excpt(NULL, QObject::tr("The %1 database connections are already in use.").arg(max_cnx));
+void
+db_transaction::commit()
+{
+  m_commit_done=true;
+  if (m_pDb->datab()->open_transactions_count()==1) {
+    m_pDb->commit_transaction();
   }
 }
+
+void
+db_transaction::rollback()
+{
+  if (m_pDb->datab()->open_transactions_count()==1) {
+    m_pDb->rollback_transaction();
+  }
+}
+
 
 
 int
@@ -292,13 +373,13 @@ pgConnection::logon(const char* conninfo)
       // pgsql versions under 8.1 return 'UNICODE', >=8.1 return 'UTF8'
       // we keep UTF8
       if (!strcmp(enc,"UNICODE"))
-	enc="UTF8";
+        enc="UTF8";
       set_encoding(enc);
     }
     if (res)
-      PQclear(res);  
+      PQclear(res);
   }
-  PQexec(m_pgConn, "SET standard_conforming_strings=on");
+  PQclear(PQexec(m_pgConn, "SET standard_conforming_strings=on"));
   return 1;
 }
 
@@ -342,216 +423,4 @@ pgConnection::ping()
   else
     return false;
 }
-
-#if 0
-db_transaction::db_transaction(database& db): m_commit_done(false)
-{
-  m_pDb=&db;
-  db.begin_transaction();
-}
-#endif
-
-db_transaction::db_transaction(db_cnx& db): m_commit_done(false)
-{
-  m_pDb=&db;
-  db.begin_transaction();
-}
-
-db_transaction::~db_transaction()
-{
-  if (m_pDb->datab()->open_transactions_count()==1 && !m_commit_done)
-    m_pDb->rollback_transaction();
-//  m_pDb->datab()->end_transaction();
-}
-
-void
-db_transaction::commit()
-{
-  m_commit_done=true;
-  if (m_pDb->datab()->open_transactions_count()==1) {
-    m_pDb->commit_transaction();
-  }
-}
-
-void
-db_transaction::rollback()
-{
-  if (m_pDb->datab()->open_transactions_count()==1) {
-    m_pDb->rollback_transaction();
-  }
-}
-
-void
-database::end_transaction()
-{
-  m_open_trans_count--;
-  DBG_PRINTF(4, "new m_open_trans_count=%d", m_open_trans_count);
-  if (m_open_trans_count<0) {
-    fprintf(stderr, "Fatal error: m_open_trans_count<0\n");
-    exit(1);
-  }
-}
-
-// fetch the current date and time in DD/MM/YYYY HH:MI:SS format
-bool
-database::fetchServerDate(QString& date)
-{
-  bool result=true;
-  try {
-  db_cnx db;
-  sql_stream query("SELECT to_char(now(),'DD/MM/YYYY HH24:MI:SS')", db);
-  query >> date;
-  }
-  catch (db_excpt e) {
-    DBEXCPT(e);
-    result=false;
-  }
-  return result;
-}
-
-/*creatorConnection
-db_cnx::getConnCreator()
-{
-    return m_creator;
-}*/
-
-int
-db_cnx::lo_creat(int mode)
-{
-    return ::lo_creat(m_cnx->connection(), mode);
-}
-
-int
-db_cnx::lo_open(Oid lobjId, int mode)
-{
-    return ::lo_open(m_cnx->connection(), lobjId, mode);
-}
-
-int
-db_cnx::lo_read(int fd, char *buf, size_t len)
-{
-    return ::lo_read(m_cnx->connection(), fd, buf, len);
-}
-
-int
-db_cnx::lo_write(int fd, const char *buf, size_t len)
-{
-    return ::lo_write(m_cnx->connection(), fd, buf, len);
-}
-
-int
-db_cnx::lo_import(const char *filename)
-{
-    return ::lo_import(m_cnx->connection(), filename);
-}
-
-int
-db_cnx::lo_close(int fd)
-{
-    return ::lo_close(m_cnx->connection(), fd);
-}
-
-void
-db_cnx::cancelRequest()
-{
-    PQrequestCancel(m_cnx->connection());
-}
-
-bool
-db_cnx::next_seq_val(const char* seqName, int* id)
-{
-  try {
-    QString query = QString("SELECT nextval('%1')").arg(seqName);
-    sql_stream s(query, *this);
-    s >> *id;
-  }
-  catch(db_excpt& p) {
-    DBEXCPT(p);
-    return false;
-  }
-  return true;
-}
-
-bool
-db_cnx::next_seq_val(const char* seqName, unsigned int* id)
-{
-  try {
-    QString query = QString("SELECT nextval('%1')").arg(seqName);
-    sql_stream s(query, *this);
-    s >> *id;
-  }
-  catch(db_excpt& p) {
-    DBEXCPT(p);
-    return false;
-  }
-  return true;
-}
-
-void
-db_cnx::begin_transaction()
-{
-  m_cnx->begin_transaction();
-  // don't use nested transactions
-  DBG_PRINTF(5,"open_transactions_count()=%d", datab()->open_transactions_count());
-  if (datab()->open_transactions_count()==1) {
-    sql_stream s("BEGIN", *this);
-  }
-}
-
-void
-db_cnx::commit_transaction()
-{
-  end_transaction();
-  if (datab()->open_transactions_count()==0) {
-    sql_stream s("COMMIT", *this);
-  }
-}
-
-void
-db_cnx::rollback_transaction()
-{
-  end_transaction();
-  if (datab()->open_transactions_count()==0) {
-    sql_stream s("ROLLBACK", *this);
-  }
-}
-
-void
-db_cnx::handle_exception(db_excpt& e)
-{
-  if (m_alerts_enabled) {
-    DBEXCPT(e);
-  }
-}
-
-bool
-db_cnx::ping()
-{
-  return m_cnx->ping();
-}
-
-std::list<QString>
-ReferencesList(const QString &s)
-{
-  std::list<QString> l;
-  uint nLen=s.length();
-  uint nPos=0;
-
-  while (nPos<nLen) {
-    int nStart=s.indexOf('<', nPos);
-    if (nStart!=-1) {
-      int endPos=s.indexOf('>',nStart);
-      if (endPos!=-1) {
-	l.push_back(s.mid(nStart+1,endPos-nStart-1));
-	nPos=endPos+1;
-      }
-      else
-	nPos=nLen;
-    }
-    else
-      nPos=nLen;
-  }
-  return l;
-}
-
 
