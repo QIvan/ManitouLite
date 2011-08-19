@@ -1,7 +1,7 @@
 #include <QString>
 #include "testConnectDisconnect.h"
 #include "RegistryTest.h"
-#include "db.h"
+#include "../db.h"
 
 std::string TestNames::connect(){ return "Connect"; }
 std::string TestNames::disconnect(){ return "Disconnect"; }

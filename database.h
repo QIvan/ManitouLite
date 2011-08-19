@@ -107,7 +107,7 @@ void DBEXCPT(db_excpt& p);	// db.cpp
 
 
 
-//---------------------------- NOT IN USE CLASS ------------------------------//
+//---------------------------- NOT USING IN CLASS ------------------------------//
 
 
 // Transaction object. The destructor issues a rollback if commit has

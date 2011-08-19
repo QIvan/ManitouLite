@@ -22,6 +22,7 @@
 #include <QString>
 #include <QVariant>
 #include <list>
+#include <tr1/memory>
 #include "pgConnection.h"
 
 
@@ -35,19 +36,23 @@ class connection
 {
 protected:
   typedef T typeDB;
+  virtual ~connection(){}
 };
 
 /// Connection class
 class db_cnx_elt : public connection<pgConnection>
 {
 public:
-  db_cnx_elt() {
-    m_available=true;
+  db_cnx_elt() :
+    m_db(new typeDB),
+    m_available(true),
+    m_connected(false)
+  {  }
+  virtual ~db_cnx_elt() {
+    m_available=false;
     m_connected=false;
-    m_db = new typeDB();
   }
-  /// @todo: подумать над закрытым деструктором!
-  typeDB* m_db;
+  std::tr1::shared_ptr<typeDB> m_db;
   bool m_available;
   bool m_connected;
 };
@@ -62,10 +67,10 @@ public:
     return m_cnx;
   }
   database* datab() {
-    return m_cnx->m_db;
+    return m_cnx->m_db.get();
   }
   const database* cdatab() const {
-    return m_cnx->m_db;
+    return m_cnx->m_db.get();
   }
   int lo_creat(int mode);
   int lo_open(uint lobjId, int mode);

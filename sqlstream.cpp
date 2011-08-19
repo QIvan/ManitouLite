@@ -19,10 +19,8 @@
 
 #include <string>
 #include <iostream>
-
 #include <ctype.h>
 #include <stdlib.h>
-
 #include "main.h"
 #include "sqlstream.h"
 #include "db.h"

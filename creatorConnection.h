@@ -9,7 +9,6 @@
 class creatorConnection
 {
   friend class db_cnx;
-  friend void DisconnectDb();
 private:
   static creatorConnection* m_impl;
   creatorConnection(const char* connect_string, QString dbname);
@@ -24,7 +23,8 @@ private:
   static db_cnx_elt m_main_cnx;
 
 public:
-  static int initialled(const char* connect_string, QString* errstr);
+  static int ConnectDb(const char* connect_string, QString* errstr);
+  static void DisconnectDb();
 private:
   static creatorConnection& getInstance();
   static void unInstance();

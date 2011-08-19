@@ -30,18 +30,18 @@
 #include <locale.h>
 #include <iostream>
 
+#include <QByteArray>
+#include <QMessageBox>
 #include <QRegExp>
 #include <QStringList>
-#include <QByteArray>
+#include <QTextCodec>
 
 #include "database.h"
-#include "sqlstream.h"
-#include "sqlquery.h"
 #include "db_listener.h"
 #include "creatorConnection.h"
+#include "sqlstream.h"
+#include "sqlquery.h"
 
-#include <QMessageBox>
-#include <QTextCodec>
 
 
 void DBEXCPT(db_excpt& p)
@@ -56,14 +56,14 @@ void DBEXCPT(db_excpt& p)
 int
 ConnectDb(const char* cnx_string, QString* errstr)
 {
-  return creatorConnection::initialled(cnx_string, errstr);
+  return creatorConnection::ConnectDb(cnx_string, errstr);
 }
 
 void
 DisconnectDb()
 {
   // close primary connection
-  creatorConnection::getInstance().disconnect_all();
+  creatorConnection::DisconnectDb();
 }
 
 //============================== database =======================================//
@@ -273,6 +273,7 @@ db_cnx::handle_exception(db_excpt& e)
 bool
 db_cnx::ping()
 {
+  if (!m_cnx) return false;
   return m_cnx->m_db->ping();
 }
 

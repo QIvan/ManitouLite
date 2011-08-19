@@ -1,8 +1,9 @@
+#include <iostream>
+#include <stdexcept>
 #include "creatorConnection.h"
-#include "iostream"
-#include "stdexcept"
 #include "main.h"
 #include "sqlstream.h"
+#include <QDebug>
 
 creatorConnection* creatorConnection::m_impl = NULL;
 db_cnx_elt creatorConnection::m_main_cnx;
@@ -28,7 +29,7 @@ creatorConnection::~creatorConnection()
 
 //static
 int
-creatorConnection::initialled(const char* connect_string, QString* errstr)
+creatorConnection::ConnectDb(const char* connect_string, QString* errstr)
 {
   try{
     m_main_cnx.m_db->logon(connect_string);
@@ -48,6 +49,13 @@ creatorConnection::initialled(const char* connect_string, QString* errstr)
   }
 
   return true;
+}
+
+void
+creatorConnection::DisconnectDb()
+{
+  m_impl->disconnect_all();
+  unInstance();
 }
 
 //======================== For Singlton ===============================//
@@ -126,12 +134,17 @@ creatorConnection::idle()
 void
 creatorConnection::disconnect_all()
 {
-  // close secondary connections
-  std::list<db_cnx_elt>::iterator it=m_cnx_list.begin();
-  for (; it!=m_cnx_list.end(); it++) {
-    if ((*it).m_connected) {
-      (*it).m_db->logoff();
-      (*it).m_connected=false;
+  if(m_impl) {
+    // close secondary connections
+    std::list<db_cnx_elt>::iterator it=m_cnx_list.begin();
+    for (; it!=m_cnx_list.end(); it++) {
+      if ((*it).m_connected) {
+        (*it).m_db->logoff();
+        (*it).m_connected=false;
+      }
     }
+  }
+  else {
+    DBG_PRINTF(1, "Error Disconnect! No initialise!");
   }
 }

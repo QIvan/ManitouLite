@@ -1,7 +1,8 @@
 #include "pgConnection.h"
 #include "main.h"
 #include "db_listener.h"
-//============================== pgConnection =======================================//
+
+
 int
 pgConnection::logon(const char* conninfo)
 {
@@ -26,13 +27,13 @@ pgConnection::logon(const char* conninfo)
       // pgsql versions under 8.1 return 'UNICODE', >=8.1 return 'UTF8'
       // we keep UTF8
       if (!strcmp(enc,"UNICODE"))
-  enc="UTF8";
+        enc="UTF8";
       set_encoding(enc);
     }
     if (res)
       PQclear(res);
   }
-  PQexec(m_pgConn, "SET standard_conforming_strings=on");
+  PQclear(PQexec(m_pgConn, "SET standard_conforming_strings=on"));
   return 1;
 }
 
@@ -76,4 +77,3 @@ pgConnection::ping()
   else
     return false;
 }
-//_______________________________pgConnection________________________________________//
