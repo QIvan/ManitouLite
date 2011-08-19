@@ -46,7 +46,7 @@ sql_stream::init (const char *query)
   m_queryBufSize = sizeof(m_localQueryBuf)-1;
   m_queryFmt = query;
   m_chunk_size = 1024;
-  m_bExecuted = 0;
+  m_bExecuted = false;
   m_pgRes = NULL;
 
   int len=strlen(query);
@@ -67,22 +67,22 @@ sql_stream::init (const char *query)
       q++;
       const char* start_var=q;
       while ((*q>='A' && *q<='Z') || (*q>='a' && *q<='z') ||
-	     (*q>='0' && *q<='9') || *q=='_')
-	{
-	  q++;
-	}
+             (*q>='0' && *q<='9') || *q=='_')
+        {
+          q++;
+        }
       if (q-start_var>0) {
-	// if the ':' was actually followed by a parameter name
-	sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
-	m_vars.push_back(p);
+        // if the ':' was actually followed by a parameter name
+        sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
+        m_vars.push_back(p);
       }
       else {
-	/* '::' is a special case because we don't want the parser to
-	   find the second colon at the start of the loop. Otherwise
-	   '::int' will be understood as a colon followed by the
-	   parameter ':int'. So in this case, we skip the second colon */
-	if (*q==':')
-	  q++;
+        /* '::' is a special case because we don't want the parser to
+           find the second colon at the start of the loop. Otherwise
+           '::int' will be understood as a colon followed by the
+           parameter ':int'. So in this case, we skip the second colon */
+        if (*q==':')
+          q++;
       }
     }
     else
@@ -108,6 +108,8 @@ sql_stream::~sql_stream()
     PQclear(m_pgRes);
   if (m_queryBuf!=m_localQueryBuf)
     free(m_queryBuf);
+  if(!m_bExecuted)
+    DBG_PRINTF(1, "QUERY NOT EXECUTE!");
 }
 
 void
@@ -156,8 +158,8 @@ sql_stream::replace_placeholder(int argPos, const char* buf, int size)
   int placeholder_len=p.name().size()+1; // +1 for the leading ':'
   // shift the substring at the right of the placeholder
   memmove(m_queryBuf+p.pos()+size,
-	  m_queryBuf+p.pos()+placeholder_len,
-	  m_queryLen-(p.pos()+placeholder_len));
+          m_queryBuf+p.pos()+placeholder_len,
+          m_queryLen-(p.pos()+placeholder_len));
   // insert the value where the placeholder was
   memcpy(m_queryBuf+p.pos(), buf, size);
   m_queryLen+=(size-placeholder_len);
@@ -360,7 +362,7 @@ sql_stream::execute()
   if ((returns_rows && PQresultStatus(m_pgRes)!=PGRES_TUPLES_OK)
       || (!returns_rows && PQresultStatus(m_pgRes)!=PGRES_COMMAND_OK)) {
     throw db_excpt(m_queryBuf, PQresultErrorMessage(m_pgRes),
-		   QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
+                   QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
   }
   const char* t=PQcmdTuples(m_pgRes);
   if (t && *t) {
@@ -371,7 +373,7 @@ sql_stream::execute()
 
   m_rowNumber=0;
   m_colNumber=0;
-  m_bExecuted=1;
+  m_bExecuted=true;
 }
 
 int
@@ -430,7 +432,7 @@ sql_stream::operator>>(unsigned int& i)
 {
   check_eof();
   unsigned long ul=strtoul(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber),
-			   NULL, 10);
+                           NULL, 10);
   m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
   if (!m_val_null)
     i=(unsigned int)ul;

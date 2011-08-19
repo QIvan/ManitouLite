@@ -32,7 +32,8 @@ manitou_SOURCES = main.cpp main.h msg_list_window.cpp db.cpp \
  headers_view.h headers_view.cpp message_view.h message_view.cpp \
  app_config.cpp app_config.h ui_controls.h edit_address_widget.cpp edit_address_widget.h \
  html_editor.h html_editor.cpp notepad.h notepad.cpp db_listener.h db_listener.cpp \
- msg_status_cache.h msg_status_cache.cpp creatorConnection.h creatorConnection.cpp
+ msg_status_cache.h msg_status_cache.cpp creatorConnection.h creatorConnection.cpp \
+ pgConnection.cpp pgConnection.h
 
 EXTRA_manitou_SOURCES = getopt.cpp mygetopt.h getopt1.cpp
 

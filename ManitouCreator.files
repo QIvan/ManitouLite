@@ -127,3 +127,6 @@ src/xface/xface.cpp
 src/xface/xface.h
 src/creatorConnection.h
 src/creatorConnection.cpp
+src/pgConnection.h
+src/pgConnection.cpp
+

@@ -120,7 +120,7 @@ private:
   int m_chunk_size;
   std::vector<sql_bind_param> m_vars;
   // results
-  int m_bExecuted;
+  bool m_bExecuted;
   PGresult* m_pgRes;
   int m_rowNumber;		/* last row read from the stream */
   int m_colNumber;		/* last column read from the stream */

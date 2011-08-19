@@ -80,7 +80,8 @@ am_manitou_OBJECTS = manitou-main.$(OBJEXT) \
 	manitou-html_editor.$(OBJEXT) manitou-notepad.$(OBJEXT) \
 	manitou-db_listener.$(OBJEXT) \
 	manitou-msg_status_cache.$(OBJEXT) \
-	manitou-creatorConnection.$(OBJEXT)
+	manitou-creatorConnection.$(OBJEXT) \
+	manitou-pgConnection.$(OBJEXT)
 manitou_OBJECTS = $(am_manitou_OBJECTS)
 am__DEPENDENCIES_1 =
 manitou_LINK = $(CXXLD) $(manitou_CXXFLAGS) $(CXXFLAGS) \
@@ -287,7 +288,8 @@ manitou_SOURCES = main.cpp main.h msg_list_window.cpp db.cpp \
  headers_view.h headers_view.cpp message_view.h message_view.cpp \
  app_config.cpp app_config.h ui_controls.h edit_address_widget.cpp edit_address_widget.h \
  html_editor.h html_editor.cpp notepad.h notepad.cpp db_listener.h db_listener.cpp \
- msg_status_cache.h msg_status_cache.cpp creatorConnection.h creatorConnection.cpp
+ msg_status_cache.h msg_status_cache.cpp creatorConnection.h creatorConnection.cpp \
+ pgConnection.cpp pgConnection.h
 
 EXTRA_manitou_SOURCES = getopt.cpp mygetopt.h getopt1.cpp
 MOC_OBJS = msg_list_window.moc.o newmailwidget.moc.o tagsbox.moc.o \
@@ -427,6 +429,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-newmailwidget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-notepad.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-notewidget.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-pgConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-preferences.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-prog_chooser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manitou-query_listview.Po@am__quote@
@@ -1240,6 +1243,20 @@ manitou-creatorConnection.obj: creatorConnection.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='creatorConnection.cpp' object='manitou-creatorConnection.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(manitou_CPPFLAGS) $(CPPFLAGS) $(manitou_CXXFLAGS) $(CXXFLAGS) -c -o manitou-creatorConnection.obj `if test -f 'creatorConnection.cpp'; then $(CYGPATH_W) 'creatorConnection.cpp'; else $(CYGPATH_W) '$(srcdir)/creatorConnection.cpp'; fi`
+
+manitou-pgConnection.o: pgConnection.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(manitou_CPPFLAGS) $(CPPFLAGS) $(manitou_CXXFLAGS) $(CXXFLAGS) -MT manitou-pgConnection.o -MD -MP -MF $(DEPDIR)/manitou-pgConnection.Tpo -c -o manitou-pgConnection.o `test -f 'pgConnection.cpp' || echo '$(srcdir)/'`pgConnection.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/manitou-pgConnection.Tpo $(DEPDIR)/manitou-pgConnection.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='pgConnection.cpp' object='manitou-pgConnection.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(manitou_CPPFLAGS) $(CPPFLAGS) $(manitou_CXXFLAGS) $(CXXFLAGS) -c -o manitou-pgConnection.o `test -f 'pgConnection.cpp' || echo '$(srcdir)/'`pgConnection.cpp
+
+manitou-pgConnection.obj: pgConnection.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(manitou_CPPFLAGS) $(CPPFLAGS) $(manitou_CXXFLAGS) $(CXXFLAGS) -MT manitou-pgConnection.obj -MD -MP -MF $(DEPDIR)/manitou-pgConnection.Tpo -c -o manitou-pgConnection.obj `if test -f 'pgConnection.cpp'; then $(CYGPATH_W) 'pgConnection.cpp'; else $(CYGPATH_W) '$(srcdir)/pgConnection.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/manitou-pgConnection.Tpo $(DEPDIR)/manitou-pgConnection.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='pgConnection.cpp' object='manitou-pgConnection.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(manitou_CPPFLAGS) $(CPPFLAGS) $(manitou_CXXFLAGS) $(CXXFLAGS) -c -o manitou-pgConnection.obj `if test -f 'pgConnection.cpp'; then $(CYGPATH_W) 'pgConnection.cpp'; else $(CYGPATH_W) '$(srcdir)/pgConnection.cpp'; fi`
 
 manitou-getopt.o: getopt.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(manitou_CPPFLAGS) $(CPPFLAGS) $(manitou_CXXFLAGS) $(CXXFLAGS) -MT manitou-getopt.o -MD -MP -MF $(DEPDIR)/manitou-getopt.Tpo -c -o manitou-getopt.o `test -f 'getopt.cpp' || echo '$(srcdir)/'`getopt.cpp
