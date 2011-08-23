@@ -46,7 +46,7 @@ sql_stream::init (const char *query)
   m_queryBufSize = sizeof(m_localQueryBuf)-1;
   m_queryFmt = query;
   m_chunk_size = 1024;
-  m_bExecuted = 0;
+  m_bExecuted = false;
   m_pgRes = NULL;
 
   int len=strlen(query);
@@ -108,6 +108,8 @@ sql_stream::~sql_stream()
     PQclear(m_pgRes);
   if (m_queryBuf!=m_localQueryBuf)
     free(m_queryBuf);
+  if(!m_bExecuted)
+    DBG_PRINTF(1, "QUERY NOT EXECUTE!");
 }
 
 void
@@ -371,7 +373,7 @@ sql_stream::execute()
 
   m_rowNumber=0;
   m_colNumber=0;
-  m_bExecuted=1;
+  m_bExecuted=true;
 }
 
 int

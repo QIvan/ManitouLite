@@ -87,7 +87,8 @@ public:
 
   /** send the query to the server */
   void execute();
-
+  /// @todo: сделать вызовфункции execute не в конструкторе
+  void exec(){}
   /** returns true if there are no more results to read from the stream,
       or false otherwise */
   int eof();
@@ -119,7 +120,7 @@ private:
   int m_chunk_size;
   std::vector<sql_bind_param> m_vars;
   // results
-  int m_bExecuted;
+  bool m_bExecuted;
   PGresult* m_pgRes;
   int m_rowNumber;		/* last row read from the stream */
   int m_colNumber;		/* last column read from the stream */
