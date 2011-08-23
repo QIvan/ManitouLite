@@ -16,13 +16,13 @@ void testBaseTestDB::tearDown()
     sql_stream query("DELETE FROM test_table", *m_DB);
 }
 
-void testBaseTestDB::InsertString_(QString tableName)
+void testBaseTestDB::InsertString_(int last_field, QString tableName)
 {
     sql_write_fields fiedls(*m_DB);
     fiedls.add("test_text", "Test Text");
     fiedls.add("test_char200", "Test Text");
     fiedls.add_no_quote("test_date", "now()");
-    fiedls.add("test_int_not_null", 1);
+    fiedls.add("test_int_not_null", last_field);
     QString str =  QString("INSERT INTO %1(%2) VALUES(%3)")
             .arg(tableName)
             .arg(fiedls.fields())

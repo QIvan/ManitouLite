@@ -18,7 +18,7 @@ public:
     void setUp();
     void tearDown();
 protected:
-    void InsertString_(QString tableName = "test_table");
+    void InsertString_(int last_field = 1, QString tableName = "test_table");
     void ThrowQuery(QString tableName = "test_table");
     bool TableIsEmpty_(QString tableName = "test_table");
     int  CountString_(QString tableName = "test_table");
