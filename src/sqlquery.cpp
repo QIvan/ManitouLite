@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2007 Daniel Vérité
+/* Copyright (C) 2004-2007 Daniel Vit
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -19,12 +19,58 @@
 
 #include "sqlquery.h"
 #include "main.h"
+#include "db.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef WITH_PGSQL
 #include <libpq-fe.h>
 #endif
+
+enum Coding
+{
+  latin1,
+  utf8,
+  local8bit
+};
+
+QString escapeString(const QString value, const Coding coding )
+{
+
+  QByteArray qba;
+  if (coding == latin1)
+    qba = value.toLatin1();
+  else if (coding == utf8)
+    qba = value.toUtf8();
+  else if (coding == local8bit)
+    qba = value.toLocal8Bit();
+
+  char* dest = qba.data();
+  bool alloc = false;
+#ifdef WITH_PGSQL
+  char local_value[1024];
+  int value_len=value.length();
+  if (value_len*2<(int)sizeof(local_value)-1)
+    dest=local_value;
+  else
+  {
+    alloc = true;
+    dest=(char*)malloc(1+value_len*2);
+  }
+  PQescapeString(dest, qba.constData(), value_len); // FIXME ENCODING*/
+#endif
+  QString result;
+  if (coding == latin1)
+    result = QString::fromLatin1(dest);
+  else if (coding == utf8)
+    result = QString::fromUtf8(dest);
+  else if (coding == local8bit)
+    result = QString::fromLocal8Bit(dest);
+
+  if (alloc)
+    free(dest);
+  return result;
+}
 
 void
 sql_query::add_clause(const QString expr)
@@ -54,21 +100,11 @@ void sql_query::add_clause(const QString field, const QString value)
 void
 sql_query::add_clause(const QString field, const QString value, const char *cmp)
 {
-  char local_value[1024];
-  char* dest;
   if (m_num_clauses++>0) {
     m_where += " AND ";
   }
-  int value_len=value.length();
-  if (value_len*2<(int)sizeof(local_value)-1)
-    dest=local_value;
-  else
-    dest=(char*)malloc(1+value_len*2);
-  QByteArray qba = value.toLatin1();
-  PQescapeString(dest, qba.constData(), value_len); // FIXME ENCODING
-  m_where += field + QString(cmp) + QString("'") + QString(dest) + QString("'");
-  if (dest!=local_value)
-    free(dest);
+  QString dest = escapeString(value, latin1);
+  m_where += field + QString(cmp) + QString("'") + dest + QString("'");
 }
 
 /*
@@ -152,7 +188,7 @@ sql_write_fields::add(const char* field, const QString value, int maxlength)
   else
     qvalue=value.toLocal8Bit();
 
-  trunc_value=(const char*)qvalue;
+  trunc_value=qvalue.constData();
 
   if (maxlength) {
     if (strlen(trunc_value) > (uint)maxlength) {
@@ -164,23 +200,13 @@ sql_write_fields::add(const char* field, const QString value, int maxlength)
     }
   }
 
-  char local_value[1024];
-  char* dest;
-  int value_len=strlen(trunc_value);
-  if (value_len*2<(int)sizeof(local_value)-1)
-    dest=local_value;
-  else
-    dest=(char*)malloc(1+value_len*2);
-  PQescapeString (dest, trunc_value, value_len);
-
   if (m_utf8)
-    m_values+=QString("'") + QString::fromUtf8(dest) + QString("'");
+    m_values+=QString("'") + escapeString(trunc_value, utf8) + QString("'");
   else
-    m_values+=QString("'") + QString::fromLocal8Bit(dest) + QString("'");
+    m_values+=QString("'") + escapeString(trunc_value, local8bit) + QString("'");
+
 
   m_fields+=field;
-  if (dest!=local_value)
-    free (dest);
   if (alloc)
     free ((void*)trunc_value);
 }
