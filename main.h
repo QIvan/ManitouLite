@@ -43,20 +43,18 @@ class QStringList;
 class mail_header;
 
 #include <map>
-
-#define DBG_PRINTF(l,...) debug_printf(l,__FILE__,__LINE__, __VA_ARGS__)
-#define ERR_PRINTF(...) err_printf(__FILE__,__LINE__, __VA_ARGS__)
+//#include <string>
 
 #if defined(__GNUG__) //&& !defined(QT_WS_WIN)
   #define _UNUSED_ __attribute((unused))
   #if __GNUG__>=3
-	// standard (gcc3) way for defining a variable number of arguments
-	#define DBG_PRINTF(l,...) debug_printf(l,__FILE__,__LINE__, __VA_ARGS__)
-	#define ERR_PRINTF(...) err_printf(__FILE__,__LINE__, __VA_ARGS__)
+  // standard (gcc3) way for defining a variable number of arguments
+  #define DBG_PRINTF(l,...) debug_printf(l,__FILE__,__LINE__, __VA_ARGS__)
+  #define ERR_PRINTF(...) err_printf(__FILE__,__LINE__, __VA_ARGS__)
   #else
-	// or gcc2's way
-	#define DBG_PRINTF(l,args...) debug_printf(l,__FILE__,__LINE__, ## args)
-	#define ERR_PRINTF(args...) err_printf(__FILE__,__LINE__, ## args)
+  // or gcc2's way
+  #define DBG_PRINTF(l,args...) debug_printf(l,__FILE__,__LINE__, ## args)
+  #define ERR_PRINTF(args...) err_printf(__FILE__,__LINE__, ## args)
   #endif
 #else
   // not gcc
@@ -101,7 +99,12 @@ private:
   QString default_style_name;
 };
 
-
 extern manitou_application* gl_pApplication;
+
+namespace service_f
+{
+    QString toCodingDb(const QString &s);
+    QString GetNameDb (const char* conninfo);
+}
 
 #endif // INC_MAIN_H

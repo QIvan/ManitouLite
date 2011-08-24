@@ -24,6 +24,7 @@
 #include <list>
 #include <tr1/memory>
 #include "pgConnection.h"
+#include "sqliteConnection.h"
 
 
 class database;
@@ -40,7 +41,11 @@ protected:
 };
 
 /// Connection class
+#ifndef WITH_PGSQL
 class db_cnx_elt : public connection<pgConnection>
+    #else
+class db_cnx_elt : public connection<sqliteConnection>
+#endif
 {
 public:
   db_cnx_elt() :

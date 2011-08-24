@@ -33,11 +33,14 @@ creatorConnection::ConnectDb(const char* connect_string, QString* errstr)
 {
   try{
     m_main_cnx.m_db->logon(connect_string);
+    QString dbname = service_f::GetNameDb(connect_string);
+    /** @date: 24.08.2011
     db_cnx db;
     sql_stream s("SELECT current_database()", db);
     QString dbname = "";
     if (!s.eos())
       s >> dbname;
+    */
     m_impl = new creatorConnection(connect_string, dbname);
   }
   catch(db_excpt& p) {

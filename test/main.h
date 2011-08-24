@@ -67,5 +67,11 @@ void err_printf(const char* file, int line, const char *fmt, ...)
 }
 
 
+namespace service_f
+{
+    QString toCodingDb(const QString &s);
+    QString GetNameDb (const char* conninfo);
+}
+
 
 #endif // INC_MAIN_H

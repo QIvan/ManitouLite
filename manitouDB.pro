@@ -9,6 +9,7 @@ QT       += core, gui, network, sql
 TARGET = manitouPortotype
 
 LIBS += -L/usr/lib64/ -lpq
+LIBS += -L/usr/ -lsqlite3
 INCLUDEPATH = /usr/include/ , /usr/include/c++/4.4.4/
 
 
@@ -30,7 +31,8 @@ SOURCES +=  \
     sqlstream.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    pgConnection.cpp
+    pgConnection.cpp \
+    sqliteConnection.cpp
 
 HEADERS += \
     date.h \
@@ -42,4 +44,5 @@ HEADERS += \
     config.h \
     database.h \
     creatorConnection.h \
-    pgConnection.h
+    pgConnection.h \
+    sqliteConnection.h

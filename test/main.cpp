@@ -1,5 +1,7 @@
 #include <QApplication>
 #include <QDebug>
+#include <QString>
+#include <QStringList>
 #include <cppunit/TextTestResult.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/BriefTestProgressListener.h>
@@ -13,7 +15,8 @@
 
 std::string TestNames::db_api() { return "DB_API";}
 
-CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
+CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::connect());
+CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::disconnect());
 
 
 int main(int argn, char** args)
@@ -58,5 +61,29 @@ int main(int argn, char** args)
 
     // Return error code 1 if the one of test failed.
     return wasSucessful ? 0 : 1;*/
+}
+
+QString service_f::toCodingDb(const QString &s)
+{
+    /// @todo разобраться с кодировкой
+    /*QByteArray qb;
+    db_cnx db;
+    if (db.cdatab()->encoding()=="UTF8") {
+      qb = s.toUtf8();
+    }
+    else {
+      qb = s.toLocal8Bit();
+    }*/
+    return s;
+}
+
+QString service_f::GetNameDb(const char* conninfo)
+{
+  QString str = conninfo;
+  QStringList list = str.split(QChar(' '));
+  list = list.first().split(QChar('='));
+  QString db_name = list[1];
+  db_name.append(".db");
+  return db_name;
 }
 

@@ -62,6 +62,29 @@ usage(const char* progname)
   exit(1);
 }
 
+QString service_f::toCodingDb(const QString &s)
+{
+    /// @todo разобраться с кодировкой
+    /*QByteArray qb;
+    db_cnx db;
+    if (db.cdatab()->encoding()=="UTF8") {
+      qb = s.toUtf8();
+    }
+    else {
+      qb = s.toLocal8Bit();
+    }*/
+    return s;
+}
+
+GetDbName(const char* conninfo)
+{
+  QString str = conninfo;
+  QStringList list = str.split(QChar(' '));
+  list = list.first().split(QChar('='));
+  QString db_name = list[1];
+  db_name.append(".db");
+}
+
 int main()
 {
     printf("RELEASE!\n");
