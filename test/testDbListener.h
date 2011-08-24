@@ -24,7 +24,7 @@ public slots:
 class test_db_listener :public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(test_db_listener);
-    CPPUNIT_TEST(addListener);
+    //CPPUNIT_TEST(addListener);
     CPPUNIT_TEST_SUITE_END();
 public:
     void addListener()
