@@ -22,9 +22,9 @@
 
 class db_listener;
 
-#include "database.h"
-#include <QString>
 #include <QObject>
+#include <QString>
+#include "database.h"
 
 class QSocketNotifier;
 

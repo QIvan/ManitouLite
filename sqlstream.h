@@ -20,12 +20,14 @@
 #ifndef INC_SQLSTREAM_H
 #define INC_SQLSTREAM_H
 
-#include <libpq-fe.h>
-#include <libpq/libpq-fs.h>
 #include <vector>
 #include <qstring.h>
 #include "sqlquery.h"
 #include "db.h"
+#include <libpq-fe.h>
+#include <libpq/libpq-fs.h>
+
+
 
 /// sql_bind_param class. To be used for sql_stream internal purposes
 class sql_bind_param

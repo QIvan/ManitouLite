@@ -26,7 +26,6 @@
 #include <list>
 
 class db_cnx;
-class db_excpt;
 class db_listener;
 
 /*

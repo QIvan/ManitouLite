@@ -17,12 +17,14 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include "db.h"
-#include "db_listener.h"
-#include "sqlstream.h"
-#include "main.h"
-
+#include <libpq-fe.h>
+#include <libpq/libpq-fs.h>
 #include <QSocketNotifier>
+#include "db.h"
+#include "main.h"
+#include "pgConnection.h"
+#include "sqlstream.h"
+#include "db_listener.h"
 
 db_listener::db_listener(db_cnx& db, const QString notif_name)
 {

@@ -11,12 +11,14 @@
 #include "main.h"
 #include "RegistryTest.h"
 
-
-
 std::string TestNames::db_api() { return "DB_API";}
 
+#ifdef WITH_PGSQL
+CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
+#else
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::connect());
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::disconnect());
+#endif
 
 
 int main(int argn, char** args)
@@ -62,6 +64,35 @@ int main(int argn, char** args)
     // Return error code 1 if the one of test failed.
     return wasSucessful ? 0 : 1;*/
 }
+int global_debug_level;
+
+void
+debug_printf(int level, const char* file, int line, const char *fmt, ...)
+{
+  if (level<=global_debug_level) {
+    fprintf(stderr, "%s, line %d: ", file, line);
+    va_list ap;
+    va_start(ap,fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
+    fprintf(stderr, "\n");
+    fflush(stderr);
+  }
+
+}
+
+void
+err_printf(const char* file, int line, const char *fmt, ...)
+{
+  fprintf(stderr, "%s, line %d: ERR: ", file, line);
+  va_list ap;
+  va_start(ap,fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
+  fprintf(stderr, "\n");
+  fflush(stderr);
+}
+
 
 QString service_f::toCodingDb(const QString &s)
 {

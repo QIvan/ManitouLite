@@ -15,8 +15,8 @@ public:
   void logoff();
   bool reconnect();
   bool ping();
-  sqlite3 * connection() {
-    return m_pSQLiteObj;
+  PGconn * connection() {
+    return NULL;
   }
 
 private:

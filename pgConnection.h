@@ -4,10 +4,11 @@
 #include <libpq-fe.h>
 #include <libpq/libpq-fs.h>
 
+
 class pgConnection : public database
 {
 public:
-  pgConnection(): m_pgConn(NULL) {}
+  pgConnection();
   virtual ~pgConnection() {
     logoff();
   }
@@ -15,9 +16,7 @@ public:
   void logoff();
   bool reconnect();
   bool ping();
-  PGconn* connection() {
-    return m_pgConn;
-  }
+  PGconn* connection();
 private:
   PGconn* m_pgConn;
 };

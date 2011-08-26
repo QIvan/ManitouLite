@@ -23,8 +23,11 @@
 #include <QVariant>
 #include <list>
 #include <tr1/memory>
+#ifdef WITH_PGSQL
 #include "pgConnection.h"
+#else
 #include "sqliteConnection.h"
+#endif
 
 
 class database;
@@ -41,10 +44,11 @@ protected:
 };
 
 /// Connection class
-#ifndef WITH_PGSQL
-class db_cnx_elt : public connection<pgConnection>
-    #else
-class db_cnx_elt : public connection<sqliteConnection>
+class db_cnx_elt :
+#ifdef WITH_PGSQL
+    public connection<pgConnection>
+  #else
+    public connection<sqliteConnection>
 #endif
 {
 public:

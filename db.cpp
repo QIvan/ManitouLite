@@ -29,6 +29,8 @@
 #include <sys/stat.h>
 #include <locale.h>
 #include <iostream>
+#include <libpq-fe.h>
+#include <libpq/libpq-fs.h>
 
 #include <QByteArray>
 #include <QMessageBox>

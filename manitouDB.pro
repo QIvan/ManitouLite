@@ -20,7 +20,6 @@ CONFIG(debug, debug|release) {
     LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
-    HEADERS += main.h
     SOURCES += main.cpp
  }
 
@@ -35,6 +34,7 @@ SOURCES +=  \
     sqliteConnection.cpp
 
 HEADERS += \
+    main.h \
     date.h \
     db.h \
     db_listener.h \

@@ -3,6 +3,9 @@
 #include "db_listener.h"
 
 
+pgConnection::pgConnection(): m_pgConn(NULL)
+{}
+
 int
 pgConnection::logon(const char* conninfo)
 {
@@ -76,4 +79,9 @@ pgConnection::ping()
   }
   else
     return false;
+}
+
+PGconn*
+pgConnection::connection() {
+  return m_pgConn;
 }
