@@ -17,11 +17,10 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include "sqlquery.h"
-#include "main.h"
-#include "db.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "main.h"
+#include "sqlquery.h"
 
 #ifdef WITH_PGSQL
 #include <libpq-fe.h>
@@ -159,10 +158,10 @@ sql_query::subquery(const QString select_list)
   // no m_end
   return s;
 }
-
-sql_write_fields::sql_write_fields(const db_cnx& db) : m_fields_nb(0)
+// просто передай как параметр db_cnx::cdatab()->encoding()
+sql_write_fields::sql_write_fields(const QString encoding) : m_fields_nb(0)
 {
-  m_utf8 = (db.cdatab()->encoding()=="UTF8");
+  m_utf8 = (encoding=="UTF8");
 }
 
 void

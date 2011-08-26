@@ -13,7 +13,7 @@ void test_sql_write_fields::insert()
     try{
         sql_stream reset_id("ALTER SEQUENCE sequence_id RESTART",*m_DB);
         //первый запрос
-        sql_write_fields fiedls(*m_DB);
+        sql_write_fields fiedls(m_DB->cdatab()->encoding());
         assertNumerateString (0);
         int next_id;
         CPPUNIT_ASSERT(m_DB->next_seq_val("sequence_id", &next_id));
@@ -33,7 +33,7 @@ void test_sql_write_fields::insert()
 
         //второй запрос
         db_cnx db(true);
-        sql_write_fields fiedls2(db);
+        sql_write_fields fiedls2(db.cdatab()->encoding());
         fiedls2.add_if_not_empty("test_text", "Insert Text 2", 9);//Insert Te
         fiedls2.add("test_char200", "Insert Text 2");
         fiedls2.add_no_quote("test_date", "now()");
@@ -83,7 +83,7 @@ void test_sql_write_fields::insert()
 
 void test_sql_write_fields::insert_throw()
 {
-    sql_write_fields fiedls(*m_DB);
+    sql_write_fields fiedls(m_DB->cdatab()->encoding());
     assertNumerateString (0);
     fiedls.add("test_id", 1);
     fiedls.add_if_not_zero("test_int_not_null", 0);

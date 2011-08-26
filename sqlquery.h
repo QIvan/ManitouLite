@@ -22,7 +22,6 @@
 
 #include <QString>
 #include <set>
-#include "db.h"
 
 class sql_null
 {
@@ -71,7 +70,7 @@ private:
 class sql_write_fields
 {
 public:
-  sql_write_fields(const db_cnx& db);
+  sql_write_fields(const QString encoding);
   ~sql_write_fields() {}
   void add(const char* field, int value);
   void add(const char* field, const QString value, int maxlength=0);

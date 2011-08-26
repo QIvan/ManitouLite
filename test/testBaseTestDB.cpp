@@ -18,7 +18,7 @@ void testBaseTestDB::tearDown()
 
 void testBaseTestDB::InsertString_(int last_field, QString tableName)
 {
-    sql_write_fields fiedls(*m_DB);
+    sql_write_fields fiedls(m_DB->cdatab()->encoding());
     fiedls.add("test_text", "Test Text");
     fiedls.add("test_char200", "Test Text");
     fiedls.add_no_quote("test_date", "now()");
