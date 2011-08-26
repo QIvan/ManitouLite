@@ -807,7 +807,7 @@ mail_msg::store()
       s >> m_nMailId;
       build_message_id();
     }
-    sql_write_fields fields(db);
+    sql_write_fields fields(db.cdatab()->encoding());
     fields.add("mail_id", (int)GetId());
     fields.add("sender", m_cHeader.m_sender, 200);
     fields.add("sender_fullname", m_cHeader.m_sender_fullname, 200);

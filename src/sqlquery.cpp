@@ -160,9 +160,9 @@ sql_query::subquery(const QString select_list)
   return s;
 }
 
-sql_write_fields::sql_write_fields(const db_cnx& db) : m_fields_nb(0)
+sql_write_fields::sql_write_fields(const QString encoding) : m_fields_nb(0)
 {
-  m_utf8 = (db.cdatab()->encoding()=="UTF8");
+  m_utf8 = (encoding=="UTF8");
 }
 
 void
