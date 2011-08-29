@@ -17,43 +17,21 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include "main.h"
-
-#include "db.h"
-#include <stdio.h>
-
 #ifdef _WINDOWS
 #include <windows.h>
 #endif
-
-#include <sys/stat.h>
-#include <locale.h>
-#include <iostream>
+#include <QMessageBox>
 #include <libpq-fe.h>
 #include <libpq/libpq-fs.h>
+#include <stdio.h>
 
-#include <QByteArray>
-#include <QMessageBox>
-#include <QRegExp>
-#include <QStringList>
-#include <QTextCodec>
-
-#include "database.h"
-#include "db_listener.h"
 #include "creatorConnection.h"
+#include "db.h"
+#include "main.h"
+#include "connection.h"
 #include "sqlstream.h"
-#include "sqlquery.h"
 
 
-
-void DBEXCPT(db_excpt& p)
-{
-  //  std::cerr << p.query() << ":" << p.errmsg() << std::endl;
-  QString err=p.query();
-  err+=":\n";
-  err+=p.errmsg();
-  QMessageBox::warning(NULL, QObject::tr("Database error"), err);
-}
 
 int
 ConnectDb(const char* cnx_string, QString* errstr)
@@ -67,70 +45,6 @@ DisconnectDb()
   // close primary connection
   creatorConnection::DisconnectDb();
 }
-
-//============================== database =======================================//
-database::database() : m_open_trans_count(0)
-{
-}
-
-database::~database()
-{
-}
-
-void database::begin_transaction()
-{
-  m_open_trans_count++;
-}
-
-void database::commit_transaction()
-{
-}
-
-void database::rollback_transaction()
-{
-}
-
-int database::open_transactions_count() const
-{
-  return m_open_trans_count;
-}
-
-void
-database::add_listener(db_listener* listener)
-{
-  m_listeners.append(listener);
-}
-
-void
-database::end_transaction()
-{
-  m_open_trans_count--;
-  DBG_PRINTF(4, "new m_open_trans_count=%d", m_open_trans_count);
-  if (m_open_trans_count<0) {
-    fprintf(stderr, "Fatal error: m_open_trans_count<0\n");
-    exit(1);
-  }
-}
-
-// fetch the current date and time in DD/MM/YYYY HH:MI:SS format
-//static
-bool
-database::fetchServerDate(QString& date)
-{
-  bool result=true;
-  try {
-  db_cnx db;
-  sql_stream query("SELECT to_char(now(),\'DD/MM/YYYY HH24::MI::SS\')", db);
-  query >> date;
-  }
-  catch (db_excpt e) {
-    DBEXCPT(e);
-    result=false;
-  }
-  return result;
-}
-//_______________________________database____________________________________________//
-
 
 
 //=============================== db_cnx ============================================//
@@ -161,6 +75,19 @@ db_cnx::~db_cnx()
       m_cnx->m_db->logoff();
       m_cnx->m_connected = false;
     }
+}
+
+db_cnx_elt*
+db_cnx::connection() {
+  return m_cnx;
+}
+database*
+db_cnx::datab() {
+  return m_cnx->m_db.get();
+}
+const database*
+db_cnx::cdatab() const {
+  return m_cnx->m_db.get();
 }
 
 int
@@ -202,7 +129,7 @@ db_cnx::lo_close(int fd)
 void
 db_cnx::cancelRequest()
 {
-    PQrequestCancel(this->connection()->m_db->connection());
+  this->connection()->m_db->cancelRequest();
 }
 
 bool
@@ -265,6 +192,11 @@ db_cnx::rollback_transaction()
 }
 
 void
+db_cnx::end_transaction() {
+  m_cnx->m_db->end_transaction();
+}
+
+void
 db_cnx::handle_exception(db_excpt& e)
 {
   if (m_alerts_enabled) {
@@ -298,25 +230,6 @@ db_cnx::dbname()
 }
 //___________________________________db_cnx______________________________________//
 
-//================================== db_excpt ====================================//
-db_excpt::db_excpt(const QString query,
-			 const QString msg,
-			 QString code/*=QString::null*/)
-{
-  m_query=query;
-  m_err_msg=msg;
-  m_err_code=code;
-  DBG_PRINTF(3, "db_excpt: query='%s', err='%s'", m_query.toLocal8Bit().constData(), m_err_msg.toLocal8Bit().constData());
-}
-
-db_excpt::db_excpt(const QString query, db_cnx& d)
-{
-  m_query=query;
-  char* pg_msg = PQerrorMessage(d.connection()->m_db->connection());
-  if (pg_msg!=NULL)
-    m_err_msg = QString::fromUtf8(pg_msg);
-}
-//___________________________________db_excpt______________________________________//
 
 
 db_transaction::db_transaction(db_cnx& db): m_commit_done(false)

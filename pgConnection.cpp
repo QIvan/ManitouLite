@@ -1,6 +1,7 @@
 #include "pgConnection.h"
 #include "main.h"
 #include "db_listener.h"
+#include "sqlstream.h"
 
 
 pgConnection::pgConnection(): m_pgConn(NULL)
@@ -79,6 +80,12 @@ pgConnection::ping()
   }
   else
     return false;
+}
+
+void
+pgConnection::cancelRequest()
+{
+  PQrequestCancel(m_pgConn);
 }
 
 PGconn*

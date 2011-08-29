@@ -16,7 +16,7 @@ INCLUDEPATH = /usr/include/ , /usr/include/c++/4.4.4/
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
-    DEFINES  = WITH_PGSQL=1
+    #DEFINES  = WITH_PGSQL=1
     LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
@@ -27,6 +27,7 @@ SOURCES +=  \
     date.cpp \
     db.cpp \
     db_listener.cpp \
+    database.cpp \
     sqlstream.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
@@ -45,4 +46,5 @@ HEADERS += \
     database.h \
     creatorConnection.h \
     pgConnection.h \
-    sqliteConnection.h
+    sqliteConnection.h \
+    connection.h

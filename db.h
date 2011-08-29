@@ -22,65 +22,24 @@
 #include <QString>
 #include <QVariant>
 #include <list>
-#include <tr1/memory>
-#ifdef WITH_PGSQL
-#include "pgConnection.h"
-#else
-#include "sqliteConnection.h"
-#endif
+//#include "sqlstream.h"
+//#include "database.h"
 
-
+class db_cnx_elt;
+class db_excpt;
 class database;
 
 int ConnectDb(const char*, QString*);
 void DisconnectDb();
-
-template <class T>
-class connection
-{
-protected:
-  typedef T typeDB;
-  virtual ~connection(){}
-};
-
-/// Connection class
-class db_cnx_elt :
-#ifdef WITH_PGSQL
-    public connection<pgConnection>
-  #else
-    public connection<sqliteConnection>
-#endif
-{
-public:
-  db_cnx_elt() :
-    m_db(new typeDB),
-    m_available(true),
-    m_connected(false)
-  {  }
-  virtual ~db_cnx_elt() {
-    m_available=false;
-    m_connected=false;
-  }
-  std::tr1::shared_ptr<typeDB> m_db;
-  bool m_available;
-  bool m_connected;
-};
-
 
 class db_cnx
 {
 public:
   db_cnx(bool other_thread=false);
   virtual ~db_cnx();
-  db_cnx_elt* connection() {
-    return m_cnx;
-  }
-  database* datab() {
-    return m_cnx->m_db.get();
-  }
-  const database* cdatab() const {
-    return m_cnx->m_db.get();
-  }
+  db_cnx_elt* connection();
+  database* datab();
+  const database* cdatab() const;
   int lo_creat(int mode);
   int lo_open(uint lobjId, int mode);
   int lo_read(int fd, char *buf, size_t len);
@@ -94,9 +53,7 @@ public:
   void begin_transaction();
   void commit_transaction();
   void rollback_transaction();
-  void end_transaction() {
-    m_cnx->m_db->end_transaction();
-  }
+  void end_transaction();
   //void enable_user_alerts(bool); // return previous state
   bool ping();
   void handle_exception(db_excpt& e);

@@ -59,3 +59,9 @@ sqliteConnection::ping()
   else
     return true;
 }
+
+void
+sqliteConnection::cancelRequest()
+{
+
+}

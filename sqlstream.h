@@ -20,13 +20,36 @@
 #ifndef INC_SQLSTREAM_H
 #define INC_SQLSTREAM_H
 
-#include <vector>
-#include <qstring.h>
-#include "sqlquery.h"
-#include "db.h"
 #include <libpq-fe.h>
 #include <libpq/libpq-fs.h>
+#include <vector>
+#include <qstring.h>
+#include "database.h"
+#include "sqlquery.h"
 
+class db_cnx;
+
+/// sql Exception class
+class db_excpt
+{
+public:
+  db_excpt() {}
+  db_excpt(const QString query, db_cnx& d);
+  db_excpt(const QString query, const QString msg, QString code=QString::null);
+  virtual ~db_excpt() {}
+  QString query() const { return m_query; }
+  QString errmsg() const { return m_err_msg; }
+  QString errcode() const { return m_err_code; }
+  bool unique_constraint_violation() const {
+    return m_err_code=="23505";
+  }
+private:
+  QString m_query;
+  QString m_err_msg;
+  QString m_err_code;
+};
+
+void DBEXCPT(db_excpt& p);	// db.cpp
 
 
 /// sql_bind_param class. To be used for sql_stream internal purposes

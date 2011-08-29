@@ -15,6 +15,7 @@ public:
   void logoff();
   bool reconnect();
   bool ping();
+  void cancelRequest();
   PGconn * connection() {
     return NULL;
   }

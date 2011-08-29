@@ -48,6 +48,7 @@ public:
   virtual void logoff()=0;
   virtual bool reconnect()=0;
   virtual bool ping()=0;
+  virtual void cancelRequest() = 0;
   void end_transaction();
   int open_transactions_count() const;
   const QString& encoding() const {
@@ -78,28 +79,7 @@ private:
 };
 
 
-/// sql Exception class
-class db_excpt
-{
-public:
-  db_excpt() {}
-  db_excpt(const QString query, db_cnx& d);
-  // defined in db.cpp
-  db_excpt(const QString query, const QString msg, QString code=QString::null);
-  virtual ~db_excpt() {}
-  QString query() const { return m_query; }
-  QString errmsg() const { return m_err_msg; }
-  QString errcode() const { return m_err_code; }
-  bool unique_constraint_violation() const {
-    return m_err_code=="23505";
-  }
-private:
-  QString m_query;
-  QString m_err_msg;
-  QString m_err_code;
-};
 
-void DBEXCPT(db_excpt& p);	// db.cpp
 
 
 
