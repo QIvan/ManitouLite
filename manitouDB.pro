@@ -4,19 +4,19 @@
 #
 #-------------------------------------------------
 
-QT       += core, gui, network, sql
+#QT       += core, gui, network, sql
+QT += network
 
 TARGET = manitouPortotype
 
 LIBS += -L/usr/lib64/ -lpq
 LIBS += -L/usr/ -lsqlite3
-INCLUDEPATH = /usr/include/ , /usr/include/c++/4.4.4/
-
+INCLUDEPATH += /usr/include/ , /usr/include/c++/4.4.4/
 
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
-    #DEFINES  = WITH_PGSQL=1
+    DEFINES  = WITH_PGSQL=1
     LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
@@ -28,11 +28,12 @@ SOURCES +=  \
     db.cpp \
     db_listener.cpp \
     database.cpp \
-    sqlstream.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
     pgConnection.cpp \
-    sqliteConnection.cpp
+    sqliteConnection.cpp \
+    PostgreSQL/psql_stream.cpp \
+    #SQLite/sqlite_stream.cpp
 
 HEADERS += \
     main.h \
@@ -47,4 +48,6 @@ HEADERS += \
     creatorConnection.h \
     pgConnection.h \
     sqliteConnection.h \
-    connection.h
+    connection.h \
+    PostgreSQL/psql_stream.h \
+    #SQLite/sqlite_stream.h

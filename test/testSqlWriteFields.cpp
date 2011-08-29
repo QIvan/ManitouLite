@@ -5,6 +5,7 @@
 #include "date.h"
 #include "sqlstream.h"
 
+
 std::string TestNames::sql_wirte_fields() { return "sql_wirte_fields"; }
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_sql_write_fields, TestNames::sql_wirte_fields());
 

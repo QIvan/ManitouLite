@@ -24,12 +24,13 @@
 #include <libpq-fe.h>
 #include <libpq/libpq-fs.h>
 #include <stdio.h>
-
+#include "sqlstream.h"
 #include "creatorConnection.h"
 #include "db.h"
 #include "main.h"
 #include "connection.h"
-#include "sqlstream.h"
+
+//#include "PostgreSQL/psql_stream.h"
 
 
 

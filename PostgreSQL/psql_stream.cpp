@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2008 Daniel Vérité
+/* Copyright (C) 2004-2008 Daniel VÐ¹ritÐ¹
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -23,12 +23,10 @@
 #include <stdlib.h>
 #include <QMessageBox>
 
-#include "main.h"
-#include "sqlstream.h"
-#include "connection.h"
-#include "database.h"
 #include "db.h"
-
+#include "connection.h"
+#include "main.h"
+#include "PostgreSQL/psql_stream.h"
 
 //================================== db_excpt ====================================//
 db_excpt::db_excpt(const QString query,
@@ -515,4 +513,5 @@ sql_stream::operator>>(QString& s)
   next_result();
   return *this;
 }
+
 

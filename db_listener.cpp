@@ -25,6 +25,9 @@
 #include "pgConnection.h"
 #include "sqlstream.h"
 #include "db_listener.h"
+//#include "PostgreSQL/psql_stream.h"
+
+
 
 db_listener::db_listener(db_cnx& db, const QString notif_name)
 {

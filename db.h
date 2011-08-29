@@ -22,8 +22,6 @@
 #include <QString>
 #include <QVariant>
 #include <list>
-//#include "sqlstream.h"
-//#include "database.h"
 
 class db_cnx_elt;
 class db_excpt;
