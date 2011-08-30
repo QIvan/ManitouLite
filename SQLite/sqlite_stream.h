@@ -20,14 +20,11 @@
 #ifndef INC_SQLITE_SQLSTREAM_H
 #define INC_SQLITE_SQLSTREAM_H
 
-#include <libpq-fe.h>
-#include <libpq/libpq-fs.h>
-#include <vector>
-#include <qstring.h>
-#include "database.h"
-#include "sqlquery.h"
 
-namespace sqlite {
+#include <libpq-fe.h>
+#include <vector>
+#include <QString>
+#include "dbtypes.h"
 
 class db_cnx;
 
@@ -155,6 +152,5 @@ private:
   int m_affected_rows;
 };
 
-}
 
 #endif // INC_SQLSTREAM_H

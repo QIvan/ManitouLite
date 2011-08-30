@@ -22,15 +22,7 @@
 
 #include <QString>
 #include <set>
-
-class sql_null
-{
- public:
-  sql_null() {}
-  ~sql_null() {}
-private:
-  int m_placeholder;		/* avoid a MSVC++ bug with empty classes */
-};
+#include "dbtypes.h"
 
 class sql_query 
 {

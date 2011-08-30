@@ -513,5 +513,3 @@ sql_stream::operator>>(QString& s)
   next_result();
   return *this;
 }
-
-

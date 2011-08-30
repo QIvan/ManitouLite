@@ -21,6 +21,8 @@
 #define INC_SQLSTREAM_H
 
 #include "sqlquery.h"
+#include "database.h"
+#include "db.h"
 #ifdef WITH_PGSQL
   #include "PostgreSQL/psql_stream.h"
 #else

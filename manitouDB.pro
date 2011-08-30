@@ -32,8 +32,8 @@ SOURCES +=  \
     creatorConnection.cpp \
     pgConnection.cpp \
     sqliteConnection.cpp \
-    PostgreSQL/psql_stream.cpp \
-    #SQLite/sqlite_stream.cpp
+    #PostgreSQL/psql_stream.cpp \
+    SQLite/sqlite_stream.cpp
 
 HEADERS += \
     main.h \
@@ -49,5 +49,5 @@ HEADERS += \
     pgConnection.h \
     sqliteConnection.h \
     connection.h \
-    PostgreSQL/psql_stream.h \
-    #SQLite/sqlite_stream.h
+    #PostgreSQL/psql_stream.h \
+    SQLite/sqlite_stream.h

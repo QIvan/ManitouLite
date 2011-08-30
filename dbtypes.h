@@ -22,4 +22,13 @@
 
 typedef unsigned int mail_id_t;
 
+class sql_null
+{
+ public:
+  sql_null() {}
+  ~sql_null() {}
+private:
+  int m_placeholder;		/* avoid a MSVC++ bug with empty classes */
+};
+
 #endif // INC_DB_TYPES_H

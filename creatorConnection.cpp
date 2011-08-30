@@ -1,10 +1,10 @@
 #include <QDebug>
 #include <iostream>
 #include <stdexcept>
+#include "connection.h"
 #include "creatorConnection.h"
 #include "main.h"
 #include "sqlstream.h"
-#include "connection.h"
 
 creatorConnection* creatorConnection::m_impl = NULL;
 db_cnx_elt creatorConnection::m_main_cnx;

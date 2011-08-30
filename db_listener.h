@@ -20,13 +20,12 @@
 #ifndef INC_DB_LISTENER_H
 #define INC_DB_LISTENER_H
 
-class db_listener;
-
 #include <QObject>
 #include <QString>
-#include "database.h"
 
 class QSocketNotifier;
+class database;
+class db_cnx;
 
 /*
 A listener class for database events sent by NOTIFY.

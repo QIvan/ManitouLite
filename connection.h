@@ -1,5 +1,6 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
+
 #include <tr1/memory>
 #ifdef WITH_PGSQL
 #include "pgConnection.h"

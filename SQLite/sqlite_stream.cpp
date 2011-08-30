@@ -1,36 +1,13 @@
-/* Copyright (C) 2004-2008 Daniel Vйritй
-
-   This file is part of Manitou-Mail (see http://www.manitou-mail.org)
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License version 2 as
-   published by the Free Software Foundation.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330,
-   Boston, MA 02111-1307, USA.
-*/
-
 #include <string>
 #include <iostream>
 #include <ctype.h>
 #include <stdlib.h>
 #include <QMessageBox>
 
-#include "main.h"
-#include "sqlstream.h"
-#include "connection.h"
-#include "database.h"
 #include "db.h"
-
-namespace sqlite {
-
+#include "connection.h"
+#include "main.h"
+#include "PostgreSQL/psql_stream.h"
 
 //================================== db_excpt ====================================//
 db_excpt::db_excpt(const QString query,
@@ -103,22 +80,22 @@ sql_stream::init (const char *query)
       q++;
       const char* start_var=q;
       while ((*q>='A' && *q<='Z') || (*q>='a' && *q<='z') ||
-	     (*q>='0' && *q<='9') || *q=='_')
-	{
-	  q++;
-	}
+       (*q>='0' && *q<='9') || *q=='_')
+  {
+    q++;
+  }
       if (q-start_var>0) {
-	// if the ':' was actually followed by a parameter name
-	sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
-	m_vars.push_back(p);
+  // if the ':' was actually followed by a parameter name
+  sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
+  m_vars.push_back(p);
       }
       else {
-	/* '::' is a special case because we don't want the parser to
-	   find the second colon at the start of the loop. Otherwise
-	   '::int' will be understood as a colon followed by the
-	   parameter ':int'. So in this case, we skip the second colon */
-	if (*q==':')
-	  q++;
+  /* '::' is a special case because we don't want the parser to
+     find the second colon at the start of the loop. Otherwise
+     '::int' will be understood as a colon followed by the
+     parameter ':int'. So in this case, we skip the second colon */
+  if (*q==':')
+    q++;
       }
     }
     else
@@ -194,8 +171,8 @@ sql_stream::replace_placeholder(int argPos, const char* buf, int size)
   int placeholder_len=p.name().size()+1; // +1 for the leading ':'
   // shift the substring at the right of the placeholder
   memmove(m_queryBuf+p.pos()+size,
-	  m_queryBuf+p.pos()+placeholder_len,
-	  m_queryLen-(p.pos()+placeholder_len));
+    m_queryBuf+p.pos()+placeholder_len,
+    m_queryLen-(p.pos()+placeholder_len));
   // insert the value where the placeholder was
   memcpy(m_queryBuf+p.pos(), buf, size);
   m_queryLen+=(size-placeholder_len);
@@ -398,7 +375,7 @@ sql_stream::execute()
   if ((returns_rows && PQresultStatus(m_pgRes)!=PGRES_TUPLES_OK)
       || (!returns_rows && PQresultStatus(m_pgRes)!=PGRES_COMMAND_OK)) {
     throw db_excpt(m_queryBuf, PQresultErrorMessage(m_pgRes),
-		   QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
+       QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
   }
   const char* t=PQcmdTuples(m_pgRes);
   if (t && *t) {
@@ -468,7 +445,7 @@ sql_stream::operator>>(unsigned int& i)
 {
   check_eof();
   unsigned long ul=strtoul(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber),
-			   NULL, 10);
+         NULL, 10);
   m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
   if (!m_val_null)
     i=(unsigned int)ul;
@@ -516,6 +493,4 @@ sql_stream::operator>>(QString& s)
   m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
   next_result();
   return *this;
-}
-
 }

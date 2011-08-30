@@ -3,6 +3,7 @@
 #include "RegistryTest.h"
 #include "db.h"
 #include "date.h"
+#include "database.h"
 #include "sqlstream.h"
 
 
