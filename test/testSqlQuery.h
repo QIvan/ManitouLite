@@ -3,9 +3,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "testBaseTestDB.h"
-#include "sqlquery.h"
 
-
+class sql_query;
 
 class test_sqlquery : public testBaseTestDB
 {

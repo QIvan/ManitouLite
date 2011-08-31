@@ -12,7 +12,18 @@ namespace TestNames
     std::string transaction();
     std::string max_db_cnx();
     std::string sql_query();
+    std::string sql_stream();
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -27,6 +38,7 @@ namespace TestNames
 CPPUNIT_REGISTRY_ADD(TestNames::connect(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::max_db_cnx(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD (TestNames::sql_query(), TestNames::db_api());
+CPPUNIT_REGISTRY_ADD (TestNames::sql_stream(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::sql_wirte_fields(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::listener(), TestNames::db_api());
 CPPUNIT_REGISTRY_ADD(TestNames::transaction(), TestNames::db_api());

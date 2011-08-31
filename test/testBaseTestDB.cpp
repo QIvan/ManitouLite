@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "testBaseTestDB.h"
 #include "sqlstream.h"
 #include "db.h"
@@ -8,12 +9,30 @@ testBaseTestDB::testBaseTestDB(): m_DB(new db_cnx)
 
 void testBaseTestDB::setUp()
 {
-    sql_stream query("DELETE FROM test_table", *m_DB);
+    try{
+        sql_stream query("DELETE FROM test_table", *m_DB);
+    }
+    catch(db_excpt e)
+    {
+      qDebug() << e.errcode();
+      qDebug() << e.query();
+      qDebug() << e.errmsg();
+      throw  e;
+    }
 }
 
 void testBaseTestDB::tearDown()
 {
-    sql_stream query("DELETE FROM test_table", *m_DB);
+    try{
+      sql_stream query("DELETE FROM test_table", *m_DB);
+    }
+    catch(db_excpt e)
+    {
+      qDebug() << e.errcode();
+      qDebug() << e.query();
+      qDebug() << e.errmsg();
+      throw  e;
+    }
 }
 
 void testBaseTestDB::InsertString_(int last_field, QString tableName)
@@ -21,7 +40,7 @@ void testBaseTestDB::InsertString_(int last_field, QString tableName)
     sql_write_fields fiedls(m_DB->cdatab()->encoding());
     fiedls.add("test_text", "Test Text");
     fiedls.add("test_char200", "Test Text");
-    fiedls.add_no_quote("test_date", "now()");
+    fiedls.add_no_quote("test_date", "datetime('now')");
     fiedls.add("test_int_not_null", last_field);
     QString str =  QString("INSERT INTO %1(%2) VALUES(%3)")
             .arg(tableName)
