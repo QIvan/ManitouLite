@@ -1,3 +1,22 @@
+/* Copyright (C) 2004-2008 Daniel Vйritй
+
+   This file is part of Manitou-Mail (see http://www.manitou-mail.org)
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License version 2 as
+   published by the Free Software Foundation.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+*/
+
 #include <string>
 #include <iostream>
 #include <ctype.h>
@@ -7,7 +26,7 @@
 #include "db.h"
 #include "connection.h"
 #include "main.h"
-#include "PostgreSQL/psql_stream.h"
+#include "SQLite/sqlite_stream.h"
 
 //================================== db_excpt ====================================//
 db_excpt::db_excpt(const QString query,
@@ -23,7 +42,7 @@ db_excpt::db_excpt(const QString query,
 db_excpt::db_excpt(const QString query, db_cnx& d)
 {
   m_query=query;
-  char* pg_msg = PQerrorMessage(d.connection()->m_db->connection());
+  const char* pg_msg = sqlite3_errmsg(d.connection()->m_db->connection());
   if (pg_msg!=NULL)
     m_err_msg = QString::fromUtf8(pg_msg);
 }
@@ -38,15 +57,40 @@ void DBEXCPT(db_excpt& p)
 //___________________________________db_excpt______________________________________//
 
 
+//================================== sql_stream ====================================//
+//***************** Callback functions
+int
+sql_stream::callback (void* voidThis, int count, char** values, char** columnNames)
+{
+  sql_stream* This = static_cast<sql_stream*> (voidThis);
+  return This->callback(count, values, columnNames);
+}
+
+int
+sql_stream::callback(int count, char** values, char** columnNames)
+{
+  m_callback = true;
+  if (count == 0)
+    return SQLITE_ERROR;
+  Rec rec;
+  for (int i=0; i<count; ++i)
+  {
+    rec.insert(columnNames[i], values[i]);
+  }
+  m_resultData.append(rec);
+  return 0;
+}
+/////////////////////////////////////////
+
 sql_stream::sql_stream (const QString query, db_cnx& db) :
-  m_db(db)
+  m_db(db), m_callback(false)
 {
   QByteArray qba = query.toUtf8();
   init(qba.constData());
 }
 
 sql_stream::sql_stream (const char *query, db_cnx& db) :
-  m_db(db)
+  m_db(db), m_callback(false)
 {
   init(query);
 }
@@ -135,7 +179,7 @@ sql_stream::reset_results()
     m_pgRes=NULL;
   }
   strcpy(m_queryBuf, m_queryFmt.c_str());
-  for (unsigned int i=0; i<m_vars.size(); i++) {
+  for (int i=0; i<m_vars.size(); i++) {
     m_vars[i].resetOffset();
   }
   m_queryLen=m_initialQueryLen;
@@ -178,7 +222,7 @@ sql_stream::replace_placeholder(int argPos, const char* buf, int size)
   m_queryLen+=(size-placeholder_len);
   m_queryBuf[m_queryLen]='\0';
   // change the offsets of the remaining placeholders
-  for (unsigned int i=argPos+1; i<m_vars.size(); i++) {
+  for (int i=argPos+1; i<m_vars.size(); i++) {
     m_vars[i].offset(size-placeholder_len);
   }
 }
@@ -189,6 +233,8 @@ sql_stream::next_bind()
   if (++m_nArgPos>=(int)m_vars.size())
     execute();
 }
+
+
 
 sql_stream&
 sql_stream::operator<<(const char* p)
@@ -365,24 +411,14 @@ sql_stream::execute()
   if (m_nArgPos<(int)m_vars.size())
     throw db_excpt(m_queryBuf, "Not all variables bound");
 
-  int returns_rows=(strncasecmp(m_queryBuf,"SELECT",6)==0);
-
   DBG_PRINTF(5,"execute: %s", m_queryBuf);
 
-  m_pgRes=PQexec(m_db.connection()->m_db->connection(), m_queryBuf);
-  if (!m_pgRes)
-    throw db_excpt(m_queryBuf, PQerrorMessage(m_db.connection()->m_db->connection()));
-  if ((returns_rows && PQresultStatus(m_pgRes)!=PGRES_TUPLES_OK)
-      || (!returns_rows && PQresultStatus(m_pgRes)!=PGRES_COMMAND_OK)) {
-    throw db_excpt(m_queryBuf, PQresultErrorMessage(m_pgRes),
-       QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
-  }
-  const char* t=PQcmdTuples(m_pgRes);
-  if (t && *t) {
-    m_affected_rows=atoi(t);
-  }
-  else
-    m_affected_rows=0;
+  char* errmsg = 0;
+  int rc = sqlite3_exec(m_db.connection()->m_db->connection(), m_queryBuf,
+                        sql_stream::callback, static_cast<void*>(this), &errmsg);
+
+  if (rc != SQLITE_OK)
+    throw db_excpt(m_queryBuf, errmsg, QString::number(rc));
 
   m_rowNumber=0;
   m_colNumber=0;
@@ -494,3 +530,4 @@ sql_stream::operator>>(QString& s)
   next_result();
   return *this;
 }
+//___________________________________sql_stream______________________________________//

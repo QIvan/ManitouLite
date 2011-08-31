@@ -20,9 +20,10 @@
 #ifndef INC_SQLITE_SQLSTREAM_H
 #define INC_SQLITE_SQLSTREAM_H
 
-
 #include <libpq-fe.h>
-#include <vector>
+#include <QList>
+#include <QVector>
+#include <QMap>
 #include <QString>
 #include "dbtypes.h"
 
@@ -76,6 +77,7 @@ private:
   int m_initialOffsetInQuery;
 };
 
+
 /**
    sql_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
@@ -124,6 +126,9 @@ public:
     return m_affected_rows;
   }
 private:
+  static int callback(void* voidThis, int count, char** values, char** columnNames);
+  int callback(int count, char** values, char** columnNames);
+private:
   void init(const char* query);
   void check_binds();
   void reset_results();
@@ -142,7 +147,7 @@ private:
   char m_localQueryBuf[1024+1];
   std::string m_queryFmt;
   int m_chunk_size;
-  std::vector<sql_bind_param> m_vars;
+  QVector<sql_bind_param> m_vars;
   // results
   bool m_bExecuted;
   PGresult* m_pgRes;
@@ -150,7 +155,11 @@ private:
   int m_colNumber;		/* last column read from the stream */
   bool m_val_null;
   int m_affected_rows;
-};
 
+  typedef QMap<QString, QString> Rec;
+  typedef QList<Rec> DataList;
+  DataList m_resultData;
+  bool m_callback;
+};
 
 #endif // INC_SQLSTREAM_H

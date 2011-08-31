@@ -16,8 +16,8 @@ public:
   bool reconnect();
   bool ping();
   void cancelRequest();
-  PGconn * connection() {
-    return NULL;
+  sqlite3* connection() {
+    return m_pSQLiteObj;
   }
 
 private:

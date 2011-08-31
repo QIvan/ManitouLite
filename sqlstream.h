@@ -20,14 +20,14 @@
 #ifndef INC_SQLSTREAM_H
 #define INC_SQLSTREAM_H
 
-#include "sqlquery.h"
-#include "database.h"
-#include "db.h"
 #ifdef WITH_PGSQL
   #include "PostgreSQL/psql_stream.h"
 #else
-  //#include "SQLite/sqlite_stream.h"
+  #include "SQLite/sqlite_stream.h"
 #endif
+#include "sqlquery.h"
+#include "database.h"
+#include "db.h"
 
 
 #endif // INC_SQLSTREAM_H

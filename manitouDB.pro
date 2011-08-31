@@ -16,7 +16,7 @@ INCLUDEPATH += /usr/include/ , /usr/include/c++/4.4.4/
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
-    DEFINES  = WITH_PGSQL=1
+    #DEFINES  = WITH_PGSQL=1
     LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
