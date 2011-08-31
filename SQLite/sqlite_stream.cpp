@@ -115,11 +115,6 @@ sql_stream::init (const char *query)
 
   const char* q=query;
   while (*q) {
-//     if (*q=='\'') {
-//       q++;
-//       while (*q && *q!='\'') q++;
-//     }
-//     else
     if (*q==':') {
       q++;
       const char* start_var=q;
@@ -151,16 +146,6 @@ sql_stream::init (const char *query)
 
 sql_stream::~sql_stream()
 {
-#if 0
-  if (m_nArgPos<(int)m_vars.size()) {
-    QString q(m_queryBuf);
-    if (q.length()>40) { // cut the query to an reasonable size for debug output
-      q.truncate(37);
-      q.append("...");
-    }
-    DBG_PRINTF(2, "WRN: m_nArgPos=%d while m_vars.size()=%d for query '%s'", m_nArgPos, (int)m_vars.size(), q.toLocal8Bit().constData());
-  }
-#endif
   if (m_pgRes)
     PQclear(m_pgRes);
   if (m_queryBuf!=m_localQueryBuf)
@@ -447,21 +432,6 @@ sql_stream::check_eof()
   if (eof())
     throw db_excpt(m_queryBuf, "End of stream reached");
 }
-
-#if 0
-sql_stream&
-sql_stream::operator>>(Oid& i)
-{
-  check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (!m_val_null)
-    i=(Oid)strtoul(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber), NULL, 10);
-  else
-    i=0;
-  next_result();
-  return *this;
-}
-#endif
 
 sql_stream&
 sql_stream::operator>>(int& i)
