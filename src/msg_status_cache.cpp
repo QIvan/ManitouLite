@@ -109,7 +109,7 @@ msg_status_cache::db_new_mail_notif()
     mail_id_t mail_id;
     int status;
     int count=0;
-    while (!s.eos()) {
+    while (!s.eof()) {
       s >> mail_id >> status;
       count++;
       DBG_PRINTF(3, "Seen mail_id %d with status %d", mail_id, status);

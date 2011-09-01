@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2009 Daniel Vйritй
+/* Copyright (C) 2004-2009 Daniel Vrit
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -19,7 +19,7 @@
 
 #include "main.h"
 #include "addresses.h"
-//#include "db.h"  данный h-файл здесь нетребовался
+//#include "db.h"   h-  
 #include "sqlstream.h"
 
 //static
@@ -526,7 +526,7 @@ mail_address_list::fetchLike(const QString pattern,
   try {
     sql_stream s(query, db);
     s << percent_pattern;
-    while (!s.eos()) {
+    while (!s.eof()) {
       int id;
       QString email;
       int nb_from,nb_to;
@@ -556,7 +556,7 @@ mail_address_list::fetch_completions(const QString substring)
   try {
     sql_stream s(query, db);
     s << substring << substring;
-    while (!s.eos()) {
+    while (!s.eof()) {
       int id;
       QString email, name;
       s >> id >> email >> name;
@@ -586,7 +586,7 @@ mail_address_list::fetch_from_substring(const QString substring)
   try {
     sql_stream s(query, db);
     s << percent_pattern << percent_pattern;
-    while (!s.eos()) {
+    while (!s.eof()) {
       int id;
       QString email, name;
       QString date1, date2;
@@ -652,7 +652,7 @@ mail_address_list::fetch()
   try {
     sql_stream s(query, db);
     s << percent_pattern;
-    while (!s.eos()) {
+    while (!s.eof()) {
       int id;
       QString email;
       int nb_from,nb_to;
@@ -757,7 +757,7 @@ mail_address_list::fetch_recent(int type, int count/*=10*/, int offset/*=0*/)
   db_cnx db;
   try {
     sql_stream s(query, db);
-    while (!s.eos()) {
+    while (!s.eof()) {
       QString email;
       QString name;
       QString sdate;

@@ -42,7 +42,7 @@ user::current_user_id()
     db_cnx db;
     try {
       sql_stream s("SELECT user_id FROM users WHERE login=current_user", db);
-      if (!s.eos())
+      if (!s.eof())
 	s >> m_current_user_id;
       else
 	m_current_user_id=0;
@@ -68,7 +68,7 @@ user::create_if_missing(const QString fullname)
   db_cnx db;
   try {
     sql_stream s("SELECT user_id FROM users WHERE login=current_user", db);
-    if (s.eos()) {
+    if (s.eof()) {
       sql_stream si("INSERT INTO users(user_id,login,fullname) SELECT 1+coalesce(max(user_id),0), current_user, :p1 FROM users", db);
       if (!fullname.isEmpty())
 	si << fullname;
@@ -90,7 +90,7 @@ user::fetch(int user_id)
   try {
     sql_stream s("SELECT fullname,login,email,custom_field1,custom_field2,custom_field3 FROM users WHERE user_id=:p1", db);
     s << user_id;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> m_fullname >> m_login >> m_email >> m_custom_field1 >> m_custom_field2 >> m_custom_field3;
     }
   }
@@ -110,7 +110,7 @@ user::name(int user_id)
   try {
     sql_stream s("SELECT fullname FROM users WHERE user_id=:p1", db);
     s << user_id;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> name;
     }
   }
@@ -127,7 +127,7 @@ users_repository::fetch()
   db_cnx db;
   try {
     sql_stream s("SELECT user_id,fullname FROM users", db);
-    while (!s.eos()) {
+    while (!s.eof()) {
       int id;
       QString qname;
       s >> id >> qname;

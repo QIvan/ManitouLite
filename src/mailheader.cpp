@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2009 Daniel Vérité
+/* Copyright (C) 2004-2009 Daniel Vrit
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -180,7 +180,7 @@ mail_header::fetch()
   try {
     sql_stream s("SELECT lines FROM header WHERE mail_id=:p1", db);
     s << m_mail_id;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> m_lines;
     }
     else
@@ -459,7 +459,7 @@ mail_header::fetch_raw()
     sql_stream s("SELECT mail_text FROM raw_mail WHERE mail_id=:p1", db);
     s << m_mail_id;
     Oid lobjId;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> lobjId;
     }
     else

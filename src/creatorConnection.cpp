@@ -36,7 +36,7 @@ creatorConnection::ConnectDb(const char* connect_string, QString* errstr)
     db_cnx db;
     sql_stream s("SELECT current_database()", db);
     QString dbname = "";
-    if (!s.eos())
+    if (!s.eof())
       s >> dbname;
     m_impl = new creatorConnection(connect_string, dbname);
   }

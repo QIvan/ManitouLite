@@ -1,4 +1,4 @@
-/* Copyright (C) 2004-2007 Daniel Vérité
+/* Copyright (C) 2004-2007 Daniel Vrit
 
    This file is part of Manitou-Mail (see http://www.manitou-mail.org)
 
@@ -157,7 +157,7 @@ user_queries_repository::fetch()
     try {
       m_map.clear();
       sql_stream s("SELECT title,sql_stmt FROM user_queries", db);
-      while (!s.eos()) {
+      while (!s.eof()) {
 	QString ttl;
 	QString sql;
 	s >> ttl >> sql;

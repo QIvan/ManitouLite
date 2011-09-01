@@ -30,7 +30,7 @@ db_listener::db_listener(db_cnx& db, const QString notif_name)
   m_db = db.datab();
   sql_stream s1("SELECT quote_ident(:p1)", db);
   s1 << notif_name;
-  if (!s1.eos()) {
+  if (!s1.eof()) {
     s1 >> m_notif_name;
   }
   if (!m_notif_name.isEmpty()) {
@@ -99,7 +99,7 @@ db_listener::setup_notification()
 void
 db_listener::process_notification()
 {
-  /// @todo из-за этой функции приложение иногда виснет.
+  /// @todo -     .
   DBG_PRINTF(3, "process_notification()");
   /*pgConnection* cnx = dynamic_cast<pgConnection*>(m_db);
   PGconn* c = cnx->connection();

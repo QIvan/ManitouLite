@@ -81,7 +81,7 @@ expr_list::fetch()
     QString action_type, action_args, tmp;
     int expr_id;
     sql_stream s("SELECT fe.expr_id, fe.name, fe.expression, fe.direction, action_type,action_arg FROM filter_action fa RIGHT JOIN filter_expr fe ON fe.expr_id=fa.expr_id ORDER BY expr_id,action_order", db);
-    while (!s.eos()) {
+    while (!s.eof()) {
       s >> expr_id;
       if (!current || current->m_expr_id != expr_id) {
 	// new expr
@@ -132,7 +132,7 @@ expr_list::update_db()
       unsigned int db_expr_id=it->m_expr_id;
       if (!db_expr_id) {
 	if (!it->m_delete) {
-	  if (s_seq.eos())
+	  if (s_seq.eof())
 	    s_seq.execute();
 	  s_seq >> db_expr_id;
 	  s_ins << db_expr_id;

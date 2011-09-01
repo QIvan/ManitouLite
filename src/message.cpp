@@ -87,14 +87,14 @@ mail_msg::fetch_body_text(bool partial)
 	part="bodytext";
       sql_stream s(QString("SELECT %1 FROM body WHERE mail_id=:p1").arg(part), db);
       s << get_id();
-      if (!s.eos()) {
+      if (!s.eof()) {
 	s >> m_sBody;
 	m_body_fetched_length = m_sBody.length();
 	if (partial) {
 	  if (m_body_fetched_length==maxsz) {
 	    sql_stream s1("SELECT length(bodytext) FROM body WHERE mail_id=:p1", db);
 	    s1 << get_id();
-	    if (!s1.eos()) {
+	    if (!s1.eof()) {
 	      s1 >> m_body_length;
 	    }
 	    else {
@@ -374,7 +374,7 @@ mail_msg::mbox_id()
   try {
     sql_stream s("SELECT mbox_id FROM mail WHERE mail_id=:p1", db);
     s << get_id();
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> m_mbox_id;
     }
   }
@@ -756,7 +756,7 @@ mail_msg::fetch_status ()
   try {
     sql_stream s ("SELECT status,mod_user_id FROM mail WHERE mail_id=:p2", db);
     s << get_id();
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> m_db_status >> m_user_id_status;
       m_status = m_db_status;
       msg_status_cache::update(get_id(), m_status);
@@ -774,7 +774,7 @@ mail_msg::refresh()
   try {
     sql_stream s ("SELECT status,mod_user_id,thread_id,flags FROM mail WHERE mail_id=:p2", db);
     s << get_id();
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> m_db_status >> m_user_id_status >> m_thread_id >> m_flags;
       m_status = m_db_status;
       msg_status_cache::update(get_id(), m_status);
@@ -824,12 +824,12 @@ mail_msg::store()
 	 into the thread */
       sql_stream st ("SELECT coalesce(thread_id,0) FROM mail WHERE mail_id=:p1", db);
       st << m_nInReplyTo;
-      if (!st.eos()) {
+      if (!st.eof()) {
 	st >> m_thread_id;
 	if (!m_thread_id) {
 	  /* the message we're replying to has no thread: open one */
 	  sql_stream st1 ("SELECT nextval('seq_thread_id')", db);
-	  if (!st1.eos()) {
+	  if (!st1.eof()) {
 	    st1 >> m_thread_id;
 	    // and link the original message to that thread
 	    sql_stream sru ("UPDATE mail SET thread_id=:p1 WHERE mail_id=:p2", db);
@@ -892,7 +892,7 @@ mail_msg::store()
     DBEXCPT(p);
     result=false;
   }
-  /** @todo разобраться с этим catch
+  /** @todo    catch
   catch(int errcode) {
     DBG_PRINTF(2, "rollback caused by other reason (%d)", errcode);
     db.rollback_transaction();
@@ -1113,7 +1113,7 @@ mail_msg::setup_forward()
       db_cnx db;
       sql_stream s(QString("SELECT forward_to FROM forward_addresses fa, mail_addresses ma, addresses a WHERE ma.mail_id=:p1 AND ma.addr_type=%1 AND ma.addr_id=a.addr_id AND a.email_addr=fa.to_email_addr").arg(mail_address::addrTo), db);
       s << get_id();
-      if (!s.eos()) {
+      if (!s.eof()) {
 	s >> fwd_header.m_to;
       }
     }
@@ -1157,7 +1157,7 @@ mail_msg::fetch_body_html()
     try {
       sql_stream s("SELECT bodyhtml FROM body WHERE mail_id=:p1", db);
       s << get_id();
-      if (!s.eos()) {
+      if (!s.eof()) {
 	s >> m_body_html;
       }
       m_body_html_fetched = true;

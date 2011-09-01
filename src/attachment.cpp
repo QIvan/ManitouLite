@@ -283,7 +283,7 @@ attachment::get_contents()
       return NULL;
     sql_stream s("SELECT content FROM attachment_contents WHERE attachment_id=:p1", db);
     s << m_Id;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> lobjId;
     }
     else
@@ -336,7 +336,7 @@ attachment::streamout_content(std::ofstream& of)
     sql_stream s("SELECT content FROM attachment_contents WHERE attachment_id=:p1", db);
     s << m_Id;
     Oid lobjId;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> lobjId;
     }
     else
@@ -374,7 +374,7 @@ attachment::open_lo(struct lo_ctxt* slo)
     sql_stream s("SELECT content FROM attachment_contents WHERE attachment_id=:p1", *db);
     s << m_Id;
     Oid lobjId;
-    if (!s.eos()) {
+    if (!s.eof()) {
       s >> lobjId;
     }
     else {
@@ -534,7 +534,7 @@ attachment::fetch_filename_suffixes(QMap<QString,QString>& m)
     sql_stream s("SELECT suffix, mime_type FROM mime_types", db);
     QString suffix;
     QString mime_type;
-    while (!s.eos()) {
+    while (!s.eof()) {
       s >> suffix >> mime_type;
       m[suffix]=mime_type;
     }
@@ -571,7 +571,7 @@ attachment::import_file_content()
     if (!m_sha1_b64.isEmpty()) {
       sql_stream sfp("SELECT content FROM attachment_contents WHERE fingerprint=:p1", db);
       sfp << m_sha1_b64;
-      if (!sfp.eos()) {
+      if (!sfp.eof()) {
 	sfp >> lobjId;
       }
     }
@@ -634,7 +634,7 @@ attachments_list::fetch()
     db_cnx db;
     sql_stream s("SELECT attachment_id,content_type,content_size,filename,charset,mime_content_id FROM attachments WHERE mail_id=:p1 ORDER BY attachment_id", db);
     s << m_mailId;
-    while (!s.eos()) {
+    while (!s.eof()) {
       attachment attch;
       int id, size;
       QString filename, content_type, charset, mime_content_id;
@@ -703,7 +703,7 @@ attch_viewer_list::fetch(const QString& conf_name, bool force)
     db_cnx db;
     sql_stream s("SELECT program_name,content_type FROM programs WHERE conf_name=:p2 OR conf_name IS NULL", db);
     s << conf_name;
-    while (!s.eos()) {
+    while (!s.eof()) {
       attachment_viewer v;
       s >> v.m_program >> v.m_mime_type;
       push_back(v);

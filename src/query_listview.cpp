@@ -443,7 +443,7 @@ query_listview::fetch_tag_map()
     m_unprocessed_prioritized_count = 0;
     m_all_unprocessed_count = 0;
 
-    while (!s.eos()) {
+    while (!s.eof()) {
       s >> mail_id >> tag >> status >> pri;
 
       msg_status_cache::update(mail_id, status);
