@@ -76,7 +76,8 @@ int testBaseTestDB::CountString_(QString tableName)
 QString testBaseTestDB::AddSpace(const QString &str, int count)
 {
     QString result = str;
-    for (int i=0; i<count-str.size(); ++i)
-        result.append(' ');
+    count = 10;
+    /*for (int i=0; i<count-str.size(); ++i)
+        result.append(' ');*/
     return result;
 }

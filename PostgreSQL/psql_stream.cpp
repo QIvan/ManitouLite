@@ -70,41 +70,16 @@ sql_stream::sql_stream (const char *query, db_cnx& db) :
   init(query);
 }
 
-
-namespace fIinit {
-    QVector<sql_bind_param> find_param(const char* query)
-    {
-        QVector<sql_bind_param> result;
-        const char* q=query;
-        while (*q) {
-          if (*q==':') {
-            q++;
-            const char* start_var=q;
-            while ((*q>='A' && *q<='Z') || (*q>='a' && *q<='z') ||
-                   (*q>='0' && *q<='9') || *q=='_')
-              {
-                q++;
-              }
-            if (q-start_var>0) {
-              // if the ':' was actually followed by a parameter name
-              sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
-              result.push_back(p);
-            }
-            else {
-              /* '::' is a special case because we don't want the parser to
-                 find the second colon at the start of the loop. Otherwise
-                 '::int' will be understood as a colon followed by the
-                 parameter ':int'. So in this case, we skip the second colon */
-              if (*q==':')
-                q++;
-            }
-          }
-          else
-            q++;
-        }
-        return result;
-    }
+sql_stream::~sql_stream()
+{
+  if (m_pgRes)
+    PQclear(m_pgRes);
+  if (m_queryBuf!=m_localQueryBuf)
+    free(m_queryBuf);
+  if(!m_bExecuted)
+    DBG_PRINTF(1, "QUERY NOT EXECUTE!");
 }
+
 void
 sql_stream::init (const char *query)
 {
@@ -116,20 +91,24 @@ sql_stream::init (const char *query)
   m_bExecuted = false;
   m_pgRes = NULL;
 
-  int len=strlen(query);
+  int len = strlen(query);
   if (len>m_queryBufSize)
     query_make_space(len);
 
-  m_queryLen=m_initialQueryLen=len;
+  m_queryLen = m_initialQueryLen = len;
   strcpy(m_queryBuf, query);
 
+  find_bind(query);
+
+  if (m_vars.size()==0)
+    execute();
+}
+
+void
+sql_stream::find_bind(const char* query)
+{
   const char* q=query;
   while (*q) {
-//     if (*q=='\'') {
-//       q++;
-//       while (*q && *q!='\'') q++;
-//     }
-//     else
     if (*q==':') {
       q++;
       const char* start_var=q;
@@ -155,29 +134,8 @@ sql_stream::init (const char *query)
     else
       q++;
   }
-  if (m_vars.size()==0)
-    execute();
 }
 
-sql_stream::~sql_stream()
-{
-#if 0
-  if (m_nArgPos<(int)m_vars.size()) {
-    QString q(m_queryBuf);
-    if (q.length()>40) { // cut the query to an reasonable size for debug output
-      q.truncate(37);
-      q.append("...");
-    }
-    DBG_PRINTF(2, "WRN: m_nArgPos=%d while m_vars.size()=%d for query '%s'", m_nArgPos, (int)m_vars.size(), q.toLocal8Bit().constData());
-  }
-#endif
-  if (m_pgRes)
-    PQclear(m_pgRes);
-  if (m_queryBuf!=m_localQueryBuf)
-    free(m_queryBuf);
-  if(!m_bExecuted)
-    DBG_PRINTF(1, "QUERY NOT EXECUTE!");
-}
 
 void
 sql_stream::reset_results()
@@ -454,7 +412,7 @@ sql_stream::eof()
 void
 sql_stream::next_result()
 {
-  m_colNumber=((m_colNumber+1)%PQnfields(m_pgRes));
+  m_colNumber = ((m_colNumber+1) % PQnfields(m_pgRes));
   if (m_colNumber==0)
     m_rowNumber++;
 }
@@ -465,21 +423,6 @@ sql_stream::check_eof()
   if (eof())
     throw db_excpt(m_queryBuf, "End of stream reached");
 }
-
-#if 0
-sql_stream&
-sql_stream::operator>>(Oid& i)
-{
-  check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (!m_val_null)
-    i=(Oid)strtoul(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber), NULL, 10);
-  else
-    i=0;
-  next_result();
-  return *this;
-}
-#endif
 
 sql_stream&
 sql_stream::operator>>(int& i)

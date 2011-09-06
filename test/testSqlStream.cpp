@@ -23,12 +23,24 @@ void testSqlStream::noEmpty()
 void testSqlStream::withVariable()
 {
     try {
-        InsertString_();
-        sql_stream query("SELECT :p1 FROM :p2", *m_DB);
-        query << "test_text" << "test_table";
+        InsertString_(1);
+        InsertString_(2);
+        InsertString_(3);
+        sql_stream query_int("SELECT test_text FROM test_table WHERE test_int_not_null=:p1",
+                             *m_DB);
+        query_int << 1;
         QString text;
-        query >> text;
+        query_int >> text;
         CPPUNIT_ASSERT (text == "Test Text");
+
+        sql_stream query_text("SELECT test_int_not_null FROM test_table WHERE test_text=:p1",
+                             *m_DB);
+        query_text << "Test Text";
+        int int1, int2, int3;
+        query_text >> int1 >> int2 >> int3;
+        CPPUNIT_ASSERT (int1 == 1);
+        CPPUNIT_ASSERT (int2 == 2);
+        CPPUNIT_ASSERT (int3 == 3);
     }
     catch(db_excpt e)
     {

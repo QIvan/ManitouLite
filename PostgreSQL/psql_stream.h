@@ -124,6 +124,7 @@ public:
     return m_affected_rows;
   }
 private:
+  void find_bind(const char* query);
   void init(const char* query);
   void check_binds();
   void reset_results();
