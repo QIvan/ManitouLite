@@ -13,8 +13,8 @@ class test_sqlquery : public testBaseTestDB
     CPPUNIT_TEST_SUITE_END();
 public:
     void setUp();
-    sql_query build_query_str();
-    sql_query build_query_int();
+    sql_query build_query_return_str();
+    sql_query build_query_return_int();
 
     void exec_querys();
 };

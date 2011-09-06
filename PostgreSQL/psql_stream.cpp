@@ -70,6 +70,41 @@ sql_stream::sql_stream (const char *query, db_cnx& db) :
   init(query);
 }
 
+
+namespace fIinit {
+    QVector<sql_bind_param> find_param(const char* query)
+    {
+        QVector<sql_bind_param> result;
+        const char* q=query;
+        while (*q) {
+          if (*q==':') {
+            q++;
+            const char* start_var=q;
+            while ((*q>='A' && *q<='Z') || (*q>='a' && *q<='z') ||
+                   (*q>='0' && *q<='9') || *q=='_')
+              {
+                q++;
+              }
+            if (q-start_var>0) {
+              // if the ':' was actually followed by a parameter name
+              sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
+              result.push_back(p);
+            }
+            else {
+              /* '::' is a special case because we don't want the parser to
+                 find the second colon at the start of the loop. Otherwise
+                 '::int' will be understood as a colon followed by the
+                 parameter ':int'. So in this case, we skip the second colon */
+              if (*q==':')
+                q++;
+            }
+          }
+          else
+            q++;
+        }
+        return result;
+    }
+}
 void
 sql_stream::init (const char *query)
 {
@@ -99,22 +134,22 @@ sql_stream::init (const char *query)
       q++;
       const char* start_var=q;
       while ((*q>='A' && *q<='Z') || (*q>='a' && *q<='z') ||
-	     (*q>='0' && *q<='9') || *q=='_')
-	{
-	  q++;
-	}
+             (*q>='0' && *q<='9') || *q=='_')
+        {
+          q++;
+        }
       if (q-start_var>0) {
-	// if the ':' was actually followed by a parameter name
-	sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
-	m_vars.push_back(p);
+        // if the ':' was actually followed by a parameter name
+        sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
+        m_vars.push_back(p);
       }
       else {
-	/* '::' is a special case because we don't want the parser to
-	   find the second colon at the start of the loop. Otherwise
-	   '::int' will be understood as a colon followed by the
-	   parameter ':int'. So in this case, we skip the second colon */
-	if (*q==':')
-	  q++;
+        /* '::' is a special case because we don't want the parser to
+           find the second colon at the start of the loop. Otherwise
+           '::int' will be understood as a colon followed by the
+           parameter ':int'. So in this case, we skip the second colon */
+        if (*q==':')
+          q++;
       }
     }
     else
@@ -154,7 +189,7 @@ sql_stream::reset_results()
     m_pgRes=NULL;
   }
   strcpy(m_queryBuf, m_queryFmt.c_str());
-  for (unsigned int i=0; i<m_vars.size(); i++) {
+  for (int i=0; i<m_vars.size(); i++) {
     m_vars[i].resetOffset();
   }
   m_queryLen=m_initialQueryLen;
@@ -197,7 +232,7 @@ sql_stream::replace_placeholder(int argPos, const char* buf, int size)
   m_queryLen+=(size-placeholder_len);
   m_queryBuf[m_queryLen]='\0';
   // change the offsets of the remaining placeholders
-  for (unsigned int i=argPos+1; i<m_vars.size(); i++) {
+  for (int i=argPos+1; i<m_vars.size(); i++) {
     m_vars[i].offset(size-placeholder_len);
   }
 }

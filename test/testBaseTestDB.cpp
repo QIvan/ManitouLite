@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QTime>
 #include "testBaseTestDB.h"
 #include "sqlstream.h"
 #include "db.h"
@@ -14,10 +15,7 @@ void testBaseTestDB::setUp()
     }
     catch(db_excpt e)
     {
-      qDebug() << e.errcode();
-      qDebug() << e.query();
-      qDebug() << e.errmsg();
-      throw  e;
+      DebugExept(e);
     }
 }
 
@@ -28,11 +26,16 @@ void testBaseTestDB::tearDown()
     }
     catch(db_excpt e)
     {
-      qDebug() << e.errcode();
-      qDebug() << e.query();
-      qDebug() << e.errmsg();
-      throw  e;
+        DebugExept(e);
     }
+}
+
+void testBaseTestDB::DebugExept(db_excpt &e)
+{
+    qDebug() << e.errcode();
+    qDebug() << e.query();
+    qDebug() << e.errmsg();
+    CPPUNIT_FAIL("Database Exeption!");
 }
 
 void testBaseTestDB::InsertString_(int last_field, QString tableName)
@@ -40,7 +43,7 @@ void testBaseTestDB::InsertString_(int last_field, QString tableName)
     sql_write_fields fiedls(m_DB->cdatab()->encoding());
     fiedls.add("test_text", "Test Text");
     fiedls.add("test_char200", "Test Text");
-    fiedls.add_no_quote("test_date", "datetime('now')");
+    fiedls.add_no_quote("test_date", '\'' + QDateTime::currentDateTime().toString("yyyy-MM-dd") + '\'');
     fiedls.add("test_int_not_null", last_field);
     QString str =  QString("INSERT INTO %1(%2) VALUES(%3)")
             .arg(tableName)
@@ -68,4 +71,12 @@ int testBaseTestDB::CountString_(QString tableName)
     int count = 0;
     stream >> count;
     return count;
+}
+
+QString testBaseTestDB::AddSpace(const QString &str, int count)
+{
+    QString result = str;
+    for (int i=0; i<count-str.size(); ++i)
+        result.append(' ');
+    return result;
 }

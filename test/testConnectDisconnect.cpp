@@ -14,7 +14,7 @@ void testConnect::connect()
 {
     QString errstr;
     /// @todo: в этой функции утечка
-    CPPUNIT_ASSERT (ConnectDb("dbname=../manitouDB/test_db_api user=ivan", &errstr));
+    CPPUNIT_ASSERT (ConnectDb("dbname=test_db_api user=ivan", &errstr));
 }
 
 void testConnect::ping()

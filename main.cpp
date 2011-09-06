@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <stdlib.h>
+#include <QStringList>
 #include "main.h"
 #include "db.h"
 
@@ -76,7 +77,8 @@ QString service_f::toCodingDb(const QString &s)
     return s;
 }
 
-GetDbName(const char* conninfo)
+
+QString service_f::GetNameDb(const char *conninfo)
 {
   QString str = conninfo;
   QStringList list = str.split(QChar(' '));

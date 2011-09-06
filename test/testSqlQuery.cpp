@@ -12,7 +12,7 @@ void test_sqlquery::setUp()
   InsertString_(3);
 }
 
-sql_query test_sqlquery::build_query_str()
+sql_query test_sqlquery::build_query_return_str()
 {
   sql_query query;
   query.start("SELECT test_text");
@@ -21,7 +21,7 @@ sql_query test_sqlquery::build_query_str()
   query.add_final("ORDER BY test_id");
   return query;
 }
-sql_query test_sqlquery::build_query_int()
+sql_query test_sqlquery::build_query_return_int()
 {
   sql_query query;
   query.start("SELECT test_int_not_null");
@@ -34,13 +34,13 @@ sql_query test_sqlquery::build_query_int()
 void test_sqlquery::exec_querys()
 {
   try {
-    sql_query q_str = build_query_str();
+    sql_query q_str = build_query_return_str();
     sql_stream exec_str(q_str.get(),*m_DB);
     QString text;
     exec_str >> text;
     CPPUNIT_ASSERT(text == "Test Text");
 
-    sql_query q_int = build_query_int();
+    sql_query q_int = build_query_return_int();
     sql_stream exec_int(q_int.get(),*m_DB);
     int num1, num2, num3;
     exec_int >> num1 >> num2 >> num3;
@@ -48,9 +48,6 @@ void test_sqlquery::exec_querys()
   }
   catch(db_excpt e)
   {
-    qDebug() << e.errcode();
-    qDebug() << e.query();
-    qDebug() << e.errmsg();
-    throw  e;
+    DebugExept(e);
   }
 }

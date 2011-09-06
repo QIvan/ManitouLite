@@ -25,9 +25,7 @@ void test_Transaction::transactionCommit()
     {
         db.rollback_transaction();
         CPPUNIT_ASSERT(0 == CountString_());
-        qDebug() << e.query();
-        qDebug() << e.errmsg();
-        CPPUNIT_FAIL("Database Exept!");
+        DebugExept(e);
     }
 }
 

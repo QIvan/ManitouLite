@@ -22,6 +22,7 @@
 
 #include <libpq-fe.h>
 #include <vector>
+#include <QVector>
 #include <QString>
 #include "dbtypes.h"
 
@@ -141,7 +142,7 @@ private:
   char m_localQueryBuf[1024+1];
   std::string m_queryFmt;
   int m_chunk_size;
-  std::vector<sql_bind_param> m_vars;
+  QVector<sql_bind_param> m_vars;
   // results
   bool m_bExecuted;
   PGresult* m_pgRes;
