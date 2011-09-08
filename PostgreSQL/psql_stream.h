@@ -136,6 +136,8 @@ private:
 
   db_cnx& m_db;
   int m_nArgPos;
+  int m_nArgCount;
+  QString m_query;
   char* m_queryBuf;
   int m_queryBufSize;
   int m_queryLen;

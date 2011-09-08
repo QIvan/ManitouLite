@@ -22,6 +22,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <QMessageBox>
+#include <QDebug>
 
 #include "db.h"
 #include "connection.h"
@@ -84,12 +85,16 @@ void
 sql_stream::init (const char *query)
 {
   m_nArgPos = 0;
+  m_nArgCount = 1;
+  m_query = query;
   m_queryBuf = m_localQueryBuf;
   m_queryBufSize = sizeof(m_localQueryBuf)-1;
   m_queryFmt = query;
   m_chunk_size = 1024;
   m_bExecuted = false;
   m_pgRes = NULL;
+
+  find_bind(query);
 
   int len = strlen(query);
   if (len>m_queryBufSize)
@@ -98,7 +103,6 @@ sql_stream::init (const char *query)
   m_queryLen = m_initialQueryLen = len;
   strcpy(m_queryBuf, query);
 
-  find_bind(query);
 
   if (m_vars.size()==0)
     execute();
@@ -107,6 +111,23 @@ sql_stream::init (const char *query)
 void
 sql_stream::find_bind(const char* query)
 {
+  QString sQuery = query;
+  int pos = sQuery.indexOf(':');
+  while (pos != -1)
+  {
+    if (sQuery.at(pos+1) != ':')
+    {
+      int replaceCount = pos - sQuery.indexOf(' ', pos);
+      sQuery.replace(pos, replaceCount,
+                     "%" + QString::number(m_nArgCount) + " ");
+      ++m_nArgCount;
+    }
+    else
+      pos += 2;
+    pos = sQuery.indexOf(':', pos);
+  }
+  m_query = sQuery;
+
   const char* q=query;
   while (*q) {
     if (*q==':') {
@@ -119,7 +140,7 @@ sql_stream::find_bind(const char* query)
         }
       if (q-start_var>0) {
         // if the ':' was actually followed by a parameter name
-        sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
+        sql_bind_param p(std::string(start_var, q-start_var), (start_var-1)-query);
         m_vars.push_back(p);
       }
       else {
@@ -205,6 +226,7 @@ sql_stream::next_bind()
 sql_stream&
 sql_stream::operator<<(const char* p)
 {
+  m_query = m_query.arg(QString("'") + p + QString("'"));
   check_binds();
   size_t len=p?strlen(p):0;
   char local_buf[1024+1];
@@ -254,6 +276,7 @@ sql_stream::operator<<(const char* p)
 sql_stream&
 sql_stream::operator<<(const QString& s)
 {
+  m_query = m_query.arg(s);
   QByteArray q;
   if (m_db.datab()->encoding() == "UTF8")
     q=s.toUtf8();
@@ -265,6 +288,7 @@ sql_stream::operator<<(const QString& s)
 sql_stream&
 sql_stream::operator<<(int i)
 {
+  m_query = m_query.arg(i);
   check_binds();
   char buf[15];
   sprintf(buf,"%d", i);
@@ -276,6 +300,7 @@ sql_stream::operator<<(int i)
 sql_stream&
 sql_stream::operator<<(char c)
 {
+  m_query = m_query.arg(c);
   check_binds();
   char buf[1];
   buf[0]=c;
@@ -287,6 +312,8 @@ sql_stream::operator<<(char c)
 sql_stream&
 sql_stream::operator<<(unsigned int i)
 {
+  m_query = m_query.arg(i);
+
   check_binds();
   char buf[15];
   sprintf(buf,"%u", i);
@@ -309,6 +336,7 @@ sql_stream::operator<<(long l)
 sql_stream&
 sql_stream::operator<<(unsigned long l)
 {
+  m_query = m_query.replace(m_nArgPos, 3, QString::number(l));
   check_binds();
   char buf[15];
   sprintf(buf,"%lu", l);
@@ -320,6 +348,7 @@ sql_stream::operator<<(unsigned long l)
 sql_stream&
 sql_stream::operator<<(short s)
 {
+  m_query = m_query.replace(m_nArgPos, 3, QString::number(s));
   check_binds();
   char buf[15];
   sprintf(buf,"%hd", s);
@@ -362,13 +391,13 @@ sql_stream::check_binds()
 void
 sql_stream::print()
 {
-  std::cout << "buf=" << m_queryBuf << std::endl;
-  std::cout << "len=" << m_queryLen << ", bufsize=" << m_queryBufSize << std::endl;
-  std::cout << "params\n";
+  /*qDebug() << "buf=" << m_queryBuf << endl;
+  qDebug() << "len=" << m_queryLen << ", bufsize=" << m_queryBufSize << endl;
+  qDebug() << "params\n";
   for (int i=0; i<(int)m_vars.size(); i++) {
     const sql_bind_param& v=m_vars[i];
-    std::cout << v.name() << " => " << v.pos() << std::endl;
-  }
+    qDebug() << v.name() << " => " << v.pos() << endl;
+  }*/
 }
 
 void
@@ -381,7 +410,7 @@ sql_stream::execute()
 
   DBG_PRINTF(5,"execute: %s", m_queryBuf);
 
-  m_pgRes=PQexec(m_db.connection()->m_db->connection(), m_queryBuf);
+  m_pgRes=PQexec(m_db.connection()->m_db->connection(), m_query.toLocal8Bit().constData());
   if (!m_pgRes)
     throw db_excpt(m_queryBuf, PQerrorMessage(m_db.connection()->m_db->connection()));
   if ((returns_rows && PQresultStatus(m_pgRes)!=PGRES_TUPLES_OK)

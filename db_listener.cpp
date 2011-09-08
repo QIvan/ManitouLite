@@ -34,7 +34,7 @@ db_listener::db_listener(db_cnx& db, const QString notif_name)
   m_db = db.datab();
   sql_stream s1("SELECT quote_ident(:p1)", db);
   s1 << notif_name;
-  if (!s1.eos()) {
+  if (!s1.eof()) {
     s1 >> m_notif_name;
   }
   if (!m_notif_name.isEmpty()) {
