@@ -116,7 +116,6 @@ public:
   /** returns true if there are no more results to read from the stream,
       or false otherwise */
   int eof();
-  int eos() { return eof(); }
   bool val_is_null() const {
     return m_val_null;
   }
