@@ -7,6 +7,7 @@
 
 class db_cnx;
 class db_excpt;
+class sql_stream;
 
 class testBaseTestDB : public CppUnit::TestFixture
 {
@@ -19,12 +20,15 @@ public:
     void setUp();
     void tearDown();
 protected:
-    void DebugExept(db_excpt& e);
-    void InsertString_(int last_field = 1, QString tableName = "test_table");
-    void ThrowQuery(QString tableName = "test_table");
+    void DebugExept_(db_excpt& e);
+    void InsertString_(int count = 1, QString tableName = "test_table");
+    void ThrowQuery_(QString tableName = "test_table");
     bool TableIsEmpty_(QString tableName = "test_table");
     int  CountString_(QString tableName = "test_table");
-    QString AddSpace(const QString& str, int count);
+    QString AddSpace_(const QString& str, int count);
+
+    void CheckText_(sql_stream &stream);
+    void CheckInts_(sql_stream &stream);
 
 };
 

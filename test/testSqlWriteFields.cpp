@@ -57,7 +57,7 @@ void test_sql_write_fields::insert()
         date dateDate (dateStr);
         CPPUNIT_ASSERT(id == 1);
         CPPUNIT_ASSERT(text == "Insert Text 1");
-        CPPUNIT_ASSERT(char200 == AddSpace("Insert Te", 200));
+        CPPUNIT_ASSERT(char200 == AddSpace_("Insert Te", 200));
         CPPUNIT_ASSERT(!dateDate.is_null());
         CPPUNIT_ASSERT(int_not_null == 1);
         QString dateStr2;
@@ -65,7 +65,7 @@ void test_sql_write_fields::insert()
         date dateDate2 (dateStr2);
         CPPUNIT_ASSERT(id == 2);
         CPPUNIT_ASSERT(text == "Insert Te");
-        CPPUNIT_ASSERT(char200 == AddSpace("Insert Text 2", 200));
+        CPPUNIT_ASSERT(char200 == AddSpace_("Insert Text 2", 200));
         /// @todo: если свалится на этом ассерте, то просто запусти тест ещё раз
         CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
                                dateDate.FullOutput() == dateDate2.FullOutput());
@@ -76,7 +76,7 @@ void test_sql_write_fields::insert()
     }
     catch(db_excpt e)
     {
-        DebugExept(e);
+        DebugExept_(e);
     }
 
 }

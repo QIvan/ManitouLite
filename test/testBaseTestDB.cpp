@@ -15,7 +15,7 @@ void testBaseTestDB::setUp()
     }
     catch(db_excpt e)
     {
-      DebugExept(e);
+      DebugExept_(e);
     }
 }
 
@@ -26,11 +26,11 @@ void testBaseTestDB::tearDown()
     }
     catch(db_excpt e)
     {
-        DebugExept(e);
+        DebugExept_(e);
     }
 }
 
-void testBaseTestDB::DebugExept(db_excpt &e)
+void testBaseTestDB::DebugExept_(db_excpt &e)
 {
     qDebug() << e.errcode();
     qDebug() << e.query();
@@ -38,8 +38,12 @@ void testBaseTestDB::DebugExept(db_excpt &e)
     CPPUNIT_FAIL("Database Exeption!");
 }
 
-void testBaseTestDB::InsertString_(int last_field, QString tableName)
+
+
+void testBaseTestDB::InsertString_(int count, QString tableName)
 {
+  for (int last_field=1; last_field<=count; ++last_field)
+  {
     sql_write_fields fiedls(m_DB->cdatab()->encoding());
     fiedls.add("test_text", "Test Text");
     fiedls.add("test_char200", "Test Text");
@@ -50,9 +54,10 @@ void testBaseTestDB::InsertString_(int last_field, QString tableName)
             .arg(fiedls.fields())
             .arg(fiedls.values());
     sql_stream insert(str, *m_DB);
+  }
 }
 
-void testBaseTestDB::ThrowQuery(QString tableName)
+void testBaseTestDB::ThrowQuery_(QString tableName)
 {
     sql_stream insert(QString("SELECT error_column FROM %1").arg(tableName), *m_DB);
 }
@@ -73,7 +78,7 @@ int testBaseTestDB::CountString_(QString tableName)
     return count;
 }
 
-QString testBaseTestDB::AddSpace(const QString &str, int count)
+QString testBaseTestDB::AddSpace_(const QString &str, int count)
 {
     QString result = str;
     count = 10;
@@ -81,3 +86,20 @@ QString testBaseTestDB::AddSpace(const QString &str, int count)
         result.append(' ');*/
     return result;
 }
+
+void testBaseTestDB::CheckText_(sql_stream &stream)
+{
+  QString text;
+  stream >> text;
+  CPPUNIT_ASSERT (text == "Test Text");
+}
+
+void testBaseTestDB::CheckInts_(sql_stream &stream)
+{
+  int int1, int2, int3;
+  stream >> int1 >> int2 >> int3;
+  CPPUNIT_ASSERT (int1 == 1);
+  CPPUNIT_ASSERT (int2 == 2);
+  CPPUNIT_ASSERT (int3 == 3);
+}
+

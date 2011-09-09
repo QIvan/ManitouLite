@@ -7,8 +7,6 @@ std::string TestNames::sql_query() { return "Sql Query";}
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_sqlquery, TestNames::sql_query());
 void test_sqlquery::setUp()
 {
-  InsertString_(1);
-  InsertString_(2);
   InsertString_(3);
 }
 
@@ -48,6 +46,6 @@ void test_sqlquery::exec_querys()
   }
   catch(db_excpt e)
   {
-    DebugExept(e);
+    DebugExept_(e);
   }
 }

@@ -25,7 +25,7 @@ void test_Transaction::transactionCommit()
     {
         db.rollback_transaction();
         CPPUNIT_ASSERT(0 == CountString_());
-        DebugExept(e);
+        DebugExept_(e);
     }
 }
 
@@ -38,7 +38,7 @@ void test_Transaction::transactionRollback()
         db.begin_transaction();
         InsertString_();
         InsertString_();
-        ThrowQuery();
+        ThrowQuery_();
         db.commit_transaction();
     }
     catch (db_excpt e)
