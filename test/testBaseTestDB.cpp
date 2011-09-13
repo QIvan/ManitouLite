@@ -66,7 +66,7 @@ bool testBaseTestDB::TableIsEmpty_(QString tableName)
 {
     db_cnx db;
     sql_stream stream("SELECT * FROM " + tableName, db);
-    return stream.eof();
+    return stream.isEmpty();
 }
 
 int testBaseTestDB::CountString_(QString tableName)

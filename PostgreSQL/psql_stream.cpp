@@ -113,7 +113,7 @@ sql_stream::init (const char *query)
     query_make_space(len);
 
   m_queryLen = m_initialQueryLen = len;*/
-  strcpy(m_queryBuf, query);
+  //strcpy(m_queryBuf, query);
 
 
   if (m_nArgCount==0)
@@ -400,7 +400,7 @@ sql_stream::check_binds()
     // reset the query for another execution
     reset_results();
   }
-  if (m_nArgPos>=(int)m_vars.size())
+  if (m_nArgPos >= m_nArgCount)
     throw db_excpt(m_queryBuf, "Mismatch between bound variables and query");
 }
 
@@ -430,11 +430,13 @@ sql_stream::execute()
   m_pgRes=PQexec(m_db.connection()->m_db->connection(), m_query.toLocal8Bit().constData());
   if (!m_pgRes)
     throw db_excpt(m_queryBuf, PQerrorMessage(m_db.connection()->m_db->connection()));
+
   if ((returns_rows && PQresultStatus(m_pgRes)!=PGRES_TUPLES_OK)
       || (!returns_rows && PQresultStatus(m_pgRes)!=PGRES_COMMAND_OK)) {
     throw db_excpt(m_queryBuf, PQresultErrorMessage(m_pgRes),
 		   QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
   }
+
   const char* t=PQcmdTuples(m_pgRes);
   if (t && *t) {
     m_affected_rows=atoi(t);
@@ -448,7 +450,7 @@ sql_stream::execute()
 }
 
 int
-sql_stream::eof()
+sql_stream::isEmpty()
 {
   if (!m_bExecuted)
     execute();
@@ -466,7 +468,7 @@ sql_stream::next_result()
 void
 sql_stream::check_eof()
 {
-  if (eof())
+  if (isEmpty())
     throw db_excpt(m_queryBuf, "End of stream reached");
 }
 
@@ -474,11 +476,11 @@ sql_stream&
 sql_stream::operator>>(int& i)
 {
   check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (!m_val_null)
-    i=atoi(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
+  bool isNull = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
+  if (!isNull)
+    i = atoi(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
   else
-    i=0;
+    i = 0;
   next_result();
   return *this;
 }
@@ -488,9 +490,9 @@ sql_stream::operator>>(unsigned int& i)
 {
   check_eof();
   unsigned long ul=strtoul(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber),
-			   NULL, 10);
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (!m_val_null)
+                           NULL, 10);
+  bool isNull = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
+  if (!isNull)
     i=(unsigned int)ul;
   else
     i=0;
@@ -513,8 +515,8 @@ sql_stream&
 sql_stream::operator>>(char* p)
 {
   check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (m_val_null)
+  bool isNull = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
+  if (isNull)
     *p='\0';
   else {
     // pretty dangerous if the buffer is not big enough, but
@@ -533,6 +535,7 @@ sql_stream::operator>>(QString& s)
     s=QString::fromUtf8(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
   else
     s=PQgetvalue(m_pgRes, m_rowNumber, m_colNumber);
+  /// @todo: НАХРЕНА?!
   m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
   next_result();
   return *this;

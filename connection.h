@@ -3,7 +3,7 @@
 
 #include <tr1/memory>
 #ifdef WITH_PGSQL
-#include "pgConnection.h"
+#include "PostgreSQL/pgConnection.h"
 typedef pgConnection ConnectionClass;
 #else
 #include "sqliteConnection.h"

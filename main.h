@@ -101,6 +101,13 @@ private:
 
 extern manitou_application* gl_pApplication;
 
+enum Coding
+{
+  Coding_latin1,
+  Coding_utf8,
+  Coding_local8bit
+};
+
 namespace service_f
 {
     QString toCodingDb(const QString &s);

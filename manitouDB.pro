@@ -12,6 +12,7 @@ TARGET = manitouPortotype
 LIBS += -L/usr/lib/ -lpq
 LIBS += -L/usr/ -lsqlite3
 INCLUDEPATH += /usr/include/ , /usr/include/c++/4.4.4/ , /usr/include/postgresql
+INCLUDEPATH += ./PostgreSQL , ./SQLite
 
 TEMPLATE = app
 
@@ -30,10 +31,10 @@ SOURCES +=  \
     database.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    pgConnection.cpp \
-    sqliteConnection.cpp \
     PostgreSQL/psql_stream.cpp \
-    #SQLite/sqlite_stream.cpp
+    PostgreSQL/pgConnection.cpp \
+    #SQLite/sqlite_stream.cpp \
+    SQLite/sqliteConnection.cpp \
 
 HEADERS += \
     main.h \
@@ -46,8 +47,8 @@ HEADERS += \
     config.h \
     database.h \
     creatorConnection.h \
-    pgConnection.h \
-    sqliteConnection.h \
     connection.h \
     PostgreSQL/psql_stream.h \
-    #SQLite/sqlite_stream.h
+    PostgreSQL/pgConnection.h \
+    #SQLite/sqlite_stream.h \
+    SQLite/sqliteConnection.h \

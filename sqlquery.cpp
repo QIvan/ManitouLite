@@ -26,22 +26,16 @@
 #include <libpq-fe.h>
 #endif
 
-enum Coding
-{
-  latin1,
-  utf8,
-  local8bit
-};
 
 QString escapeString(const QString value, const Coding coding )
 {
 
   QByteArray qba;
-  if (coding == latin1)
+  if (coding == Coding_latin1)
     qba = value.toLatin1();
-  else if (coding == utf8)
+  else if (coding == Coding_utf8)
     qba = value.toUtf8();
-  else if (coding == local8bit)
+  else if (coding == Coding_local8bit)
     qba = value.toLocal8Bit();
 
   char* dest = qba.data();
@@ -59,11 +53,11 @@ QString escapeString(const QString value, const Coding coding )
   PQescapeString(dest, qba.constData(), value_len); // FIXME ENCODING*/
 #endif
   QString result;
-  if (coding == latin1)
+  if (coding == Coding_latin1)
     result = QString::fromLatin1(dest);
-  else if (coding == utf8)
+  else if (coding == Coding_utf8)
     result = QString::fromUtf8(dest);
-  else if (coding == local8bit)
+  else if (coding == Coding_local8bit)
     result = QString::fromLocal8Bit(dest);
 
   if (alloc)
@@ -102,7 +96,7 @@ sql_query::add_clause(const QString field, const QString value, const char *cmp)
   if (m_num_clauses++>0) {
     m_where += " AND ";
   }
-  QString dest = escapeString(value, latin1);
+  QString dest = escapeString(value, Coding_latin1);
   m_where += field + QString(cmp) + QString("'") + dest + QString("'");
 }
 
@@ -200,9 +194,9 @@ sql_write_fields::add(const char* field, const QString value, int maxlength)
   }
 
   if (m_utf8)
-    m_values+=QString("'") + escapeString(trunc_value, utf8) + QString("'");
+    m_values+=QString("'") + escapeString(trunc_value, Coding_utf8) + QString("'");
   else
-    m_values+=QString("'") + escapeString(trunc_value, local8bit) + QString("'");
+    m_values+=QString("'") + escapeString(trunc_value, Coding_local8bit) + QString("'");
 
 
   m_fields+=field;
