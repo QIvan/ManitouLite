@@ -13,6 +13,7 @@
 #include "testBaseTestDB.h"
 #include "sqlstream.h"
 
+int global_debug_level;
 std::string TestNames::db_api() { return "DB_API";}
 
 #ifdef WITH_PGSQL
@@ -26,6 +27,7 @@ CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::disconnect());
 
 int main(int argn, char** args)
 {
+  global_debug_level=0;
     QApplication a(argn, args);
     //global_debug_level = 3;
     CPPUNIT_NS :: TestResult testresult;
@@ -67,7 +69,7 @@ int main(int argn, char** args)
     // Return error code 1 if the one of test failed.
     return wasSucessful ? 0 : 1;*/
 }
-int global_debug_level;
+
 
 void
 debug_printf(int level, const char* file, int line, const char *fmt, ...)

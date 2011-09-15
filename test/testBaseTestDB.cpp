@@ -54,6 +54,7 @@ void testBaseTestDB::InsertString_(int count, QString tableName)
             .arg(fiedls.fields())
             .arg(fiedls.values());
     sql_stream insert(str, *m_DB);
+    CPPUNIT_ASSERT (insert.affected_rows() == 1);
   }
 }
 

@@ -10,11 +10,13 @@ class testSqlStream : public testBaseTestDB
     CPPUNIT_TEST(empty);
     CPPUNIT_TEST(noEmpty);
     CPPUNIT_TEST(withVariable);
+    CPPUNIT_TEST(hardQuery);
     CPPUNIT_TEST_SUITE_END();
 public:
     void empty();
     void noEmpty();
     void withVariable();
+    void hardQuery();
 };
 
 
