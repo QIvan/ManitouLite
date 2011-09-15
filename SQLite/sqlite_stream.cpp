@@ -60,7 +60,7 @@ void DBEXCPT(db_excpt& p)
 
 //================================== sql_stream ====================================//
 //***************** Callback functions
-int
+/*int
 sql_stream::callback (void* voidThis, int count, char** values, char** columnNames)
 {
   sql_stream* This = static_cast<sql_stream*> (voidThis);
@@ -81,330 +81,121 @@ sql_stream::callback(int count, char** values, char** columnNames)
   m_resultData.append(rec);
   return 0;
 }
-/////////////////////////////////////////
+*/
+//======================== public ===============================
+namespace service_f {
+  void replace_random_param (QString &str)
+  {
+    str = str.replace("%", "\1");
+  }
+  void return_random_param (QString &str)
+  {
+    str = str.replace("\1", "%");
+  }
+}
 
 sql_stream::sql_stream (const QString query, db_cnx& db) :
-  m_db(db), m_callback(false)
+  m_db(db), m_query(query)
 {
   QByteArray qba = query.toUtf8();
   init(qba.constData());
 }
 
 sql_stream::sql_stream (const char *query, db_cnx& db) :
-  m_db(db), m_callback(false)
+  m_db(db), m_query(query)
 {
   init(query);
 }
 
-void
-sql_stream::init (const char *query)
-{
-  m_nArgPos = 0;
-  m_queryBuf = m_localQueryBuf;
-  m_queryBufSize = sizeof(m_localQueryBuf)-1;
-  m_queryFmt = query;
-  m_chunk_size = 1024;
-  m_bExecuted = false;
-  m_pgRes = NULL;
-
-  int len=strlen(query);
-  if (len>m_queryBufSize)
-    query_make_space(len);
-
-  m_queryLen=m_initialQueryLen=len;
-  strcpy(m_queryBuf, query);
-
-  const char* q=query;
-  while (*q) {
-    if (*q==':') {
-      q++;
-      const char* start_var=q;
-      while ((*q>='A' && *q<='Z') || (*q>='a' && *q<='z') ||
-       (*q>='0' && *q<='9') || *q=='_')
-  {
-    q++;
-  }
-      if (q-start_var>0) {
-  // if the ':' was actually followed by a parameter name
-  sql_bind_param p(std::string(start_var,q-start_var), (start_var-1)-query);
-  m_vars.push_back(p);
-      }
-      else {
-  /* '::' is a special case because we don't want the parser to
-     find the second colon at the start of the loop. Otherwise
-     '::int' will be understood as a colon followed by the
-     parameter ':int'. So in this case, we skip the second colon */
-  if (*q==':')
-    q++;
-      }
-    }
-    else
-      q++;
-  }
-  if (m_vars.size()==0)
-    execute();
-}
-
 sql_stream::~sql_stream()
 {
-  if (m_pgRes)
-    PQclear(m_pgRes);
-  if (m_queryBuf!=m_localQueryBuf)
-    free(m_queryBuf);
+//  if (m_sqlRes)
+//    PQclear(m_sqlRes);
   if(!m_bExecuted)
     DBG_PRINTF(1, "QUERY NOT EXECUTE!");
 }
 
-void
-sql_stream::reset_results()
-{
-  m_bExecuted=false;
-  m_nArgPos=0;
-  if (m_pgRes) {
-    PQclear(m_pgRes);
-    m_pgRes=NULL;
-  }
-  strcpy(m_queryBuf, m_queryFmt.c_str());
-  for (int i=0; i<m_vars.size(); i++) {
-    m_vars[i].resetOffset();
-  }
-  m_queryLen=m_initialQueryLen;
-}
 
-void
-sql_stream::query_make_space(int len)
-{
-  if (m_queryLen+len < m_queryBufSize)
-    return;			// m_queryBuf is big enough
-  if (m_queryBuf==m_localQueryBuf) {
-    char* p=(char*)malloc(1+m_queryBufSize+len+m_chunk_size);
-    if (p) {
-      strcpy (p, m_queryBuf);
-      m_queryBuf = p;
-    }
-  }
-  else {
-    m_queryBuf=(char*)realloc(m_queryBuf, 1+m_queryBufSize+len+m_chunk_size);
-  }
-  if (!m_queryBuf)
-    throw "not enough memory";
-  m_queryBufSize+=len+m_chunk_size;
-  m_chunk_size<<=1;
-}
-
-void
-sql_stream::replace_placeholder(int argPos, const char* buf, int size)
-{
-  query_make_space(size);
-  sql_bind_param& p=m_vars[argPos];
-  // Replace the placeholder with the value
-  int placeholder_len=p.name().size()+1; // +1 for the leading ':'
-  // shift the substring at the right of the placeholder
-  memmove(m_queryBuf+p.pos()+size,
-    m_queryBuf+p.pos()+placeholder_len,
-    m_queryLen-(p.pos()+placeholder_len));
-  // insert the value where the placeholder was
-  memcpy(m_queryBuf+p.pos(), buf, size);
-  m_queryLen+=(size-placeholder_len);
-  m_queryBuf[m_queryLen]='\0';
-  // change the offsets of the remaining placeholders
-  for (int i=argPos+1; i<m_vars.size(); i++) {
-    m_vars[i].offset(size-placeholder_len);
-  }
-}
-
-void
-sql_stream::next_bind()
-{
-  if (++m_nArgPos>=(int)m_vars.size())
-    execute();
-}
-
-
-
+// operators <<
 sql_stream&
-sql_stream::operator<<(const char* p)
+sql_stream::operator<<(const QString &s)
 {
-  check_binds();
-  size_t len=p?strlen(p):0;
-  char local_buf[1024+1];
-  char* buf;
-  if (len<(sizeof(local_buf)-1)/2)
-    buf=local_buf;
-  else
-    buf=(char*)malloc(2*len+1);
-  int escaped_size=PQescapeString(buf, p, len);
-  buf[escaped_size]='\0';
-
-  /* Very bad kludge here: if the bind parameter inside the query
-     doesn't start with a quote, we add quotes around the value at this point.
-     TODO: make all the callers NOT enclose the values, since it's a
-     problem for backends that support real bind parameters
-     (oracle) */
-  int pos = m_vars[m_nArgPos].pos();
-  if (pos>0 && m_queryBuf[pos-1]!='\'') {
-    //    DBG_PRINTF(5,"bindpos=%d", pos);
-    if (p) {
-      char placeholder[2+escaped_size+1];
-      placeholder[0]='\'';
-      strcpy(placeholder+1, buf);
-      placeholder[1+escaped_size]='\'';
-      placeholder[1+escaped_size+1]='\0';
-      replace_placeholder(m_nArgPos, placeholder, escaped_size+2);
-    }
-    else {
-      // null pointer => null sql value
-      replace_placeholder(m_nArgPos, "null", 4);
-    }
-  }
-  else {
-    if (p)
-      replace_placeholder(m_nArgPos, buf, escaped_size);
-    else
-      replace_placeholder(m_nArgPos, "null", 4);
-  }
-
-  if (buf!=local_buf)
-    free(buf);
-
-  next_bind();
-  return *this;
+  return next_param('\'' + s + '\'');
 }
 
 sql_stream&
-sql_stream::operator<<(const QString& s)
+sql_stream::operator<<(const char* s)
 {
-  QByteArray q;
-  if (m_db.datab()->encoding() == "UTF8")
-    q=s.toUtf8();
-  else
-    q=s.toLocal8Bit();
-  return operator<<((const char*)q);
-}
-
-sql_stream&
-sql_stream::operator<<(int i)
-{
-  check_binds();
-  char buf[15];
-  sprintf(buf,"%d", i);
-  replace_placeholder(m_nArgPos, buf, strlen(buf));
-  next_bind();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator<<(char c)
-{
-  check_binds();
-  char buf[1];
-  buf[0]=c;
-  replace_placeholder(m_nArgPos, buf, 1);
-  next_bind();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator<<(unsigned int i)
-{
-  check_binds();
-  char buf[15];
-  sprintf(buf,"%u", i);
-  replace_placeholder(m_nArgPos, buf, strlen(buf));
-  next_bind();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator<<(long l)
-{
-  check_binds();
-  char buf[15];
-  sprintf(buf,"%ld", l);
-  replace_placeholder(m_nArgPos, buf, strlen(buf));
-  next_bind();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator<<(unsigned long l)
-{
-  check_binds();
-  char buf[15];
-  sprintf(buf,"%lu", l);
-  replace_placeholder(m_nArgPos, buf, strlen(buf));
-  next_bind();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator<<(short s)
-{
-  check_binds();
-  char buf[15];
-  sprintf(buf,"%hd", s);
-  replace_placeholder(m_nArgPos, buf, strlen(buf));
-  next_bind();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator<<(unsigned short s)
-{
-  check_binds();
-  char buf[15];
-  sprintf(buf,"%hu", s);
-  replace_placeholder(m_nArgPos, buf, strlen(buf));
-  next_bind();
-  return *this;
+  return next_param('\'' + QString(s) + '\'');
 }
 
 sql_stream&
 sql_stream::operator<<(sql_null n _UNUSED_)
 {
-  check_binds();
-  replace_placeholder(m_nArgPos, "null", 4);
-  next_bind();
+  return next_param(QString("null"));
+}
+
+//operators >>
+sql_stream&
+sql_stream::operator>>(int& i)
+{
+  i = next_result().toInt();
   return *this;
 }
 
-void
-sql_stream::check_binds()
+sql_stream&
+sql_stream::operator>>(unsigned int& i)
 {
-  if (m_bExecuted && m_nArgPos==(int)m_vars.size()) {
-    // reset the query for another execution
-    reset_results();
-  }
-  if (m_nArgPos>=(int)m_vars.size())
-    throw db_excpt(m_queryBuf, "Mismatch between bound variables and query");
+  i = next_result().toUInt();
+  return *this;
 }
 
-void
-sql_stream::print()
+sql_stream&
+sql_stream::operator>>(char& c)
 {
-  std::cout << "buf=" << m_queryBuf << std::endl;
-  std::cout << "len=" << m_queryLen << ", bufsize=" << m_queryBufSize << std::endl;
-  std::cout << "params\n";
-  for (int i=0; i<(int)m_vars.size(); i++) {
-    const sql_bind_param& v=m_vars[i];
-    std::cout << v.name() << " => " << v.pos() << std::endl;
-  }
+  c = next_result().at(0).cell();
+  return *this;
 }
 
+sql_stream&
+sql_stream::operator>>(char* p)
+{
+  strcpy(next_result().toLocal8Bit().data(), p);
+  return *this;
+}
+
+sql_stream&
+sql_stream::operator>>(QString& s)
+{
+  s = next_result();
+  return *this;
+}
+//______________end operators
+
+namespace service_f {
+  int count_affected_rows(PGresult* res)
+  {
+    int result = 0;
+//    const char* t = PQcmdTuples(res);
+//    if (t && *t)
+//      result = atoi(t);
+    return result;
+  }
+}
 void
 sql_stream::execute()
 {
-  if (m_nArgPos<(int)m_vars.size())
-    throw db_excpt(m_queryBuf, "Not all variables bound");
+  if (m_nArgPos < m_nArgCount)
+    throw db_excpt(m_query, "Not all variables bound");
 
-  DBG_PRINTF(5,"execute: %s", m_queryBuf);
+  DBG_PRINTF(5,"execute: %s", m_query.toLocal8Bit().constData());
 
-  char* errmsg = 0;
-  int rc = sqlite3_exec(m_db.connection()->m_db->connection(), m_queryBuf,
-                        sql_stream::callback, static_cast<void*>(this), &errmsg);
+  service_f::return_random_param(m_query);
+  int rc =0;
+  //m_sqlRes = sqlite3_(m_db.connection()->m_db->connection(), m_query.toLocal8Bit().constData());
 
-  if (rc != SQLITE_OK)
-    throw db_excpt(m_queryBuf, errmsg, QString::number(rc));
+  check_results(rc);
+//  m_affected_rows = service_f::count_affected_rows(m_sqlRes);
 
   m_rowNumber=0;
   m_colNumber=0;
@@ -412,93 +203,111 @@ sql_stream::execute()
 }
 
 int
-sql_stream::eof()
+sql_stream::isEmpty()
 {
-  if (!m_bExecuted)
+//  if (!m_bExecuted)
+//    execute();
+//  return m_rowNumber >= PQntuples(m_sqlRes);
+}
+
+int
+sql_stream::affected_rows() const
+{
+  return m_affected_rows;
+}
+
+
+//======================== private ===============================
+void
+sql_stream::init (const char *query)
+{
+  m_nArgCount = 0;
+  m_nArgPos = 0;
+  m_sqlRes = NULL;
+  m_bExecuted = false;
+
+  service_f::replace_random_param(m_query);
+  find_param(query);
+
+  if(m_nArgCount == 0)
     execute();
-  return m_rowNumber>=PQntuples(m_pgRes);
 }
 
 void
+sql_stream::find_param(const char* query)
+{
+  QString sQuery = query;
+  int pos = sQuery.indexOf(':');
+  while (pos != -1)
+  {
+    if (sQuery.at(pos+1) != ':')
+    {
+      int rightPos = sQuery.indexOf(' ', pos+1);
+      if (rightPos < 0)
+        rightPos = sQuery.length();
+      int replaceCount = rightPos - pos;
+      sQuery.replace(pos, replaceCount,
+                     "%" + QString::number(m_nArgCount) + " ");
+      ++m_nArgCount;
+    }
+    else
+      pos += 2;
+    pos = sQuery.indexOf(':', pos);
+  }
+  m_query = sQuery;
+}
+
+void
+sql_stream::check_params() const
+{
+  if (m_nArgPos >= m_nArgCount)
+    throw db_excpt(m_query, "Mismatch between bound variables and query");
+}
+
+sql_stream&
+sql_stream::next_param(QString value)
+{
+  check_params();
+  m_query = m_query.arg(value);
+  ++m_nArgPos;
+  return *this;
+}
+
+void
+sql_stream::check_end_of_stream()
+{
+  if (isEmpty())
+    throw db_excpt(m_query, "End of stream reached");
+}
+
+QString
 sql_stream::next_result()
 {
-  m_colNumber=((m_colNumber+1)%PQnfields(m_pgRes));
+  QString result;
+  check_end_of_stream();
+//  bool isNull = PQgetisnull(m_sqlRes, m_rowNumber, m_colNumber);
+//  if (!isNull)
+//  {
+//    result = QString(PQgetvalue(m_sqlRes, m_rowNumber, m_colNumber));
+//  }
+//  m_colNumber = ((m_colNumber+1) % PQnfields(m_sqlRes));
   if (m_colNumber==0)
     m_rowNumber++;
+  return result;
 }
 
 void
-sql_stream::check_eof()
+sql_stream::check_results(int code_error)
 {
-  if (eof())
-    throw db_excpt(m_queryBuf, "End of stream reached");
-}
+  bool returns_rows = (m_query.indexOf("SELECT",0, Qt::CaseInsensitive) != -1);
 
-sql_stream&
-sql_stream::operator>>(int& i)
-{
-  check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (!m_val_null)
-    i=atoi(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
-  else
-    i=0;
-  next_result();
-  return *this;
-}
+//  if (!m_sqlRes)
+//    throw db_excpt(m_query, SQl(m_db.connection()->m_db->connection()));
 
-sql_stream&
-sql_stream::operator>>(unsigned int& i)
-{
-  check_eof();
-  unsigned long ul=strtoul(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber),
-         NULL, 10);
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (!m_val_null)
-    i=(unsigned int)ul;
-  else
-    i=0;
-  next_result();
-  return *this;
+//  if ((returns_rows && PQresultStatus(m_sqlRes)!=PGRES_TUPLES_OK)
+//      || (!returns_rows && PQresultStatus(m_sqlRes)!=PGRES_COMMAND_OK))
+//  {
+//    throw db_excpt(m_query, PQresultErrorMessage(m_sqlRes),
+//       QString(PQresultErrorField(m_sqlRes, PG_DIAG_SQLSTATE)));
+//  }
 }
-
-sql_stream&
-sql_stream::operator>>(char& c)
-{
-  check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  char* p=PQgetvalue(m_pgRes, m_rowNumber, m_colNumber);
-  c = p?*p:'\0';
-  next_result();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator>>(char* p)
-{
-  check_eof();
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  if (m_val_null)
-    *p='\0';
-  else {
-    // pretty dangerous if the buffer is not big enough, but
-    // we have no way of knowing. Better use C++ strings
-    strcpy(p, PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
-  }
-  next_result();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator>>(QString& s)
-{
-  check_eof();
-  if (m_db.datab()->encoding() == "UTF8")
-    s=QString::fromUtf8(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
-  else
-    s=PQgetvalue(m_pgRes, m_rowNumber, m_colNumber);
-  m_val_null = PQgetisnull(m_pgRes, m_rowNumber, m_colNumber);
-  next_result();
-  return *this;
-}
-//___________________________________sql_stream______________________________________//

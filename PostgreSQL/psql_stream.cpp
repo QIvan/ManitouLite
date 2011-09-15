@@ -147,7 +147,7 @@ sql_stream::operator>>(QString& s)
   s = next_result();
   return *this;
 }
-
+//______________end operators
 
 namespace service_f {
   int count_affected_rows(PGresult* res)

@@ -79,7 +79,7 @@ db_listener::setup_db()
 bool
 db_listener::setup_notification()
 {
-  if (m_socket_notifier) {
+  /*if (m_socket_notifier) {
     delete m_socket_notifier;
     m_socket_notifier=NULL;
   }
@@ -92,7 +92,7 @@ db_listener::setup_notification()
   }
   else {
     DBG_PRINTF(1, "could not get db socket: PQsocket returned -1");
-  }  
+  } */
   
   return true;
 }
@@ -102,7 +102,7 @@ void
 db_listener::process_notification()
 {
   DBG_PRINTF(3, "process_notification()");
-  pgConnection* cnx = dynamic_cast<pgConnection*>(m_db);
+  /*pgConnection* cnx = dynamic_cast<pgConnection*>(m_db);
   PGconn* c = cnx->connection();
   int r=PQconsumeInput(c);
   if (r==0) {
@@ -121,5 +121,5 @@ db_listener::process_notification()
 	PQfreemem(n);
       }
     }
-  }
+  }*/
 }

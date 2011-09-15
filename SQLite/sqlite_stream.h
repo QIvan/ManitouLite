@@ -19,12 +19,11 @@
 
 #ifndef INC_SQLITE_SQLSTREAM_H
 #define INC_SQLITE_SQLSTREAM_H
-
 #include <libpq-fe.h>
-#include <QList>
+#include <vector>
 #include <QVector>
-#include <QMap>
 #include <QString>
+#include <sqlite3.h>
 #include "dbtypes.h"
 
 class db_cnx;
@@ -51,33 +50,6 @@ private:
 
 void DBEXCPT(db_excpt& p);	// db.cpp
 
-
-/// sql_bind_param class. To be used for sql_stream internal purposes
-class sql_bind_param
-{
-public:
-  sql_bind_param() {}
-  sql_bind_param(const std::string s, int pos) {
-    m_name=s;
-    m_initialOffsetInQuery=m_offsetInQuery=pos;
-  }
-  virtual ~sql_bind_param() {}
-  void offset(int off) {
-    m_offsetInQuery+=off;
-  }
-  void resetOffset() {
-    m_offsetInQuery=m_initialOffsetInQuery;
-  }
-  const std::string name() const { return m_name; }
-  int pos() const { return m_offsetInQuery; }
-private:
-  std::string m_name;
-  std::string m_value;
-  int m_offsetInQuery;		/* position of the ':' character in query */
-  int m_initialOffsetInQuery;
-};
-
-
 /**
    sql_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
@@ -85,81 +57,52 @@ private:
 class sql_stream
 {
 public:
-  /// constructor
   sql_stream(const char* query, db_cnx& db);
   sql_stream(const QString query, db_cnx& db);
-  /// destructor
   virtual ~sql_stream();
-  /// assign a char* parameter
-  sql_stream& operator<<(const char*);
-  sql_stream& operator<<(const QString&);
-  sql_stream& operator<<(int);
-  sql_stream& operator<<(char);
-  sql_stream& operator<<(unsigned int);
-  sql_stream& operator<<(long);
-  sql_stream& operator<<(unsigned long);
-  sql_stream& operator<<(short);
-  sql_stream& operator<<(unsigned short);
+
+  template<typename T>
+  sql_stream& operator<<(T param)
+  {
+    return next_param(QString("%1").arg(param));
+  }
+  sql_stream& operator<<(const QString& );
+  sql_stream& operator<<(const char* );
   sql_stream& operator<<(sql_null);
 
   sql_stream& operator>>(int&);
   sql_stream& operator>>(unsigned int&);
   sql_stream& operator>>(char*);
   sql_stream& operator>>(char&);
-//  sql_stream& operator>>(Oid);
   sql_stream& operator>>(QString&);
-
-  void print();
 
   /** send the query to the server */
   void execute();
-  /// @todo: сделать вызовфункции execute не в конструкторе
-  void exec(){}
-  /** returns true if there are no more results to read from the stream,
-      or false otherwise */
-  int eof();
-  int eos() { return eof(); }
-  bool val_is_null() const {
-    return m_val_null;
-  }
-  int affected_rows() const {
-    return m_affected_rows;
-  }
-private:
-  static int callback(void* voidThis, int count, char** values, char** columnNames);
-  int callback(int count, char** values, char** columnNames);
+  /** true if there are no more results to read from the stream */
+  int isEmpty(); //no const
+  int affected_rows() const;
 private:
   void init(const char* query);
-  void check_binds();
-  void reset_results();
-  void next_result();
-  void check_eof();
-  void query_make_space(int len);
-  void replace_placeholder(int argPos, const char* buf, int size);
-  void next_bind();
+  void find_param(const char* query);
+  void check_params() const;
+  sql_stream& next_param(QString value);
+  void check_end_of_stream();
+  QString next_result();
+  void check_results(int code_error);
 
   db_cnx& m_db;
+  QString m_query;
+  // query parametrs
   int m_nArgPos;
-  char* m_queryBuf;
-  int m_queryBufSize;
-  int m_queryLen;
-  int m_initialQueryLen;
-  char m_localQueryBuf[1024+1];
-  std::string m_queryFmt;
-  int m_chunk_size;
-  QVector<sql_bind_param> m_vars;
+  int m_nArgCount;
   // results
   bool m_bExecuted;
-  PGresult* m_pgRes;
+  sqlite3* m_sqlRes;
   int m_rowNumber;		/* last row read from the stream */
   int m_colNumber;		/* last column read from the stream */
   bool m_val_null;
   int m_affected_rows;
-
-  typedef QMap<QString, QString> Rec;
-  typedef QList<Rec> DataList;
-  DataList m_resultData;
-  bool m_callback;
 };
+
 
 #endif // INC_SQLSTREAM_H

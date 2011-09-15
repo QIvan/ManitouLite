@@ -17,7 +17,6 @@ INCLUDEPATH += ./PostgreSQL , ./SQLite
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
-    DEFINES  = WITH_PGSQL=1
     LIBS += -L/usr/lib/ -lcppunit
     include (test/test.pri)
  } else {
@@ -31,10 +30,6 @@ SOURCES +=  \
     database.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    PostgreSQL/psql_stream.cpp \
-    PostgreSQL/pgConnection.cpp \
-    #SQLite/sqlite_stream.cpp \
-    SQLite/sqliteConnection.cpp \
 
 HEADERS += \
     main.h \
@@ -48,7 +43,25 @@ HEADERS += \
     database.h \
     creatorConnection.h \
     connection.h \
-    PostgreSQL/psql_stream.h \
-    PostgreSQL/pgConnection.h \
-    #SQLite/sqlite_stream.h \
-    SQLite/sqliteConnection.h \
+
+#SQLite
+SOURCES +=  \
+    SQLite/sqlite_stream.cpp \
+    SQLite/sqliteConnection.cpp
+
+HEADERS += \
+    SQLite/sqlite_stream.h \
+    SQLite/sqliteConnection.h
+
+#PostgreSQL
+#DEFINES  = WITH_PGSQL=1
+#SOURCES +=  \
+#    PostgreSQL/psql_stream.cpp \
+#    PostgreSQL/pgConnection.cpp
+
+#HEADERS += \
+#    PostgreSQL/psql_stream.h \
+#    PostgreSQL/pgConnection.h \
+
+
+
