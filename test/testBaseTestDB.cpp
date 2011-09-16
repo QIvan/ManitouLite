@@ -91,7 +91,9 @@ QString testBaseTestDB::AddSpace_(const QString &str, int count)
 void testBaseTestDB::CheckText_(sql_stream &stream)
 {
   QString text;
+  CPPUNIT_ASSERT (!stream.isEmpty());
   stream >> text;
+  CPPUNIT_ASSERT (stream.isEmpty());
   CPPUNIT_ASSERT (text == "Test Text");
 }
 

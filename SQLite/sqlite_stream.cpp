@@ -109,8 +109,8 @@ sql_stream::sql_stream (const char *query, db_cnx& db) :
 
 sql_stream::~sql_stream()
 {
-//  if (m_sqlRes)
-//    PQclear(m_sqlRes);
+  if (m_sqlRes)
+    sqlite3_finalize(m_sqlRes);
   if(!m_bExecuted)
     DBG_PRINTF(1, "QUERY NOT EXECUTE!");
 }
@@ -191,11 +191,15 @@ sql_stream::execute()
   DBG_PRINTF(5,"execute: %s", m_query.toLocal8Bit().constData());
 
   service_f::return_random_param(m_query);
-  int rc =0;
-  //m_sqlRes = sqlite3_(m_db.connection()->m_db->connection(), m_query.toLocal8Bit().constData());
+  const char *errmsg = 0;
+  int rc = 0;
+  rc = sqlite3_prepare(m_db.connection()->m_db->connection(),
+                       m_query.toLocal8Bit().constData(),
+                       -1, &m_sqlRes, &errmsg);
+  m_status = sqlite3_step(m_sqlRes);
 
-  check_results(rc);
-//  m_affected_rows = service_f::count_affected_rows(m_sqlRes);
+  check_results(rc, errmsg);
+  m_affected_rows = sqlite3_changes(m_db.connection()->m_db->connection());
 
   m_rowNumber=0;
   m_colNumber=0;
@@ -205,9 +209,12 @@ sql_stream::execute()
 int
 sql_stream::isEmpty()
 {
-//  if (!m_bExecuted)
-//    execute();
-//  return m_rowNumber >= PQntuples(m_sqlRes);
+  if (!m_bExecuted)
+    execute();
+
+  if (m_colNumber+1 < sqlite3_data_count(m_sqlRes))
+    return false;
+  return m_status == SQLITE_DONE;
 }
 
 int
@@ -285,24 +292,26 @@ sql_stream::next_result()
 {
   QString result;
   check_end_of_stream();
-//  bool isNull = PQgetisnull(m_sqlRes, m_rowNumber, m_colNumber);
-//  if (!isNull)
-//  {
-//    result = QString(PQgetvalue(m_sqlRes, m_rowNumber, m_colNumber));
-//  }
-//  m_colNumber = ((m_colNumber+1) % PQnfields(m_sqlRes));
-  if (m_colNumber==0)
-    m_rowNumber++;
+  if (m_status == SQLITE_ROW)
+  {
+    result = QString(((const char*)sqlite3_column_text(m_sqlRes, m_colNumber)));
+
+    increment_position();
+  }
   return result;
 }
 
 void
-sql_stream::check_results(int code_error)
+sql_stream::check_results(int code_error, const QString& errmsg)
 {
   bool returns_rows = (m_query.indexOf("SELECT",0, Qt::CaseInsensitive) != -1);
 
-//  if (!m_sqlRes)
-//    throw db_excpt(m_query, SQl(m_db.connection()->m_db->connection()));
+  if (m_status == SQLITE_MISUSE)
+    throw db_excpt(m_query, m_db);
+
+  if (code_error != SQLITE_OK)
+    throw db_excpt(m_query, errmsg, QString::number(code_error));
+
 
 //  if ((returns_rows && PQresultStatus(m_sqlRes)!=PGRES_TUPLES_OK)
 //      || (!returns_rows && PQresultStatus(m_sqlRes)!=PGRES_COMMAND_OK))
@@ -310,4 +319,18 @@ sql_stream::check_results(int code_error)
 //    throw db_excpt(m_query, PQresultErrorMessage(m_sqlRes),
 //       QString(PQresultErrorField(m_sqlRes, PG_DIAG_SQLSTATE)));
 //  }
+}
+
+void
+sql_stream::increment_position()
+{
+  if (m_status != SQLITE_DONE)
+  {
+    m_colNumber = ((m_colNumber+1) % sqlite3_column_count(m_sqlRes));
+    if (m_colNumber==0)
+    {
+      m_rowNumber++;
+      m_status = sqlite3_step(m_sqlRes);
+    }
+  }
 }

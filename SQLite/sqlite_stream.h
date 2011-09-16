@@ -88,7 +88,8 @@ private:
   sql_stream& next_param(QString value);
   void check_end_of_stream();
   QString next_result();
-  void check_results(int code_error);
+  void check_results(int code_error, const QString& errmsg);
+  void increment_position();
 
   db_cnx& m_db;
   QString m_query;
@@ -97,10 +98,10 @@ private:
   int m_nArgCount;
   // results
   bool m_bExecuted;
-  sqlite3* m_sqlRes;
+  sqlite3_stmt* m_sqlRes;
   int m_rowNumber;		/* last row read from the stream */
   int m_colNumber;		/* last column read from the stream */
-  bool m_val_null;
+  int m_status;
   int m_affected_rows;
 };
 
