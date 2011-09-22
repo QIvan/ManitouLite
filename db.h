@@ -56,7 +56,7 @@ public:
   bool ping();
   void handle_exception(db_excpt& e);
 
-  static bool idle();
+  static bool all_is_idle();
   static const QString& dbname();
 private:
   db_cnx_elt* m_cnx;

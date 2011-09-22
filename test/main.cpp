@@ -19,9 +19,7 @@ std::string TestNames::db_api() { return "DB_API";}
 #ifdef WITH_PGSQL
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 #else
-CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::connect());
-CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::sql_stream());
-CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::disconnect());
+CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 #endif
 
 

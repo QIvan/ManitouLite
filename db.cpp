@@ -215,7 +215,7 @@ db_cnx::ping()
    queries whenever possible */
 // static
 bool
-db_cnx::idle()
+db_cnx::all_is_idle()
 {
   return creatorConnection::getInstance().idle();
 }

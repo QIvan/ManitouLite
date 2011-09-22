@@ -172,16 +172,6 @@ sql_stream::operator>>(QString& s)
 }
 //______________end operators
 
-namespace service_f {
-  int count_affected_rows(PGresult* res)
-  {
-    int result = 0;
-//    const char* t = PQcmdTuples(res);
-//    if (t && *t)
-//      result = atoi(t);
-    return result;
-  }
-}
 void
 sql_stream::execute()
 {
