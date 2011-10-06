@@ -22,6 +22,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <QMessageBox>
+#include <QDateTime>
 
 #include "db.h"
 #include "connection.h"
@@ -112,7 +113,13 @@ sql_stream::~sql_stream()
   if (m_sqlRes)
     sqlite3_finalize(m_sqlRes);
   if(!m_bExecuted)
+  {
+#ifdef QT_DEBUG
+    throw db_excpt(m_query, "QUERY NOT EXECUTE!");
+#else
     DBG_PRINTF(1, "QUERY NOT EXECUTE!");
+#endif
+  }
 }
 
 
@@ -183,11 +190,17 @@ sql_stream::execute()
   service_f::return_random_param(m_query);
   const char *errmsg = 0;
   int rc = 0;
-  rc = sqlite3_prepare(m_db.connection()->m_db->connection(),
-                       m_query.toLocal8Bit().constData(),
-                       -1, &m_sqlRes, &errmsg);
-  m_status = sqlite3_step(m_sqlRes);
-
+  bool isLocked = false;
+  do
+  {
+    rc = sqlite3_prepare(m_db.connection()->m_db->connection(),
+                         m_query.toLocal8Bit().constData(),
+                         -1, &m_sqlRes, &errmsg);
+    m_status = sqlite3_step(m_sqlRes);
+    isLocked = (rc == SQLITE_BUSY) || (m_status == SQLITE_LOCKED);
+    if (isLocked)
+      sleep(1);
+  } while (isLocked);
   check_results(rc, errmsg);
   m_affected_rows = sqlite3_changes(m_db.connection()->m_db->connection());
 
@@ -230,16 +243,31 @@ sql_stream::init (const char *query)
     execute();
 }
 
+namespace service_f
+{
+  QString find_key_word(const char* query)
+  {
+    QString sQuery = query;
+    const QString NOW = ":now:";
+    int pos_now = sQuery.indexOf(NOW);
+    if (pos_now != -1)
+    {
+      sQuery = sQuery.replace(NOW,
+                              '\'' + QDateTime::currentDateTime().toString("dd.MM.yyyy hh::mm::ss.zzzz") + '\'');
+    }
+    return sQuery;
+  }
+}
 void
 sql_stream::find_param(const char* query)
 {
-  QString sQuery = query;
+  QString sQuery = service_f::find_key_word (query);
   int pos = sQuery.indexOf(':');
   while (pos != -1)
   {
     if (sQuery.at(pos+1) != ':')
     {
-      int rightPos = sQuery.indexOf(' ', pos+1);
+      int rightPos = std::max(sQuery.indexOf(' ', pos+1), sQuery.indexOf(',', pos+1));
       if (rightPos < 0)
         rightPos = sQuery.length();
       int replaceCount = rightPos - pos;
@@ -294,7 +322,7 @@ sql_stream::next_result()
 void
 sql_stream::check_results(int code_error, const QString& errmsg)
 {
-  bool returns_rows = (m_query.indexOf("SELECT",0, Qt::CaseInsensitive) != -1);
+  //bool returns_rows = (m_query.indexOf("SELECT",0, Qt::CaseInsensitive) != -1);
 
   if (m_status == SQLITE_MISUSE)
     throw db_excpt(m_query, m_db);

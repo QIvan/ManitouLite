@@ -54,6 +54,7 @@ public:
   void end_transaction();
   //void enable_user_alerts(bool); // return previous state
   bool ping();
+  bool ping(const QString table_name);
   void handle_exception(db_excpt& e);
 
   static bool all_is_idle();

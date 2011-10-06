@@ -130,13 +130,21 @@ db_cnx::cancelRequest()
   this->connection()->m_db->cancelRequest();
 }
 
+namespace service_f
+{
+}
 bool
 db_cnx::next_seq_val(const char* seqName, int* id)
 {
   try {
-    QString query = QString("SELECT nextval('%1')").arg(seqName);
-    sql_stream s(query, *this);
-    s >> *id;
+    begin_transaction();
+    sql_stream update(QString("UPDATE sequence set value=value+1 where name='%1'").arg(seqName),
+                      *this);
+    sql_stream select(QString("SELECT value from sequence where name='%1'").arg(seqName),
+                      *this);
+    commit_transaction();
+    select >> *id;
+    -- *id;
   }
   catch(db_excpt& p) {
     DBEXCPT(p);
@@ -208,6 +216,23 @@ db_cnx::ping()
   if (!m_cnx) return false;
   return m_cnx->m_db->ping();
 }
+
+bool
+db_cnx::ping(const QString table_name)
+{
+  if (!m_cnx) return false;
+
+  try {
+    sql_stream ping ("Select 1 from " + table_name, *this);
+  }
+  catch (db_excpt)
+  {
+    return false;
+  }
+  return true;
+}
+
+
 
 /* idle(): Return false if at least one non-primary connection is in
    use, meaning that we're probably running a query in a sub-thread.

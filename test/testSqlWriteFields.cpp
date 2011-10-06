@@ -24,7 +24,7 @@ void test_sql_write_fields::insert()
         fiedls.add("test_id", next_id);
         fiedls.add("test_text", "Insert Text 1");
         fiedls.add_if_not_empty("test_char200", "Insert Text 1", 9); //Insert Te
-        fiedls.add_no_quote("test_date", "now()");
+        fiedls.add_no_quote("test_date", ":now:");
         fiedls.add_if_not_zero("test_int_not_null", 0);
         fiedls.add_if_not_zero("test_int_not_null", 1);
         QString str =  QString("INSERT INTO test_table(%1) VALUES(%2)")
@@ -40,7 +40,7 @@ void test_sql_write_fields::insert()
         sql_write_fields fiedls2(db.cdatab()->encoding());
         fiedls2.add_if_not_empty("test_text", "Insert Text 2", 9);//Insert Te
         fiedls2.add("test_char200", "Insert Text 2");
-        fiedls2.add_no_quote("test_date", "now()");
+        fiedls2.add_no_quote("test_date", ":now:");
         fiedls2.add_if_not_zero("test_int_not_null", 0);
         fiedls2.add_if_not_zero("test_int_not_null", 2);
         QString str2 =  QString("INSERT INTO test_table(%1) VALUES(%2)")

@@ -85,6 +85,7 @@ QString service_f::GetNameDb(const char *conninfo)
   list = list.first().split(QChar('='));
   QString db_name = list[1];
   db_name.append(".db");
+  return db_name;
 }
 
 int main()

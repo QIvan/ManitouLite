@@ -2,6 +2,9 @@
 #include <QDebug>
 #include <QString>
 #include <QStringList>
+#include <QThread>
+#include <QProcess>
+#include <QDateTime>
 #include <cppunit/TextTestResult.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/BriefTestProgressListener.h>
@@ -13,6 +16,8 @@
 #include "testBaseTestDB.h"
 #include "sqlstream.h"
 
+
+#include <QMessageBox>
 int global_debug_level;
 std::string TestNames::db_api() { return "DB_API";}
 

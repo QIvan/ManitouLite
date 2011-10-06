@@ -18,6 +18,7 @@
 #include <QRegExp>
 #include <QStringList>
 #include <QTextCodec>
+#include <QDateTime>
 
 #include "database.h"
 #include "db_listener.h"
@@ -75,17 +76,8 @@ database::end_transaction()
 bool
 database::fetchServerDate(QString& date)
 {
-  bool result=true;
-  try {
-  db_cnx db;
-  sql_stream query("SELECT to_char(now(),\'DD/MM/YYYY HH24::MI::SS\')", db);
-  query >> date;
-  }
-  catch (db_excpt e) {
-    DBEXCPT(e);
-    result=false;
-  }
-  return result;
+  date = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss.zzzz");
+  return true;
 }
 //_______________________________database____________________________________________//
 

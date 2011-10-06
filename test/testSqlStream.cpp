@@ -42,17 +42,17 @@ void testSqlStream::withVariable()
         CheckText_(query_int);
 
         sql_stream query_text("   SELECT test_int_not_null FROM test_table WHERE test_text=:p1",
-                             *m_DB);
+                              *m_DB);
         query_text << "Test Text";
         CheckInts_(query_text);
 
         sql_stream query_text_like("SELECT test_int_not_null FROM test_table WHERE test_text like :p1",
-                             *m_DB);
+                                   *m_DB);
         query_text_like << QString ("Test%");
         CheckInts_(query_text_like);
 
         sql_stream query_text_param("SELECT test_int_not_null FROM test_table WHERE test_text like :p1",
-                             *m_DB);
+                                    *m_DB);
         query_text_param << "%1";
         CPPUNIT_ASSERT(query_text_param.isEmpty());
 

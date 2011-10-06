@@ -42,19 +42,26 @@ void testBaseTestDB::DebugExept_(db_excpt &e)
 
 void testBaseTestDB::InsertString_(int count, QString tableName)
 {
-  for (int last_field=1; last_field<=count; ++last_field)
+  try
   {
-    sql_write_fields fiedls(m_DB->cdatab()->encoding());
-    fiedls.add("test_text", "Test Text");
-    fiedls.add("test_char200", "Test Text");
-    fiedls.add_no_quote("test_date", '\'' + QDateTime::currentDateTime().toString("yyyy-MM-dd") + '\'');
-    fiedls.add("test_int_not_null", last_field);
-    QString str =  QString("INSERT INTO %1(%2) VALUES(%3)")
-            .arg(tableName)
-            .arg(fiedls.fields())
-            .arg(fiedls.values());
-    sql_stream insert(str, *m_DB);
-    CPPUNIT_ASSERT (insert.affected_rows() == 1);
+    for (int last_field=1; last_field<=count; ++last_field)
+    {
+      sql_write_fields fiedls(m_DB->cdatab()->encoding());
+      fiedls.add("test_text", "Test Text");
+      fiedls.add("test_char200", "Test Text");
+      fiedls.add_no_quote("test_date", '\'' + QDateTime::currentDateTime().toString("yyyy-MM-dd") + '\'');
+      fiedls.add("test_int_not_null", last_field);
+      QString str =  QString("INSERT INTO %1(%2) VALUES(%3)")
+              .arg(tableName)
+              .arg(fiedls.fields())
+              .arg(fiedls.values());
+      sql_stream insert(str, *m_DB);
+      CPPUNIT_ASSERT (insert.affected_rows() == 1);
+    }
+  }
+  catch(db_excpt e)
+  {
+    DebugExept_(e);
   }
 }
 
