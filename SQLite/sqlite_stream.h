@@ -20,8 +20,8 @@
 #ifndef INC_SQLITE_SQLSTREAM_H
 #define INC_SQLITE_SQLSTREAM_H
 #include <libpq-fe.h>
-#include <vector>
 #include <QVector>
+#include <QPair>
 #include <QString>
 #include <sqlite3.h>
 #include "dbtypes.h"
@@ -57,7 +57,6 @@ void DBEXCPT(db_excpt& p);	// db.cpp
 class sql_stream
 {
 public:
-  sql_stream(const char* query, db_cnx& db);
   sql_stream(const QString query, db_cnx& db);
   virtual ~sql_stream();
 
@@ -82,8 +81,8 @@ public:
   int isEmpty(); //no const
   int affected_rows() const;
 private:
-  void init(const char* query);
-  void find_param(const char* query);
+  void find_param();
+  void find_key_word();
   void check_params() const;
   sql_stream& next_param(QString value);
   void check_end_of_stream();

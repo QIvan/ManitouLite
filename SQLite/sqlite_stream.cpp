@@ -96,16 +96,15 @@ namespace service_f {
 }
 
 sql_stream::sql_stream (const QString query, db_cnx& db) :
-  m_db(db), m_query(query)
+  m_db(db), m_query(query), m_nArgPos(0), m_nArgCount(0),
+  m_bExecuted(false), m_sqlRes(NULL)
 {
-  QByteArray qba = query.toUtf8();
-  init(qba.constData());
-}
+  service_f::replace_random_param(m_query);
+  find_key_word();
+  find_param();
 
-sql_stream::sql_stream (const char *query, db_cnx& db) :
-  m_db(db), m_query(query)
-{
-  init(query);
+  if(m_nArgCount == 0)
+    execute();
 }
 
 sql_stream::~sql_stream()
@@ -228,40 +227,28 @@ sql_stream::affected_rows() const
 
 
 //======================== private ===============================
+
+
 void
-sql_stream::init (const char *query)
+sql_stream::find_key_word()
 {
-  m_nArgCount = 0;
-  m_nArgPos = 0;
-  m_sqlRes = NULL;
-  m_bExecuted = false;
-
-  service_f::replace_random_param(m_query);
-  find_param(query);
-
-  if(m_nArgCount == 0)
-    execute();
-}
-
-namespace service_f
-{
-  QString find_key_word(const char* query)
+  QString sQuery = m_query;
+  const QString NOW = ":now:";
+  int pos_now = sQuery.indexOf(NOW);
+  if (pos_now != -1)
   {
-    QString sQuery = query;
-    const QString NOW = ":now:";
-    int pos_now = sQuery.indexOf(NOW);
-    if (pos_now != -1)
-    {
-      sQuery = sQuery.replace(NOW,
-                              '\'' + QDateTime::currentDateTime().toString("dd.MM.yyyy hh::mm::ss.zzzz") + '\'');
-    }
-    return sQuery;
+    sQuery = sQuery.replace(NOW,
+                            '\'' + QDateTime::currentDateTime().
+                                   toString("dd.MM.yyyy hh::mm::ss.zzzz")
+                            + '\'');
   }
+  m_query = sQuery;
 }
+
 void
-sql_stream::find_param(const char* query)
+sql_stream::find_param()
 {
-  QString sQuery = service_f::find_key_word (query);
+  QString sQuery = m_query;
   int pos = sQuery.indexOf(':');
   while (pos != -1)
   {
@@ -322,21 +309,11 @@ sql_stream::next_result()
 void
 sql_stream::check_results(int code_error, const QString& errmsg)
 {
-  //bool returns_rows = (m_query.indexOf("SELECT",0, Qt::CaseInsensitive) != -1);
-
   if (m_status == SQLITE_MISUSE)
     throw db_excpt(m_query, m_db);
 
   if (code_error != SQLITE_OK)
     throw db_excpt(m_query, errmsg, QString::number(code_error));
-
-
-//  if ((returns_rows && PQresultStatus(m_sqlRes)!=PGRES_TUPLES_OK)
-//      || (!returns_rows && PQresultStatus(m_sqlRes)!=PGRES_COMMAND_OK))
-//  {
-//    throw db_excpt(m_query, PQresultErrorMessage(m_sqlRes),
-//       QString(PQresultErrorField(m_sqlRes, PG_DIAG_SQLSTATE)));
-//  }
 }
 
 void
