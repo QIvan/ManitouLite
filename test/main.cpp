@@ -17,16 +17,11 @@
 #include "sqlstream.h"
 
 
-#include <QMessageBox>
-int global_debug_level;
 std::string TestNames::db_api() { return "DB_API";}
 
-#ifdef WITH_PGSQL
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
-#else
-CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
-#endif
 
+int global_debug_level;
 
 int main(int argn, char** args)
 {

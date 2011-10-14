@@ -1,6 +1,6 @@
     LIBS += -L/usr/lib/ -lcppunit
 
-    HEADERS +=  \
+    HEADERS +=  test/main.h \
     test/RegistryTest.h \
     test/testConnectDisconnect.h \
     test/testSqlWriteFields.h \
