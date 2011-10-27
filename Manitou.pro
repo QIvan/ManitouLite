@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+
 SUBDIRS += \
     DB \
-    GUI
+    GUI \
+    test \

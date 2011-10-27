@@ -6,19 +6,18 @@
 
 #QT       += core, gui, network, sql
 QT += network
-
-TARGET = manitouPortotype
+CONFIG += staticlib
+TARGET = DB
+TEMPLATE = lib
 
 LIBS += -L/usr/lib/ -lpq
 LIBS += -L/usr/ -lsqlite3
 INCLUDEPATH += /usr/include/ , /usr/include/c++/4.4.4/ , /usr/include/postgresql
 INCLUDEPATH += ./PostgreSQL , ./SQLite
 
-TEMPLATE = app
+
 
 CONFIG(debug, debug|release) {
-    LIBS += -L/usr/lib/ -lcppunit
-    include (test/test.pri)
  } else {
     SOURCES += main.cpp
  }
