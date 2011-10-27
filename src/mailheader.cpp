@@ -180,7 +180,7 @@ mail_header::fetch()
   try {
     sql_stream s("SELECT lines FROM header WHERE mail_id=:p1", db);
     s << m_mail_id;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       s >> m_lines;
     }
     else
@@ -459,7 +459,7 @@ mail_header::fetch_raw()
     sql_stream s("SELECT mail_text FROM raw_mail WHERE mail_id=:p1", db);
     s << m_mail_id;
     Oid lobjId;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       s >> lobjId;
     }
     else

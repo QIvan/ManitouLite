@@ -49,7 +49,7 @@ app_config::init()
     // (they apply to all configurations)
     sql_stream s("SELECT conf_key,value FROM config WHERE conf_name is null", db);
     QString key, value;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       s >> key >> value;
       m_mapconf[key] = value;
     }
@@ -59,7 +59,7 @@ app_config::init()
     if (!m_name.isEmpty()) {
       sql_stream s2("SELECT conf_key,value FROM config WHERE conf_name=:p1", db);
       s2 << m_name;
-      while (!s2.eof()) {
+      while (!s2.isEmpty()) {
 	s2 >> key >> value;
 	m_mapconf[key] = value;
       }
@@ -88,7 +88,7 @@ app_config::get_all_conf_names(QStringList* l)
   try {
     sql_stream s("SELECT distinct conf_name FROM config", db);
     QString confname;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       s >> confname;
       if (!confname.isEmpty())
 	l->append(confname);

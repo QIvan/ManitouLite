@@ -87,7 +87,7 @@ headers_groupview::init(const std::list<unsigned int>& id_list)
   m_mv_t::iterator v_it;
   for (; iter!=id_list.end(); ++iter) {
     s << *iter;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       s >> h;
     }
     headers_count++;

@@ -123,7 +123,7 @@ notepad::load()
   db_cnx db;
   try {
     sql_stream s ("SELECT contents FROM global_notepad", db);
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       QString contents;
       s >> contents;
       set_contents(contents);
@@ -162,7 +162,7 @@ notepad::save()
   db_cnx db;
   try {
     sql_stream s1("SELECT 1 FROM global_notepad", db);
-    if (s1.eof()) {
+    if (s1.isEmpty()) {
       sql_stream s2("INSERT INTO global_notepad(contents,last_modified) VALUES(:p1, now())", db);
       s2 << t;
     }

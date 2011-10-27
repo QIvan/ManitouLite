@@ -42,7 +42,7 @@ identities::fetch(bool force/*=false*/)
   const QString default_email=get_config().get_string("default_identity");
   try {
     sql_stream s("SELECT email_addr,username,xface,signature FROM identities ORDER BY email_addr", db);
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       mail_identity id;
       s >> id.m_email_addr >> id.m_name >> id.m_xface >> id.m_signature;
       if (id.m_email_addr.isEmpty()) {
@@ -71,7 +71,7 @@ mail_identity::update_db()
   try {
     sql_stream ss("SELECT 1 FROM identities WHERE email_addr=:p1", db);
     ss << m_orig_email_addr;
-    if (!ss.eof()) {
+    if (!ss.isEmpty()) {
       sql_stream su("UPDATE identities SET email_addr=:p1, username=:p2, xface=:p3, signature=:p4 WHERE email_addr=:p5", db);
       su << m_email_addr << m_name << m_xface << m_signature;
       su << m_orig_email_addr;
@@ -108,7 +108,7 @@ mailboxes::fetch(bool force/*=false*/)
   db_cnx db;
   try {
     sql_stream s("SELECT mbox_id, name FROM mailboxes", db);
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       mailbox m;
       s >> m.m_id >> m.m_email;
       (*this)[m.m_email]=m;

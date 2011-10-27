@@ -370,7 +370,7 @@ mail_address::fetchByEmail(const QString& email, bool* found)
   try {
     sql_stream s("SELECT addr_id,name FROM addresses WHERE email_addr=lower(:p1)", db);
     s << email;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       s >> m_id >> m_name;
       m_address=email;
       *found=true;
@@ -395,7 +395,7 @@ mail_address::fetch_by_nickname(const QString& nick, bool* found)
   try {
     sql_stream s("SELECT addr_id,name,email_addr FROM addresses WHERE nickname=lower(:p1)", db);
     s << nick;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       s >> m_id >> m_name >> m_address;
       *found=true;
     }
@@ -417,7 +417,7 @@ mail_address::add_alias (const QString email)
   try {
     sql_stream s1("SELECT addr_id FROM addresses where email_addr=:p1", db);
     s1 << email;
-    if (!s1.eof()) {
+    if (!s1.isEmpty()) {
       int addr_id;
       s1 >> addr_id;
       sql_stream s("UPDATE addresses SET owner_id=:p1 WHERE addr_id=:p2", db);
@@ -437,7 +437,7 @@ mail_address::remove_alias (const QString email)
   try {
     sql_stream s1("SELECT addr_id FROM addresses where email_addr=:p1", db);
     s1 << email;
-    if (!s1.eof()) {
+    if (!s1.isEmpty()) {
       int addr_id;
       s1 >> addr_id;
       sql_stream s("UPDATE addresses SET owner_id=null WHERE addr_id=:p2", db);
@@ -456,7 +456,7 @@ mail_address::fetchDetails(const QString& email)
   try {
     sql_stream s("SELECT addr_id,name,nickname,nb_recv_from,notes,TO_CHAR(last_recv_from,'YYYYMMDDHH24MISS'),TO_CHAR(last_sent_to,'YYYYMMDDHH24MISS'),invalid,recv_pri,nb_sent_to FROM addresses WHERE email_addr=lower(:p1)", db);
     s << email;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       QString sdate1, sdate2;
       s >> m_id >> m_name >> m_nickname >> m_nb_from >> m_notes >> sdate1 >> sdate2 >> m_invalid >> m_recv_pri >> m_nb_to;
       m_date_last_recv = date(sdate1);
@@ -479,12 +479,12 @@ mail_address::fetch_aliases (std::list<mail_address>* alist)
   try {
     sql_stream s1("SELECT addr_id FROM addresses WHERE email_addr=:p1", db);
     s1 << m_address;
-    if (!s1.eof()) {
+    if (!s1.isEmpty()) {
       int id;
       s1 >> id;
       sql_stream s("SELECT addr_id,email_addr FROM addresses WHERE owner_id=:p1", db);
       s << id;
-      while (!s.eof()) {
+      while (!s.isEmpty()) {
 	int id;
 	QString a_email;
 	s >> id >> a_email;
@@ -526,7 +526,7 @@ mail_address_list::fetchLike(const QString pattern,
   try {
     sql_stream s(query, db);
     s << percent_pattern;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       int id;
       QString email;
       int nb_from,nb_to;
@@ -556,7 +556,7 @@ mail_address_list::fetch_completions(const QString substring)
   try {
     sql_stream s(query, db);
     s << substring << substring;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       int id;
       QString email, name;
       s >> id >> email >> name;
@@ -586,7 +586,7 @@ mail_address_list::fetch_from_substring(const QString substring)
   try {
     sql_stream s(query, db);
     s << percent_pattern << percent_pattern;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       int id;
       QString email, name;
       QString date1, date2;
@@ -620,7 +620,7 @@ mail_address_list::fetchFromMail(mail_id_t mail_id, int/*mail_address::t_addrTyp
 		" AND a.addr_id=ma.addr_id"
 		" AND ma.addr_type=:p2", db);
     s << mail_id << addr_type;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       mail_address addr;
       QString email_addr;
       QString name;
@@ -652,7 +652,7 @@ mail_address_list::fetch()
   try {
     sql_stream s(query, db);
     s << percent_pattern;
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       int id;
       QString email;
       int nb_from,nb_to;
@@ -757,7 +757,7 @@ mail_address_list::fetch_recent(int type, int count/*=10*/, int offset/*=0*/)
   db_cnx db;
   try {
     sql_stream s(query, db);
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       QString email;
       QString name;
       QString sdate;

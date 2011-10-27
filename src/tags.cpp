@@ -40,7 +40,7 @@ tags_repository::fetch()
   db_cnx db;
   try {
     sql_stream s("SELECT tag_id,name,coalesce(parent_id,0) FROM tags", db);
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       int id, parent_id;
       QString name;
       s >> id >> name >> parent_id;
@@ -249,7 +249,7 @@ message_tag::reload()
   try {
     sql_stream s("SELECT name,parent_id from tags WHERE tag_id=:p1", db);
     s << m_tag_id;
-    if (!s.eof()) {
+    if (!s.isEmpty()) {
       s >> m_name >> m_parent_id;
     }
     else {
@@ -274,7 +274,7 @@ tags_definition_list::fetch(bool force /*=false*/)
   try {
     db_cnx db;
     sql_stream s ("SELECT tag_id,name,parent_id FROM tags ORDER BY name", db);
-    while (!s.eof()) {
+    while (!s.isEmpty()) {
       int id, parent_id;
       QString name;
       s >> id >> name >> parent_id;

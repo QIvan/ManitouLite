@@ -157,7 +157,7 @@ user_queries_repository::fetch()
     try {
       m_map.clear();
       sql_stream s("SELECT title,sql_stmt FROM user_queries", db);
-      while (!s.eof()) {
+      while (!s.isEmpty()) {
 	QString ttl;
 	QString sql;
 	s >> ttl >> sql;

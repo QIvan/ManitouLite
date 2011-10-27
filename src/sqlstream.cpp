@@ -377,7 +377,7 @@ sql_stream::execute()
 }
 
 int
-sql_stream::eof()
+sql_stream::isEmpty()
 {
   if (!m_bExecuted)
     execute();
@@ -395,7 +395,7 @@ sql_stream::next_result()
 void
 sql_stream::check_eof()
 {
-  if (eof())
+  if (isEmpty())
     throw db_excpt(m_queryBuf, "End of stream reached");
 }
 

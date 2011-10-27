@@ -91,11 +91,7 @@ public:
   void exec(){}
   /** returns true if there are no more results to read from the stream,
       or false otherwise */
-  int eof();
-  //int eof() { return eof(); }
-  bool val_is_null() const {
-    return m_val_null;
-  }
+  int isEmpty();
   int affected_rows() const {
     return m_affected_rows;
   }
