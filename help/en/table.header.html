@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">10.  Table: header - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.filter-log.html" title="9.  Table: filter_log" /><link rel="next" href="table.identities.html" title="11.  Table: identities" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">10. 
+         Table:
+         
+         <span class="structname">header</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.filter-log.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.identities.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.header"></a>10. 
+         Table:
+         
+         <span class="structname">header</span>
+        </h2></div></div></div><p>Each mail message has a header that consists of a list of
+<code class="literal">Name: Value</code> lines. It is from these lines that
+information such as the subject, the recipients, the sender, or the
+date of the message are extracted.  The <code class="literal">header</code>
+table contains the decoded header for each message. The lines are
+unfolded, so the newline character can be seen as an effective
+separator between successive entries. The lines are also decoded so
+that they no longer contain quoted-printable or base64 contents, and
+they're converted to the database character set (UTF-8).</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">header</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+Unique internal identifier of the message.
+
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.mail.html" title="14.  Table: mail">mail</a>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>lines</code></em></span></dt><dd><p>
+                <span class="type">text</span>
+
+The decoded contents of the entire header of the message. Lines are separated by newline characters (ASCII code=10).
+              </p></dd></dl></div><p>
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.filter-log.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.identities.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">9. 
+         Table:
+         
+         <span class="structname">filter_log</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 11. 
+         Table:
+         
+         <span class="structname">identities</span>
+        </td></tr></table></div></body></html>

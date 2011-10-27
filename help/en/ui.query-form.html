@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">6. The query form - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="user-interface.html" title="The User Interface" /><link rel="prev" href="ui.tags.html" title="5. Tags" /><link rel="next" href="ui.attachments.html" title="7. Attachments" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">6. The query form</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ui.tags.html">Prev</a> </td><th width="60%" align="center">The User Interface</th><td width="20%" align="right"> <a accesskey="n" href="ui.attachments.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ui.query-form"></a>6. The query form</h2></div></div></div><p>
+The <span class="guimenuitem">Selection-&gt;New query</span> command opens a non-modal dialog window that allows the user to specify search criteria, as shown below:
+</p><div class="screenshot"><div class="mediaobject" align="center"><img src="img/query-form.png" align="middle" /><div class="caption"><p>Query form</p></div></div></div><p>
+</p><p> The user should fill in one or several fields with values
+against which the database contents will be tested. When OK is
+pressed, the program generates a query based on the non-empty fields
+(they're combined with a logical AND, therefore for a particular
+message to be retrieved, it has to match all the submitted
+criteria). Then it runs the query and on completion, create a new page
+of results in the window from which the command has been
+called. </p><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2683261"></a>6.1. Fields</h3></div></div></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683266"></a>6.1.1. From/To/Cc/Any</h4></div></div></div><p>An email address is expected. You may type only a part of the address and hit the space bar to autocomplete: a list of addresses containing the substring typed will then be fetched and shown in the combobox. Any means that the messages to retrieve must have that address either in a From, To, or Cc field. 
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683281"></a>6.1.2. Dates between</h4></div></div></div><p>The date format expected is YYYY/MM/DD (US style) or
+DD/MM/YYYY (european style) depending on the current preferences.
+One of the minimum (lower bound) or maximum (upper bound) can be omitted
+to select an semi-open interval of dates.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683294"></a>6.1.3. Not older than</h4></div></div></div><p>Use this field to retrieve only the more recent messages,
+with "recent" expressed as a number of days, or weeks, or months back from now.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683304"></a>6.1.4. To</h4></div></div></div><p>an email address is expected, and autocompletion is available by
+hitting the space bar, as for the From/To/Cc/Any input field.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683315"></a>6.1.5. Subject</h4></div></div></div><p> a substring that the message subject must contain.
+The search will be case insensitive.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683325"></a>6.1.6. Contains</h4></div></div></div><p>a substring that the message body must contain. Be aware
+that the search is case sensitive.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683335"></a>6.1.7. SQL statement</h4></div></div></div><p>This field should be used by users who know SQL and the Manitou-Mail
+database schema.
+The input has to be a sql statement that
+returns a list of mail_id. Example:
+</p><pre class="screen"> SELECT mail_id FROM attachments
+WHERE content_type like 'image/jpeg' and content_size&gt;1024*1024</pre><p>
+(that query will retrieve any message to which a big jpeg image has
+been attached).
+As with any other field of the query dialog, the result of that query
+will be ANDed with the other criteria.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683356"></a>6.1.8. Contains tag</h4></div></div></div><p>The combobox lists all available tags. Selecting a tag
+will constrain the messages retrieved to those to which that tag is assigned.
+The hierarchy of tags is flattened so that child tags are expressed
+as parent_tag-&gt;child_tag
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683369"></a>6.1.9. Status</h4></div></div></div><p>Pressing the "More..." button will display a panel of
+all possible status combinations, with "Yes","No" and "Either" choices
+for each one. The status is a set of boolean properties (properties
+that can be true or false)
+</p><div class="itemizedlist"><ul type="disc"><li><p>"Either" means no test will be performed on the corresponding property.</p></li><li><p>"Yes" means the corresponding property has to be true.</p></li><li><p>"No" means the corresponding property has to be false.</p></li></ul></div><p>For example, choosing "No" for "Replied", and "No" for
+"Forwarded", and "Yes" to "Processed", means you want to constrain the
+messages to retrieve to those that have been marked as processed, but
+for which no reply has been issued, and that haven't been forwarded as
+well.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683408"></a>6.1.10. Limit To</h4></div></div></div><p>An integral number is expected in this field. It
+will limit the number of messages fetched from the database to this
+value, even if there are more messages that match the criteria
+entered.
+</p><p>
+It is intended to avoid cluttering the network and/or
+your computer if the query hasn't been narrowed enough to retrieve a
+reasonable number of messages. Several thousands of messages to fetch
+in one go is still reasonable, but millions of messages is not (it
+actually depends on the throughput of the link with the database and
+the power of the computer running manitou-mail user's interface, though).
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2683430"></a>6.1.11. In trash</h4></div></div></div><p>Only messages that are trashed will be retrieved.</p></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2683441"></a>6.2. Refining queries</h3></div></div></div><p>Sometimes a search has to be modified several times before
+giving satisfactory results. After results are shown, the
+<span class="guimenuitem">Selection-&gt;Modify</span> query command may be used
+to reopen the query selection dialog, with the criteria already set
+and ready to be modified.</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2683459"></a>6.3. Refreshing results</h3></div></div></div><p>Queries retrieve messages that match criteria at the time
+they're run. Since new messages come into the database independently
+of the user interface, it is possible to explicitly run again the
+query and have those new messages added to the current list. This is
+done with the <span class="guimenuitem">Selection-&gt;Refresh</span> command or
+the F5 key. Note that messages in the current list that no longer
+match the query are not removed from the list. </p><p>
+Built-in selections "New-&gt;All" and "Current-&gt;All" can also be automatically and periodically refreshed based on the setting on a Preferences parameter (Check new mail every X minutes). When this parameter is set and new messages are available, an icon with a number of messages gets displayed in a button at the bottom right in the status bar and a message "New mail is availaible" is left at the bottom left.
+</p><p>
+Clicking on the button will add the new messages to the current list (actually a refresh command will be issued, which should have the same effect except if you're in a multi-user environment and another user has already changed the messages so that they no longer match the "new" or "current" criteria).
+</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2683498"></a>6.4. Saving search criteria</h3></div></div></div><p>
+When query definitions are saved, they appear in the "User queries" branch of the quick selection panel. Use the <span class="guimenuitem">Selection-&gt;Save query</span> command to save a query. The associated SQL sentence will be shown, and a query name will be asked for.
+</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ui.tags.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="user-interface.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ui.attachments.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">5. Tags </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 7. Attachments</td></tr></table></div></body></html>

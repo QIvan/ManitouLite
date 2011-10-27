@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">2. Configurations - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="user-interface.html" title="The User Interface" /><link rel="prev" href="ui.invocation.html" title="1. Invocation" /><link rel="next" href="ui.quicksel.html" title="3. The quick selection panel" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Configurations</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ui.invocation.html">Prev</a> </td><th width="60%" align="center">The User Interface</th><td width="20%" align="right"> <a accesskey="n" href="ui.quicksel.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ui.configurations"></a>2. Configurations</h2></div></div></div><p>
+A configuration at the user interface level is a set of settings
+grouped inside the database under a common name. 
+The settings are related to the display and user
+preferences in general.
+</p><p>
+The contents of a configuration are written both by the <span class="guimenuitem">Display-&gt;Store
+settings</span> command and the preferences dialog.
+When manitou is launched without the <code class="literal"> --config</code> parameter specifying what configuration to use, it chooses its configuration name by
+combining the hostname and the operating system name of the machine it runs on
+(for example: <code class="literal">myhost-linux</code>).
+</p><p>In order to use the same configuration on different
+workstations, or for several users to share the same workstation but with
+different configurations , the --config option has to be used.
+Under MS-Windows, the operating system name is <code class="literal">windows</code>, no matter
+the version and flavour.
+</p><p>
+The configuration's name can only be chosen at application launch. To
+operate under a different configuration, the user must restart the
+program. Note that it does not affect user identities (the From fields of messages being composed): any
+identity  can be selected when composing a message, independantly of the current configuration.
+</p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ui.invocation.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="user-interface.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ui.quicksel.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1. Invocation </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. The quick selection panel</td></tr></table></div></body></html>

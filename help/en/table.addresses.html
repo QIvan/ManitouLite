@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">1.  Table: addresses - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="database-schema.html" title="Database schema" /><link rel="next" href="table.attachment-contents.html" title="2.  Table: attachment_contents" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">1. 
+         Table:
+         
+         <span class="structname">addresses</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="database-schema.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.attachment-contents.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.addresses"></a>1. 
+         Table:
+         
+         <span class="structname">addresses</span>
+        </h2></div></div></div><p>Contains an entry for each email address referenced by messages
+in the database. The email addresses are extracted from the header
+fields: To, Cc, From, Reply-To. The table is updated each time a new
+message is added to the database. It is also possible to add manually
+new addresses and comments, like in an address book.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">addresses</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>addr_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>Unique internal identifier for the email address. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>email_addr</code></em></span></dt><dd><p>
+                <span class="type">character varying(300)</span>
+
+</p><p>The email address, in lowercase characters. It is unique. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>name</code></em></span></dt><dd><p>
+                <span class="type">character varying(300)</span>
+
+</p><p>The name (or rfc822 comment) that is optionally associated to the email. </p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>nickname</code></em></span></dt><dd><p>
+                <span class="type">character varying(300)</span>
+
+</p><p>An optional nickname for the contact. Can be used as an alias for the email address.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>last_sent_to</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+
+</p><p>The most recent date at which a mail has been sent by manitou to this address. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>last_recv_from</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+
+</p><p>The most recent date at which a mail sent by this address has been received by manitou.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>notes</code></em></span></dt><dd><p>
+                <span class="type">text</span>
+
+</p><p>Optional comments about the contact. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>invalid</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+</p><p>A flag indicating that this address is invalid and shouldn't be used for future messages. Such addresses are to be kept in the table only if messages still reference them.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>recv_pri</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+
+</p><p>The priority of the contact. When a message comes from this email address (according to the From field), this value is added to priority of the message. </p><p>
+
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>nb_sent_to</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+
+
+</p><p>The total number of messages sent to this address. </p><p>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>nb_recv_from</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+</p><p>The total number of messages having this address as a recipient.</p><p>
+
+
+
+
+              </p></dd></dl></div><p>
+
+
+        </p><div class="variablelist"><p class="title"><b>Indexes on addresses</b></p><dl><dt><span class="term">addresses_email_idx</span></dt><dd><p>email_addr</p></dd></dl></div><p>
+
+
+        </p><div class="itemizedlist"><p class="title"><b>
+            Tables referencing mail_addresses via Foreign Key Constraints
+          </b></p><ul type="disc"><li><p>
+              <a class="xref" href="table.mail-addresses.html" title="15.  Table: mail_addresses">mail_addresses</a>
+            </p></li></ul></div><p>
+
+
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="database-schema.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.attachment-contents.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Database schema </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2. 
+         Table:
+         
+         <span class="structname">attachment_contents</span>
+        </td></tr></table></div></body></html>

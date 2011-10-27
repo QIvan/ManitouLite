@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">6. mdx plugins - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="manitou-mdx.html" title="manitou-mdx (Mail Database eXchanger)" /><link rel="prev" href="mdx.monitoring.html" title="5. Monitoring" /><link rel="next" href="manitou-mgr.html" title="manitou-mgr" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">6. mdx plugins</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="mdx.monitoring.html">Prev</a> </td><th width="60%" align="center">manitou-mdx (Mail Database eXchanger)</th><td width="20%" align="right"> <a accesskey="n" href="manitou-mgr.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="mdx.plugins"></a>6. mdx plugins</h2></div></div></div>
+The functionalities of manitou-mdx can be extended or customized by writing Perl modules that are hooked to manitou-mdx as plugins. Some examples of what plugins can do:
+
+<div class="itemizedlist"><ul type="disc"><li>automatically classify incoming messages.</li><li>open attachments and pass their contents to the full text indexer.</li><li>call external filters such as anti-virus and anti-spam and act upon the result.</li><li>match the sender with another database (customer db, whitelist, blacklist,...).</li><li>route a message, change its priority.</li><li>trigger alerts.</li><li>add additional information in headers or the private note.</li><li>automatically sign, encrypt, decrypt</li><li>modify the contents of incoming and outgoing messages.</li></ul></div>
+
+Plugins can be called at different stages of the mail processing, depending on what kind of functionality they provide:
+<div class="itemizedlist"><ul type="disc"><li><code class="literal">incoming_preprocess_plugins</code> are called before a message is opened and analyzed by manitou-mdx, and have read and write access to the raw mail file. For example, a sample spamassassin client is implemented as an incoming_preprocess_plugins, because SA expects a raw mail file, as does clamav.
+ </li><li><code class="literal">incoming_mimeprocess_plugins</code> are called after the message has been parsed by manitou-mdx, and before it's put into the database. These plugins have read/write access to the parsed form of the message (perl MIME object with decoded parts).
+</li><li><code class="literal">incoming_postprocess_plugins</code> are called after a
+message has been commited into the database and all associated actions
+have been carried out.
+</li><li><code class="literal">outgoing_plugins</code> are called before passing an outgoing
+message to the mail system. They can modify the message,
+for example by adding a digital signature or additional headers.
+</li><li><code class="literal">maintenance_plugins</code> are called periodically by the
+mdx to carry out special maintenance tasks such as cleaning up
+tables, reclaiming database space, running statistics, issuing
+alerts...  Maintenance plugins play the kind of role that could
+be assigned to crontab scripts, except that they have access to an already opened database connection, and current configuration options, and they're not run concurrently with the other mdx functions, such
+as importing or sending messages, so that no database access
+contention occurs.
+</li></ul></div><p>
+The distribution archive include those sample plugins, in the scripts/plugins
+directory:
+</p><div class="itemizedlist"><ul type="disc"><li>spamc: a pre-process plugin that calls the <a class="ulink" href="http://www.spamassassin.org" target="_top">SpamAssassin</a> client
+(spamc) on incoming messages to determine their spam probability and
+add a user-defined tag when positive.
+</li><li>
+mswordindexer: a mime-process plugin that pass MS-word .doc
+attachments on to <a class="ulink" href="http://wvware.sourceforge.net/" target="_top">wvWare</a>,
+convert them to Unicode text and add their words to the full-text
+index of the body.  This allows the user interface's search engine to
+retrieve those messages based on the contents of their attachments.
+</li><li>
+undouble_newlines: a pre-process plugin that checks and fixes
+mailfiles in which all end of lines are doubled, resulting in an incorrect MIME structure.
+Apparently, some pop3 servers may deliver mail this way, so activating this plugin
+allows to overcome this annoying feature.
+</li><li>
+bayes_classify: a mime-process plugin that does automatic mail
+classification according to words contained in the message. The so-called
+"naive bayesian algorithm" has become popular for its efficiency in spam
+filtering, but can
+also be used more generally for automated classification:
+a <a class="ulink" href="http://en.wikipedia.org/wiki/Naive_Bayes_classifier" target="_top">Wikipedia entry</a> explains this in detail.
+Read
+<a class="ulink" href="http://www.manitou-mail.org/tutorials/bayes-lang/lang-autodetect.html" target="_top">the case study on automatic language detection</a> for a step by step introduction on how to set up
+and use the classifier plugin in Manitou-Mail.
+</li><li>
+attach_uploader: <p>an outgoing plugin that replaces large
+attachments by a web link to the contents before sending a
+message. Such attachments are not welcome in Internet
+mail, and sometimes rejected, because they bog down mail
+servers, eat people's mailboxes quotas, and may cause trouble
+when being fetched.</p><p>
+When this plugin is enabled, large attachments (the inline maximum
+size is configurable) are uploaded to an FTP server instead of being
+sent along with the mail.
+</p><p>
+The plugin let Manitou-Mail users just attach files as usual and
+let manitou-mdx care whether they should be part of the message or
+taken outside.
+</p></li></ul></div><p>
+
+
+</p><p>A plugin is activated by installing the corresponding perl module file
+(with a .pm suffix) in the plugins directory, and declaring it in the
+configuration file, optionally with arguments, like this:
+
+</p><pre class="programlisting">
+[common]
+plugins_directory = /usr/local/manitou/plugins
+# vacuum every 2 hours
+maintenance_plugins = 2h vacuum
+
+[mailbox@company.com]
+# these plugins will be called only for that mailbox
+incoming_preprocess_plugins = spamc("tag for spam")
+outgoing_plugins = gpgsign
+incoming_postprocess_plugins = guesslang("en","fr") \
+                               anotherplugin(arg1,arg2,...)
+
+</pre><p>
+</p><p>
+
+</p><p>See the Plugins Reference section for
+developer-oriented information on how to write plugins.
+</p><p>
+
+</p><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="mdx.plugins.developement"></a>6.1. Developer information</h3></div></div></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678813"></a>6.1.1. Architecture</h4></div></div></div><p>A plugin named 'myplugin' should provide a myplugin.pm file declaring a myplugin package matching this structure:
+</p><pre class="programlisting">
+package myplugin;
+
+sub init {
+  my $dbh=shift;
+  my @args=@_;	# user-supplied arguments
+
+  # optionally do initialization stuff using $dbh and @args
+
+  bless {}      # create the perl object and returns a reference to it
+}
+
+sub finish {
+  # do optional cleaning
+  1;
+}
+
+sub process {
+  my ($self, $context) = @_;
+
+  # $self=class pointer
+
+  # $context=pointer to a hash set up by the caller and that contains those keys:
+  #   stage: string whose value is "preprocess", "mimeprocess", "postprocess", "outgoing" or "maintenance"
+  #   dbh: the DBI connexion object pointing to the mail database
+  #   filename: full path of the mailfile (undef if $context-&gt;{stage} is "outgoing" or "maintenance")
+  #   mail_id: an integer containing the unique id of the mail (undef if the stage is "preprocess" or "maintenance")
+  #   mimeobj: the MIME object containing the mail (undef if the stage is "preprocess" or "maintenance")
+  #   notice_log: a pointer to a function to log a notice message (to be called with the message as argument)
+  #   error_log: a pointer to a function to log an error message (to be called with the message as argument)
+
+  # The context is also used to communicate results to the caller and to the other plugins
+  # along the chain. The keys that are going to be interpreted are:
+  #   tags= perl array of tag names that should be assigned to the message.
+  #   action: undef if no particular action (insert the incoming message as new)
+  #     "discard" to discard an incoming message, "trash" to trash it
+
+
+  # Process the mail...
+  1;
+}
+
+1;   # the package should evaluate to 1
+</pre><p>The plugin's name must not contain any non-ascii nor punctuation or space characters. Digits are allowed except for the first character of the name.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678862"></a>6.1.2. Declaration</h4></div></div></div>
+Plugins are declared in the configuration file, through these directives:
+
+<pre class="programlisting">
+      # in the [common] section of the configuration
+      plugins_directory = /path/to/plugins
+
+      # in a [mailbox] section (the plugin will be called only for mails to that mailbox)
+      incoming_preprocess_plugins = plugin1(arg1,arg2,...) \
+      plugin2(arg1,arg2,arg3...) \
+      plugin3 \
+      ...
+
+      incoming_postprocess_plugins: same syntax than incoming_preprocess_plugins
+
+      incoming_mimeprocess_plugins: same syntax than incoming_preprocess_plugins
+
+      outgoing_plugins: same syntax than incoming_preprocess_plugins
+
+      maintenance_plugins: the declaration begins with a time frequency specification, which is either:
+          o an interval expressed as a number of hours. Example: 10h. That will make the plugin run every 10 hours, starting 10 hours after the program launch.
+          o an interval expressed as a number of minutes. Example: 100mn.
+          o a point in time. Example 12h10 will make the plugin run every day at 12h10. The hour range is 0 to 23, 0 being midnight.
+          o a point in time every hour. Example: *:20 will make the plugin run at 0:20, 1:20, 2:20 and so on. 
+
+      They are not tied to a mailbox, and thus should appear in the [common] section.
+
+</pre><p>
+      Invocation of maintenance plugins are serialized: two plugins never run at the same time. Also, mail import and export is stopped when a plugin runs. 
+Example: 
+
+</p><pre class="programlisting">
+[common]
+plugins_directory = /usr/local/manitou/plugins
+maintenance_plugins = 5h vacuum \
+		      23:30 reporting
+
+[mailbox@domain.tld]
+#  plugins for that mailbox
+incoming_preprocess_plugins = spamc("tag for spam")
+incoming_postprocess_plugins = guesslang("en","fr") \
+                               anotherplugin(arg1,arg2,...)
+outgoing_plugins = gpgsign
+
+[mailbox2@domain.tld]
+incoming_preprocess_plugins = spamc("another tag for spam")
+</pre><p>
+</p><p>
+Note that a declaration containing multiple plugins must be splitted across multiple lines, each line except the last one being ended by a backslash.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678941"></a>6.1.3. Loading and initialization</h4></div></div></div><p>When manitou-mdx is launched, it searches the configuration file for all plugins and includes each corresponding perl module file once, using perl's require command. It means that in the example configuration shown, it would load these files from /usr/local/manitou/plugins:
+guesslang.pm, anotherplugin.pm, spamc.pm, gpgsign.pm (note that spamc will be instantiated twice).
+
+For each reference to a plugin, a new plugin perl class is instantiated, and its init() function called with the arguments from the config file along with a database handle. For the example configuration, the following instantiations would occur:
+
+</p><pre class="programlisting">
+$pl1 = guesslang::init($dbh, "en","fr");
+$pl2 = anotherplugin::init($dbh, arg1,arg2,...);
+$pl3 = spamc::init($dbh, "tag for spam");
+$pl4 = gpgsign::init($dbh);
+$pl5 = spamc::init($dbh, "another tag for spam");
+
+</pre><p>
+In the example above, since spamc is used by two different mailboxes, two separate spamc objects are instantiated and spamc::init is called on each of them. Variables used inside the spamc module may or may not be shared between different instances of a module: it is the responsibility of the plugin's writer to make the right choice between private variables inside the object ($self-&gt;var) or variables shared at the package level (my $var). 
+</p><p>
+The user-supplied arguments for the init function are passed verbatim from the configuration file, and thus are to be considered as perl text. (technically, the call to the plugin's init function is embedded inside a perl eval call). Thus those user supplied arguments should be expressed as they would be inside a perl program, and every special character should be quoted according to perl syntax rules. Examples: </p><pre class="programlisting">
+# @ sign quoted as per perl strings requirements
+incoming_preprocess_plugins=spamc("tag\@cf")
+
+# Simple quotes can be also used to avoid perl variables interpolation
+# inside strings
+incoming_preprocess_plugins=spamc('tag@cf$')
+
+# On the other hand, we may want to use perl's interpreter to evaluate
+# variables: here we're passing the value of the MAIL_ARCH_DIR environment
+# variable.
+incoming_postprocess_plugins=archivemsg($ENV{MAIL_ARCH_DIR})
+
+</pre></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2679004"></a>6.1.4. Processing</h4></div></div></div><div class="sect4" lang="en" xml:lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="id2679009"></a>6.1.4.1. Incoming mail</h5></div></div></div>
+Each time a new message file appears in the mailfiles_directory of a mailbox, manitou-mdx carries out these actions:
+<div class="orderedlist"><ol type="1"><li><p>It changes the file suffix (the part at the right of the dot) from .received to .pid.processing 
+</p></li><li><p>If there are incoming_preprocess_plugins, it calls their process() functions, in the order of their declaration in the configuration file. The plugins are allowed to modify the mailfile if needed. 
+</p></li><li><p>If one of the plugins has marked the mail as "to be discarded", the mailfile suffix is changed to .discarded and the processing of this message is stopped. 
+</p></li><li><p>The mailfile is opened, parsed and put into a perl MIME object.
+</p></li><li><p>If there are incoming_mimeprocess_plugins, their process() functions are called, in the order of their declaration in the configuration file. Plugins are allowed to modify the MIME object in memory in every way they see fit. 
+</p></li><li><p>Once again, if one of the plugins has marked the mail as "to be discarded", the mailfile suffix is changed to .discarded and the processing of this message is stopped. 
+</p></li><li><p>manitou-mdx does its own processing of the message, using the MIME object possibly modified by the plugins previously run. Then if no error has occured, it inserts it into the database and commits the transaction. 
+</p></li><li><p>It changes the mailfile's suffix from .pid.processing to .processed, or to .error if an error has occured during the previous step.
+</p></li><li><p>If there are incoming_postprocess_plugins, it calls them in the order of their declaration in the configuration file. Once all the plugins have been called, it commits whatever changes have been made in the database. 
+</p></li></ol></div></div><div class="sect4" lang="en" xml:lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="id2679108"></a>6.1.4.2. Outgoing mail</h5></div></div></div><p>When a message is ready to be sent (its status has the "Outgoing" bit and not the "Sent" bit), manitou-mdx does the following:
+</p><div class="orderedlist"><ol type="1"><li><p>If there are outgoing_plugins attached to the mailbox of the message, their process functions are called with the outgoing mail built as a perl MIME object in memory, and the unique mail identifier in the database (mail_id). 
+</p></li><li><p>Once all plugins have been run, the message will be passed from the MIME object in memory (possibly modified by the plugins) to the local mailer. Note that it is the plugin's responsibility to update the message in the database to reflect whatever change it makes in the MIME object in memory. 
+</p></li></ol></div><p>
+</p></div><div class="sect4" lang="en" xml:lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="id2679149"></a>6.1.4.3. Mailbox import</h5></div></div></div><p>When importing a mailbox with manitou-mdx (using the --mboxfile option), incoming_mimeprocess_plugins are called if:</p><div class="itemizedlist"><ul type="disc"><li><p>the --mailbox option is also specified in the command line </p></li><li><p>the configuration has a declaration for that mailbox  </p></li><li><p>that declaration includes incoming_mimeprocess_plugins lines.  </p></li></ul></div><p>Other kinds of plugins are not called. Each mail contained in the mailbox file goes through steps 4 to 7 of the incoming mail process described above.</p></div></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="mdx.monitoring.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="manitou-mdx.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="manitou-mgr.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">5. Monitoring </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> manitou-mgr</td></tr></table></div></body></html>

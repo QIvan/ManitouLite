@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">5.  Table: config - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.body.html" title="4.  Table: body" /><link rel="next" href="table.files.html" title="6.  Table: files" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5. 
+         Table:
+         
+         <span class="structname">config</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.body.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.files.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.config"></a>5. 
+         Table:
+         
+         <span class="structname">config</span>
+        </h2></div></div></div><p>
+Contains (key, values) string pairs that contain configuration information. Keys can be repeated with different values for different configurations names. 
+</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">config</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>conf_key</code></em></span></dt><dd><p>
+                <span class="type">character varying(100)</span>
+
+
+
+                <code class="literal">NOT NULL</code>
+</p><p>The name of the parameter. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>value</code></em></span></dt><dd><p>
+                <span class="type">character varying(2000)</span>
+
+</p><p>The value of the parameter. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>conf_name</code></em></span></dt><dd><p>
+                <span class="type">character varying(100)</span>
+</p><p>The name of the configuration to which the pair (key,value) applies. A null value means that this is the default configuration. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>date_update</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+
+</p><p>The date and time of the row's last update</p><p>
+
+              </p></dd></dl></div><p>
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.body.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.files.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">4. 
+         Table:
+         
+         <span class="structname">body</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 6. 
+         Table:
+         
+         <span class="structname">files</span>
+        </td></tr></table></div></body></html>

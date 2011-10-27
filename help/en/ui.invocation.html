@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">1. Invocation - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="user-interface.html" title="The User Interface" /><link rel="prev" href="user-interface.html" title="The User Interface" /><link rel="next" href="ui.configurations.html" title="2. Configurations" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">1. Invocation</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="user-interface.html">Prev</a> </td><th width="60%" align="center">The User Interface</th><td width="20%" align="right"> <a accesskey="n" href="ui.configurations.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="ui.invocation"></a>1. Invocation</h2></div></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2682619"></a>1.1. Without arguments</h3></div></div></div><p>The user interface first has to connect to an existing mail database.
+Either the connection parameters are given on the command line, or
+the program will display this dialog window:
+
+</p><div class="screenshot"><div class="mediaobject" align="center"><img src="img/login.png" align="middle" /><div class="caption"><p>Startup window when no connection parameters are passed</p></div></div></div><p>
+
+Fields left empty in this window get default values provided by
+the PostgreSQL client-API:
+</p><div class="itemizedlist"><ul type="disc"><li><p>Database name: login name of the current user (as logged to the operating system).</p></li><li><p>Login: also the login name of the current user.</p></li><li><p>Password: empty.</p></li><li><p>Host: empty, which means connect locally to an unix domain socket on Unix, or localhost on MS-Windows.</p></li><li><p>More parameters: empty.</p></li></ul></div><p>
+These defaults can themselves be overriden with some PostgreSQL specific
+environment variables, such as PGHOST, PGUSER or PGPORT.
+</p><p>When the connection is successful, the parameters (except the
+password) are stored locally, and recalled automatically on the next
+invocation, so that only the password has to be typed again.</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2682660"></a>1.2. Optional arguments</h3></div></div></div><p>Options are specified on the command line using the syntax: <code class="literal">--option1=value1 --option2=value2 ...</code> on the command line.
+The accepted options are:
+
+</p><div class="itemizedlist"><ul type="disc"><li><p>--dbcnx: a list of space-separated <code class="code">name=value</code> parameters, all grouped in one string (under a shell, the string should be enclosed in simple
+  or double quotes if it contains spaces).The more common parameters
+  are <code class="literal">user</code>, <code class="literal">password</code>, <code class="literal">host</code>, <code class="literal">port</code>, and <code class="literal">dbname</code>.
+</p><div class="informalexample">For example: <pre class="screen">manitou --dbcnx="dbname=mail user=joe host=pgserver"</pre></div><p>
+  </p></li><li><p>--config: a configuration's name. See the <a class="link" href="ui.configurations.html" title="2. Configurations">user interface configurations</a>
+for details.</p></li><li><p>--debug-output: an integer debug level between 1 and 10. Useful only for developpers.</p></li></ul></div><p>
+</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="user-interface.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="user-interface.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ui.configurations.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">The User Interface </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 2. Configurations</td></tr></table></div></body></html>

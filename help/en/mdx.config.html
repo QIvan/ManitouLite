@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">2. Configuration file - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="manitou-mdx.html" title="manitou-mdx (Mail Database eXchanger)" /><link rel="prev" href="manitou-mdx-intro.html" title="1. Usage" /><link rel="next" href="mdx.importing-mbox.html" title="3. Importing an existing mailbox in mbox format" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Configuration file</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="manitou-mdx-intro.html">Prev</a> </td><th width="60%" align="center">manitou-mdx (Mail Database eXchanger)</th><td width="20%" align="right"> <a accesskey="n" href="mdx.importing-mbox.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="mdx.config"></a>2. Configuration file</h2></div></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="id2677316"></a>2.1. Location</h3></div></div></div></div>
+By default, the configuration file is located at <code class="filename">/etc/manitou-mdx.conf</code>.
+Both manitou-mgr and manitou-mdx accept the <code class="literal">--conf</code> option to specify an alternative file.
+
+<div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="mdx.config.struct"></a>2.2. Structure</h3></div></div></div><p>The file is divided into sections: one common section at the top of the file, followed by one section per mailbox.</p><p>
+The common section contains configuration options that apply by default to all mailboxes. Then each mailbox's section can override specific options, or provide values for options that are not referenced in the common section. Options appearing in a mailbox section only apply to that mailbox.
+</p><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677354"></a>2.2.1. Syntax rules</h4></div></div></div><div class="itemizedlist"><ul type="disc"><li><p>blank lines and lines starting with # are ignored</p></li><li><p>blanks around the first '=' sign of a line are ignored.</p></li><li><p>trailing blanks are ignored.</p></li><li><p>Some parameters accept multi-lines values, in which case a backslash (\) at the end of the line is the continuation character to use.</p></li></ul></div></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677386"></a>2.2.2. Example</h4></div></div></div><pre class="programlisting">
+[common]
+db_connect_string = Dbi:Pg:dbname=mail;user=mailadmin
+local_delivery_agent=/usr/sbin/sendmail -f $FROM$ -t
+plugins_directory = /usr/share/perl/5.10
+
+# one mailbox
+[mymail@domain.tld]
+index_words=yes
+mailfiles_directory=/var/manitou/spool/mymail
+
+# another mailbox
+[mymail2@other-domain.tld]
+mailfiles_directory=/var/manitou/spool/mymail2
+index_words=no
+preferred_datetime=sender
+</pre></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="mdx.config.options"></a>2.3. Alphabetical list of options</h3></div></div></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677413"></a>2.3.1. alive_interval</h4></div></div></div><p>
+[common] section only. 
+</p><p>
+When this parameter is set, manitou-mdx will update the runtime_info table every 'alive_interval' seconds, with an entry containing the current timestamp (timestamp means the current date and time expressed as a number of seconds elapsed since Jan,1st 1970 UTC). The timestamp is put in the runtime_info.rt_value column of the row that matches rt_key='last_alive'. Its purpose is to be read by an external process to periodically check that manitou-mdx is alive and running.
+</p><p>
+Since it involves a write into the database, the value for 'alive_interval' should not be too small or the table will get rapidly bloated and performance degraded. For example any value below 60s is probably unnecessary small, while 600s looks reasonable.
+</p><p>
+The default is to leave it unset, meaning there is no update of the last_alive entry. A value of zero has the same meaning.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677447"></a>2.3.2. auto_db_reconnect</h4></div></div></div><p>[common] section only.</p><p>When set to "yes", manitou-mdx will try to reconnect to the database when an error occurs that may be due to a loss of its connexion to the database. When set to "false", it will abort with a fatal error.</p><p>The default is yes.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="mdx.db_connect_string"></a>2.3.3. db_connect_string</h4></div></div></div><p>[common] section only.</p><p>
+The connection string used to connect to the manitou-mail database, formatted as needed by the DBD::Pg perl driver.
+
+Example:
+</p><pre class="programlisting">
+db_connect_string = dbi:Pg:dbname=mail;user=mailadmin;password=pass;host=dbserver
+</pre><p>
+</p><p>
+The dbname, user, password and host parameters should suffice for most installations. However for more customized setups, additional options can be provided in the connect string. Please refer to the documentation of DBD::Pg and/or the PostgreSQL manual for more information. 
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677500"></a>2.3.4. detach_text_plain</h4></div></div></div><p>[common] or mailboxes sections.</p><p>When set to "yes", text/plain attachments with no filename get included into the body of the messages instead of being kept separate. Such attachments are typically the text part of HTML messages, so it's more convenient to have them in the body.</p><p>The default is yes.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677521"></a>2.3.5. flush_word_index_interval</h4></div></div></div><p>[common] section only.</p><p>It is the number of seconds during which word vectors used by
+the full text indexer are kept in memory, before being flushed
+to the database. During this lapse of time, the newly imported
+mails are not yet full-text searchable by other programs such
+as the user interface.</p><p>Flushing the vectors induces a spike of disk activity in the
+database, so increasing the delay between flushings reduces
+the load on the database.</p><p>This parameter can be changed in combination with
+<em class="parameter"><code>flush_word_index_max_queued</code></em>. It is ignored if
+<em class="parameter"><code>index_words</code></em> is set to "no".
+</p><p>The default value is 300.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677562"></a>2.3.6. flush_word_index_max_queued</h4></div></div></div><p>[common] section only.</p><p>It is the maximum number of messages for which word vectors
+are kept in memory before being flushed
+to the database, and thus made available to the full-text
+search functionality.
+The parameter is ignored if <em class="parameter"><code>index_words</code></em> is set to "no".
+</p><p>The default value is 100.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677586"></a>2.3.7. incoming_check_interval</h4></div></div></div><p>[common] section only.</p><p>It is the number of seconds that manitou-mdx will wait before checking
+for new messages to be imported from the spool directory.
+</p><p>Setting it too small will generate too much unnecessary disk activity.
+When at least one file is available, all messages ready to be imported
+will be processed.
+</p><p>The default is 60 (one check every minute)</p><p>Example:
+</p><pre class="programlisting">
+# check for new mail every 120s
+incoming_check_interval=120
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677621"></a>2.3.8. incoming_mimeprocess_plugins</h4></div></div></div><p>[common] or mailboxes sections.</p><p>This is a multiline entry that declares the Perl plugins
+that should be run against incoming messages at import time,
+after having been parsed and before being stored into the database.
+See <a class="xref" href="mdx.plugins.html" title="6. mdx plugins">mdx plugins</a> for more information on plugins.
+</p><p>Example:
+</p><pre class="programlisting">
+incoming_mimeprocess_plugins = bayes_classify \
+			antispam("spamtag")
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677655"></a>2.3.9. incoming_postprocess_plugins</h4></div></div></div><p>[common] or mailboxes sections.</p><p>This is a multiline entry that declares the Perl plugins
+that should be run against incoming messages at import time,
+after the message has been put into the database.
+See <a class="xref" href="mdx.plugins.html" title="6. mdx plugins">mdx plugins</a> for more information on plugins.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677678"></a>2.3.10. incoming_preprocess_plugins</h4></div></div></div><p>[common] or mailboxes sections.</p><p>This is a multiline entry that declares the Perl plugins
+that should be run against incoming messages at import time,
+before the mailfile is opened.
+See <a class="xref" href="mdx.plugins.html" title="6. mdx plugins">mdx plugins</a> for more information on plugins.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677700"></a>2.3.11. index_words</h4></div></div></div><p>[common] or mailboxes sections.</p><p>A boolean value indicating whether manitou-mdx should index the
+body contents of incoming and outgoing messages. Such indexing allows
+the use of the fast words-search capability in manitou's user interface.
+It may be desirable to turn it off to reduce the database's disk usage.
+</p><p>That directive can appear in the [common] section and be overriden by
+mailboxes sections. It defaults to yes.
+</p><p>Example:
+</p><pre class="programlisting">
+[mailbox@domain.tld]
+index_words = no
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677731"></a>2.3.12. init_sql</h4></div></div></div><p>[common] section.</p><p>A multiline entry with SQL statements to be executed after each successful database connection. The typical use case is to SET specific SQL parameters.
+</p><p>Example:
+</p><pre class="programlisting">
+init_sql = SET TIME ZONE 'Europe/Rome' \
+  SET search_path TO myschema,public
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677755"></a>2.3.13. local_delivery_agent</h4></div></div></div><p>[common] section only.</p><p>The external command to which outgoing mail is passed by manitou-mdx. This
+is typically a sendmail-like command along with its arguments.
+The message is passed to the command through its standard input.
+If a substring $FROM$ is found, it will be substituted by
+the email address of the identity attached
+to the message when it was composed.</p><p>Example:
+</p><pre class="programlisting">
+[common]
+local_delivery_agent=/usr/lib/sendmail -f $FROM$ -t
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677783"></a>2.3.14. mailfiles_directory</h4></div></div></div><p>mailboxes sections</p><p>The path of the directory where incoming mailfiles are looked for.
+Is is the fact that a mailfile is found in a mailbox directory
+that tells the mdx that the message belongs to this mailbox.
+</p><p>
+Example:
+</p><pre class="programlisting">
+[support@domain.tld]
+mailfiles_directory=/var/tmp/manitou/spool/support
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677807"></a>2.3.15. maintenance_plugins</h4></div></div></div><p>[common] section.</p><p>Multi-line declaration of plugins that run periodically.
+The period is either a time interval such as 10mn or 2h, or
+a point in time in the day such as 20:30.
+</p><p>Example:
+</p><pre class="programlisting">
+# vacuum every 2 hours
+maintenance_plugins = 2h vacuum
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677831"></a>2.3.16. no_send</h4></div></div></div><p>[common] or mailboxes sections.</p><p>Set to yes if manitou-mdx should not send any outgoing message,
+even if such messages are available in the database.</p><p>If set to no or not set at all, manitou-mdx will pass outgoing
+messages to the local mailer and mark them as sent in the database.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677851"></a>2.3.17. outgoing_bcc</h4></div></div></div><p>[common] or mailboxes sections.</p><p>An email address to which all outgoing email will be carbon-copied,
+using the Bcc field. Several email addresses separated by commas can
+also be used. This can be used for debugging, backup, or tracking purposes.
+</p><p>Example:
+</p><pre class="programlisting">
+# blind-copy all outgoing mail to the local 'outgoing' address
+outgoing_bcc=outgoing@localhost
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677878"></a>2.3.18. outgoing_check_interval</h4></div></div></div><p>[common] section only.</p><p>It is the number of seconds that manitou-mdx will sleep before checking
+for pending outgoing messages to send. Checking for outgoing messages is
+implented as a fast SQL query to the database.</p><p>The default is 5.</p><p>Example:
+</p><pre class="programlisting">
+# check for new mail to send every 60s
+outgoing_check_interval=60
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677906"></a>2.3.19. plugins_directory</h4></div></div></div><p>[common] section only</p><p>The path of a directory where manitou-mdx plugins are to be searched first. Plugins are perl modules named after the plugin name followed by a <code class="literal">.pm</code> suffix.
+When specified, this directory must contain a <code class="literal">Manitou/Plugins</code> subdirectory, which itself contains the module files.
+</p><p>By default, <code class="literal">plugins_directory</code> is not specified and the Perl interpreter follows its own algorithm to find the manitou-mdx plugin modules as it does with any other Perl module.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677943"></a>2.3.20. postprocess_mailfile_cmd</h4></div></div></div>
+[common] or mailboxes sections.
+<p>A shell command run each time a mailfile has
+been processed, with the arguments below:
+</p><div class="itemizedlist"><ul type="disc"><li>$0: a string telling the result of the mailfile processing, with
+three possible values: <code class="literal">imported</code>, <code class="literal">error</code> or 
+<code class="literal">discarded</code>. A message is discarded when the action resulting
+from applying the filtering rules is "delete".</li><li>$1: the current name and path of the mailfile</li><li>$2: the mailbox's name (based on this config file)</li></ul></div><p>
+</p><p>Example:
+This postprocess command copies the mailfile to a daily tar archive
+and then removes it.
+</p><pre class="programlisting">
+
+postprocess_mailfile_cmd = cd `dirname $1` &amp;&amp; tar -f /var/manitou/archive/daily-$0.`date +%Y%m%d`.tar -r `basename $1` &amp;&amp; rm $1
+
+</pre><p>
+Note that the command has to be a one-liner. For complex processing, it
+is therefore better to point postprocess_mailfile_cmd to a user-made separate
+shell script, like this:
+</p><pre class="programlisting">
+postprocess_mailfile_cmd = /usr/manitou/bin/postprocess.sh $0 $1 $2
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678012"></a>2.3.21. preferred_charset</h4></div></div></div><p>[common] or mailboxes sections.</p><p>The charset to which the bodies of outgoing mail should be
+converted before being set. Examples of values are utf-8, iso-8859-1,
+iso-8859-15, us-ascii...
+</p><p>When left unset, manitou-mdx will try to find a suitable charset based on
+the database encoding and possibly the contents of the message to send.
+</p><p>Example:
+</p><pre class="programlisting">
+# use utf-8 to encode anything
+preferred_charset = utf-8
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678043"></a>2.3.22. preferred_datetime</h4></div></div></div><p>[common] or mailboxes sections.</p><p>Each message has a internal date field in the database whose value can
+differ from the mail's headers date field. The header contains the sender's
+computer date at the time the message was sent. This date can be wrong
+or the delay between the sending and the fetch of the message into the
+database can be significant.</p><p>The 'preferred_datetime' parameter tells whether the internal date
+field of an incoming message should be set to the sender date or to
+the message's arrival date.  The possible values are:
+</p><div class="itemizedlist"><ul type="disc"><li><code class="literal">sender</code>: the sender's date is used. Recommended if you're
+often offline and the incoming messages are not necessarily imported
+into manitou-mail on a regular basis, in a stream-like fashion. Note
+that the sender's date can be wrong (badly formatted or faked by the sender).
+</li><li><code class="literal">mtime</code>: the last modification's date of the file containing
+the message. Recommended if mail is fetched on a regular basis or if
+the arrival date is to be considered more significant than the
+sender's date.
+</li></ul></div><p>
+</p><p>The default is <code class="literal">mtime</code>.</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678101"></a>2.3.23. security_checks</h4></div></div></div><p>[common] section only.</p><p>When set to "yes", the tmpdir directory permissions and owner
+are checked to make sure that no other user can create files
+or symlinks into it. If that check fails, the program exits immediately.
+When security_checks is set to "no", the result of the test is ignored.
+</p><p>The default is set to "yes".</p><p>Example:
+</p><pre class="programlisting">
+security_checks=yes
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678130"></a>2.3.24. store_filenames</h4></div></div></div><p>[common] or mailboxes sections.</p><p>A boolean value telling whether each mailfile's name and path should be
+stored into the <code class="literal">files</code> table of the database, associated with its
+mail_id. If the mailfiles are not deleted after processing, that
+table allows to retrieve a message in its original non-decoded form
+from it's database mail_id.</p><p>The default is set to yes</p><p>Example:
+</p><pre class="programlisting">
+store_filenames=no
+</pre><p>
+</p><p>
+See <a class="xref" href="table.files.html" title="6.  Table: files">files</a> for more
+information on this table.
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678172"></a>2.3.25. store_raw_mail</h4></div></div></div><p>[common] or mailboxes sections.</p><p>A boolean value telling if the original contents of imported mail
+messages should be stored as a binary large object in the
+raw_mail table. This allows to retrieve a message in its
+original non-decoded form by it's database mail_id, even after the
+mailfile has been deleted.
+</p><p>The default is set to no</p><p>Example:
+</p><pre class="programlisting">
+store_raw_mail=yes
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2678201"></a>2.3.26. tags_incoming</h4></div></div></div><p>[common] or mailboxes sections.</p><p>This is a multi-line entry that lists the tags that should be
+applied to all the messages coming into a mailbox. Note that a plugin
+called on incoming messages is still able to remove or add any
+tag. Each tag's name must be on a line by itself, consecutive lines
+being separated by a backslash followed by a newline.  White spaces
+before the backslash will be ignored, as well as white spaces between
+the start of the line and the first non-space character.  All the
+other characters are considered to be part of the tag's name.  If a
+tag declared in the configuration file doesn't exist in the database,
+it will be inserted into it as soon as it's needed.
+</p><p>A typical use of tags_incoming, for installations that use a single database
+schema for several mailboxes, is to create a tag per mailbox.</p><p>Example:
+</p><pre class="programlisting">
+[one-mailbox@domain.tld]
+tags_incoming = tag1 \
+		one-mailbox-tag\		# comment
+		tag2
+</pre><p>
+</p></div><div class="sect3" lang="en" xml:lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="id2677123"></a>2.3.27. tmpdir</h4></div></div></div><p>[common] section only.</p><p>A directory where temporary files will be created for attachments.
+That directory, if it already exists, should have such permissions
+that no other user than the one running manitou-mdx should be able to
+read or write into.
+It defaults to <code class="literal">/var/tmp/manitou-&lt;uid&gt;</code> where <code class="literal">uid</code> is the unix userid running the program.
+</p><p>Example:
+</p><pre class="programlisting">
+# system-wide temp directory
+tmpdir=/var/tmp/manitou
+</pre><p>
+</p></div></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="manitou-mdx-intro.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="manitou-mdx.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="mdx.importing-mbox.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1. Usage </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. Importing an existing mailbox in mbox format</td></tr></table></div></body></html>

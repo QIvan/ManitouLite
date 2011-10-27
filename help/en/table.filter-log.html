@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">9.  Table: filter_log - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.filter-expr.html" title="8.  Table: filter_expr" /><link rel="next" href="table.header.html" title="10.  Table: header" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">9. 
+         Table:
+         
+         <span class="structname">filter_log</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.filter-expr.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.header.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.filter-log"></a>9. 
+         Table:
+         
+         <span class="structname">filter_log</span>
+        </h2></div></div></div><p>Log filter hits. An entry is inserted in this table each time manitou-mdx applies a set of actions given by the filter_expr and filter_action tables. A message may have several entries if several filters have been applied to it but the (mail_id,expr_id) combination should be unique.</p><p>The filter logs can be displayed in the user interface.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">filter_log</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>expr_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>The reference to the expression. It is intentional that there is no foreign key to the filter_expr table, to avoid having to delete entries in filter_logs when the associated filter is removed.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>The reference to the message. It is intentional that there is no foreign key to the mail table, to avoid having to delete entries in filter_logs when the associated message is removed.</p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>hit_date</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+
+</p><p>The date and time when the filter has been applied.</p><p>
+
+                <code class="literal">DEFAULT now()</code>
+
+
+
+              </p></dd></dl></div><p>
+
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.filter-expr.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.header.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">8. 
+         Table:
+         
+         <span class="structname">filter_expr</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 10. 
+         Table:
+         
+         <span class="structname">header</span>
+        </td></tr></table></div></body></html>

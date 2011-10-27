@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">3. Database - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="installation.html" title="Installation" /><link rel="prev" href="building-from-source.html" title="2. Building from source" /><link rel="next" href="install-mdx.html" title="4. Setting up manitou-mdx" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Database</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="building-from-source.html">Prev</a> </td><th width="60%" align="center">Installation</th><td width="20%" align="right"> <a accesskey="n" href="install-mdx.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="database"></a>3. Database</h2></div></div></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="database.creation"></a>3.1. Database creation</h3></div></div></div><p> The creation and initialization of a database to the point when
+it's ready to store messages is normally done using the
+<span class="command"><strong>manitou-mgr</strong></span> command, although it can also be done
+manually with the SQL scripts from the source code archive.</p><p>To create the database from scratch, manitou-mgr has to connect
+as a database superuser. Assuming that the PostgreSQL server has the
+default security configuration (see pg_hba.conf file), running
+manitou-mgr as shown below from the local postgres Unix account on the server is the
+simplest option.
+
+</p><pre class="screen">
+postgres:~$ <strong class="userinput"><code>manitou-mgr --create-database</code></strong>
+Database user manitou created.
+Database manitou created.
+Creating tables
+Creating sequences
+Creating functions
+Creating triggers
+Database manitou successfully created.
+</pre><p>
+
+Non default behavior can be achieved using options --db-name, --db-user, --db-super-user, --db-super-password, --db-host, --db--port to the --create-database command.
+The command <strong class="userinput"><code>manitou-mgr --help</code></strong> gives usage information.
+</p><p>Once the database is created, the <a class="xref" href="mdx.config.html#mdx.db_connect_string" title="2.3.3. db_connect_string">db_connect_string</a> entry in the manitou-mdx configuration file must be set up to point to the database, with optionally the user, password, host, port and other information needed to connect.
+</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="database.schema-upgrade"></a>3.2. Database schema upgrade</h3></div></div></div><p>When upgrading to a new version of Manitou-Mail, a database schema upgrade should be performed after having stopped of the old version of manitou-mdx and before having started the new version:
+</p><pre class="screen">
+postgres:~$ <strong class="userinput"><code>manitou-mgr --upgrade-schema</code></strong>
+Upgrading from 0.9.12 to 1.0.0
+Schema upgrade successful
+</pre><p>
+
+</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="building-from-source.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="installation.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="install-mdx.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2. Building from source </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 4. Setting up manitou-mdx</td></tr></table></div></body></html>

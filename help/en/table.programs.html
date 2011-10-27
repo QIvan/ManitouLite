@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">22.  Table: programs - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.notes.html" title="21.  Table: notes" /><link rel="next" href="table.raw-mail.html" title="23.  Table: raw_mail" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">22. 
+         Table:
+         
+         <span class="structname">programs</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.notes.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.raw-mail.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.programs"></a>22. 
+         Table:
+         
+         <span class="structname">programs</span>
+        </h2></div></div></div><p> Contains the names or paths of the programs that can be executed to display attachments.</p><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">programs</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>program_name</code></em></span></dt><dd><p>
+                <span class="type">character varying(256)</span>
+
+
+</p><p>The path of the program and its arguments. If should contain a $1 parameter that will be replaced by the path of the temporary file where the user interface has saved the attachment contents just before launching the program.
+Example: <code class="literal">mozilla -remote "openfile(file:$1,new-window)"</code> can be used on text/html attachments on a linux system with the mozilla browser installed. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>content_type</code></em></span></dt><dd><p>
+                <span class="type">character varying(256)</span>
+</p><p>The content type for which program_name will be used.
+Example: text/html, image/jpeg, ... </p><p>
+             </p></dd><dt><span class="term"><em class="structfield"><code>conf_name</code></em></span></dt><dd><p>
+                <span class="type">character varying(100)</span>
+
+</p><p>
+      The configuration for which the entry apply. A null value will mean that the entry applies by default. If the user interface is running under a particular configuration and that configuration has an entry for the content_type, then that entry is taken instead of the default one.
+      There are two basic reasons why programs can be specialized by configuration:
+      1) On a multi-user installation, some users may not want to use the same programs to display attachments than others: they can do so by setting up their own configuration to override the default.
+      2) An individual user can run the user interface under several operating systems, with obviously different software installed on each OS. 
+
+</p><p>
+              </p></dd></dl></div><p>
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.notes.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.raw-mail.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">21. 
+         Table:
+         
+         <span class="structname">notes</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 23. 
+         Table:
+         
+         <span class="structname">raw_mail</span>
+        </td></tr></table></div></body></html>

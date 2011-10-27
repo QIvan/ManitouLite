@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">14.  Table: mail - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="database-schema.html" title="Database schema" /><link rel="prev" href="table.jobs-queue.html" title="13.  Table: jobs_queue" /><link rel="next" href="table.mail-addresses.html" title="15.  Table: mail_addresses" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">14. 
+         Table:
+         
+         <span class="structname">mail</span>
+        </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="table.jobs-queue.html">Prev</a> </td><th width="60%" align="center">Database schema</th><td width="20%" align="right"> <a accesskey="n" href="table.mail-addresses.html">Next</a></td></tr></table><hr /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="table.mail"></a>14. 
+         Table:
+         
+         <span class="structname">mail</span>
+        </h2></div></div></div><p>
+          </p><div class="variablelist"><p class="title"><b>
+              Structure of <span class="structname">mail</span>
+            </b></p><dl><dt><span class="term"><em class="structfield"><code>mail_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+</p><p>The unique internal mail identifier.It is generated from the seq_mail_id sequence.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>sender</code></em></span></dt><dd><p>
+                <span class="type">character varying(200)</span>
+
+</p><p>
+The RFC822 address part extracted from the "From" address. If there are several senders (quite uncommon, but not illegal), the names are joined by a comma. The value is also arbitrarily truncated at the size of the database field (200 characters)
+</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>toname</code></em></span></dt><dd><p>
+                <span class="type">character varying(200)</span>
+
+</p><p>The RFC822 address part extracted from the first recipient of the "To" address. This field is a shortcut that should only be used to get limited results fast. What is recommended instead is to look up senders and recipients in the <a class="xref" href="table.mail-addresses.html" title="15.  Table: mail_addresses">mail_addresses</a> table.</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>sender_fullname</code></em></span></dt><dd><p>
+                <span class="type">character varying(200)</span>
+
+
+</p><p>
+The RFC822 name part extracted from the "From" address. If there are several senders (quite uncommon, but not illegal), the names are joined by a comma. The value is also arbitrarily truncated at the size of the database field (200 characters)
+</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>subject</code></em></span></dt><dd><p>
+                <span class="type">character varying(1000)</span>
+
+</p><p>The subject of the mail, decoded according to rfc2047 rules and truncated to 1000 characters. The full subject is available in the headers (see table header). 
+</p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>msg_date</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+
+</p><p>The date and time at which the mail has been inserted into the database. For incoming messages, it is different from the sender_date (see below the definition of the sender_date field) The timezone is also that of the manitou system, not the sender's.
+</p><p>
+
+                <code class="literal">DEFAULT now()</code>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>sender_date</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+
+</p><p>The date and time at which the mail has been sent by the originator. It depends on the sender computer's date and time accuracy. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>mbox_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>When not null, that field references an entry in the mailboxes table. Incoming mails are assigned a mbox_id depending on the configuration and options of manitou-mdx. For outgoing mails, the mbox_id field will be set if the email of the identity issuing the message matches with a mailbox name from the mailboxes table. 
+
+ </p><p>
+
+
+                <code class="literal">REFERENCES</code> <a class="xref" href="table.mailboxes.html" title="18.  Table: mailboxes">mailboxes</a>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>status</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>A mask of bits that contain cumulative information about the message. The bits and the corresponding mask in hexadecimal are:
+</p><div class="itemizedlist"><ul type="disc"><li>0 (0x1): Set if the message has been read.</li><li>1 (0x2): Reserved. Do not use.</li><li>2 (0x4): Set if a reply to the message has been made.</li><li>3 (0x8): Set if the message has been forwarded.</li><li>4 (0x10): Set if the message has been trashed.</li><li>5 (0x20): Set if the message has been archived.</li><li>6 (0x40): Set if the message is currently locked by a user for processing. Not used in current versions.</li><li>7 (0x80): Set if the message is meant to be sent (and not cleared when it has actually been sent).</li><li>8 (0x100): Set if the message has been sent (that is, successfully passed to the local delivery agent).</li><li>9 (0x200): Set if a reply is currently being made by an operator. Not used in current versions.</li><li>10 (0x400): Set if the message has been composed but not yet scheduled for sending. Not used in current versions.</li></ul></div><p>
+</p><p>
+
+</p><p>The bits are added together. For example, a message that has been read,
+then replied to, and thus marked as archived should have its status set to
+1+4+32=37 in decimal or 0x25 in hexadecimal. A status of zero indicates a new message.
+</p><p>
+
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>mod_user_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+</p><p>Internal unique ID of the person (foreign key into the users  table) that most recently processed the message (replied,forwarded,trashed,archived, or composed for an outgoing message) 
+
+ </p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>thread_id</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>Internal unique ID of the discussion thread if a thread is referenced and recognized in the message (by looking at the Reply-To or References header fields). Null if the message couldn't be assigned to a thread. 
+ </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>message_id</code></em></span></dt><dd><p>
+                <span class="type">text</span>
+
+
+</p><p>The value of the Message-ID header field, truncated if necessary. 
+ </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>in_reply_to</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+
+
+</p><p>If the message is a reply to another message that also is in the mail table, then that field is a pointer to that message, by its internal unique ID (foreign key to a mail_id). Otherwise it's null.
+ </p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>date_processed</code></em></span></dt><dd><p>
+                <span class="type">timestamp with time zone</span>
+</p><p>Date and time when the message has been archived, or trashed, or replied to, or any action of processing the message.
+ </p><p>
+              </p></dd><dt><span class="term"><em class="structfield"><code>priority</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+</p><p>The priority of the message, as set by filter rules or by a user. </p><p>
+
+              </p></dd><dt><span class="term"><em class="structfield"><code>flags</code></em></span></dt><dd><p>
+                <span class="type">integer</span>
+
+
+</p><p>A bitfield used as a cache to avoid the cost of looking up certain tables to get boolean results ("has" / "has not"). Currently, bit 0 indicates that the message has attachments and bit 1 indicates that it has a private note. Future versions will use more bits to cache more information.</p><p>
+
+              </p></dd></dl></div><p>
+
+        </p><div class="variablelist"><p class="title"><b>Indexes on mail</b></p><dl><dt><span class="term">mail_date_idx</span></dt><dd><p>msg_date</p></dd><dt><span class="term">mail_in_replyto_idx</span></dt><dd><p>in_reply_to</p></dd><dt><span class="term">mail_message_id_idx</span></dt><dd><p>message_id</p></dd><dt><span class="term">mail_thread_idx</span></dt><dd><p>thread_id</p></dd></dl></div><p>
+
+
+
+
+
+        </p><div class="itemizedlist"><p class="title"><b>
+            Tables referencing attachments via Foreign Key Constraints
+          </b></p><ul type="disc"><li><p>
+              <a class="xref" href="table.attachments.html" title="3.  Table: attachments">attachments</a>
+            </p></li><li><p>
+              <a class="xref" href="table.body.html" title="4.  Table: body">body</a>
+            </p></li><li><p>
+              <a class="xref" href="table.header.html" title="10.  Table: header">header</a>
+            </p></li><li><p>
+              <a class="xref" href="table.mail-addresses.html" title="15.  Table: mail_addresses">mail_addresses</a>
+            </p></li><li><p>
+              <a class="xref" href="table.mail-tags.html" title="17.  Table: mail_tags">mail_tags</a>
+            </p></li><li><p>
+              <a class="xref" href="table.notes.html" title="21.  Table: notes">notes</a>
+            </p></li><li><p>
+              <a class="xref" href="table.raw-mail.html" title="23.  Table: raw_mail">raw_mail</a>
+            </p></li></ul></div><p>
+
+
+
+
+
+
+      </p></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="table.jobs-queue.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="database-schema.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="table.mail-addresses.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">13. 
+         Table:
+         
+         <span class="structname">jobs_queue</span>
+         </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 15. 
+         Table:
+         
+         <span class="structname">mail_addresses</span>
+        </td></tr></table></div></body></html>

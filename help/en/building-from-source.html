@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link xmlns="" rel="stylesheet" href="manitou-docbook.css" type="text/css" /><title xmlns="">2. Building from source - Manitou-Mail documentation</title><link rel="start" href="index.html" title="Manitou-Mail 1.0.2 User Manual" /><link rel="up" href="installation.html" title="Installation" /><link rel="prev" href="requirements.html" title="1. Requirements" /><link rel="next" href="database.html" title="3. Database" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Building from source</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="requirements.html">Prev</a> </td><th width="60%" align="center">Installation</th><td width="20%" align="right"> <a accesskey="n" href="database.html">Next</a></td></tr></table><hr /></div><div class="sect1" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="building-from-source"></a>2. Building from source</h2></div></div></div><p>
+The source comes as two compressed tarfiles: <code class="filename">manitou-mdx-x.y.z.tar.gz</code>
+for the mail database exchanger (mdx) and <code class="filename">manitou-x.y.z.tar.gz</code> for the user interface, x.y.z being the version number.
+
+These two programs can be built and installed separately on different computers if needed.
+</p><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="building-mdx"></a>2.1. Building manitou-mdx and manitou-mgr</h3></div></div></div><p>
+manitou-mdx and the associated script manitou-mgr come in a standard Perl source package that can be built and installed by these commands:
+</p><pre class="screen">
+ cd /path/to/manitou-mdx-x.y.z
+ perl Makefile.PL
+ make
+ make install
+</pre><p>
+To install in a non-system location /my/path, the invocation would be:
+</p><pre class="screen">
+perl Makefile.PL DESTDIR=/my/path PREFIX=''
+</pre><p>
+</p></div><div class="sect2" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="building-ui"></a>2.2. Building manitou (the user interface)</h3></div></div></div><p>manitou is the program that provides the Mail User Agent functionality in a graphical user interface. It can be built for MS-Windows and Unix operating systems. To build manitou, invoke the following commands:
+</p><pre class="screen">
+ cd /path/to/manitou-x.y.z/
+ ./configure
+ make
+ make install
+</pre><p>
+Use </p><pre class="screen">./configure --help</pre><p> for options.
+</p>
+To build the MS-Windows version, a toolchain based on MSYS and MingW must be used. A set of tutorials on how to install and use it to compile manitou are <a class="ulink" href="http://www.manitou-mail.org/blog/2009/08/windows-developement-environment-part-1/" target="_top"> available online</a>.
+</div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="requirements.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="installation.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="database.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1. Requirements </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. Database</td></tr></table></div></body></html>
