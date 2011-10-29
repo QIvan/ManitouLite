@@ -203,14 +203,14 @@ sql_stream::init (const char *query)
   m_bExecuted = false;
 
   service_f::replace_random_param(m_query);
-  find_param(query);
+  find_and_replace_param(query);
 
   if(m_nArgCount == 0)
     execute();
 }
 
 void
-sql_stream::find_param(const char* query)
+sql_stream::find_and_replace_param(const char* query)
 {
   QString sQuery = query;
   int pos = sQuery.indexOf(':');
@@ -218,12 +218,11 @@ sql_stream::find_param(const char* query)
   {
     if (sQuery.at(pos+1) != ':')
     {
-      int rightPos = sQuery.indexOf(' ', pos+1);
-      if (rightPos < 0)
-        rightPos = sQuery.length();
+      int rightPos = pos;
+      while ((++rightPos < sQuery.size()) && sQuery.at(rightPos).isLetterOrNumber());
       int replaceCount = rightPos - pos;
       sQuery.replace(pos, replaceCount,
-                     "%" + QString::number(m_nArgCount) + " ");
+                     "%" + QString::number(m_nArgCount));
       ++m_nArgCount;
     }
     else

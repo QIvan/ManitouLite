@@ -83,7 +83,7 @@ public:
   int affected_rows() const;
 private:
   void init(const char* query);
-  void find_param(const char* query);
+  void find_and_replace_param(const char* query);
   void check_params() const;
   sql_stream& next_param(QString value);
   void check_end_of_stream();

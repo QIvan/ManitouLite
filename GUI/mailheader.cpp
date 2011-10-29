@@ -35,6 +35,9 @@
 #include <malloc.h>
 #endif
 
+#define INV_WRITE		0x00020000
+#define INV_READ		0x00040000
+
 void
 mail_header::make()
 {

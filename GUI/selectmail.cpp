@@ -280,8 +280,6 @@ msgs_filter::quote_like_arg(const QString& s)
 int
 msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
 {
-  db_cnx db1;
-  QMessageBox::about(NULL, "", db1.dbname());
   db_cnx db;
   try {
     bool unique=false;

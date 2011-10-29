@@ -37,6 +37,9 @@
 #include <windows.h>
 #endif
 
+#define INV_WRITE		0x00020000
+#define INV_READ		0x00040000
+
 attachment::attachment() :
   m_Id(0), m_data(NULL), m_descFetched(false), m_inMemory(false)
 {

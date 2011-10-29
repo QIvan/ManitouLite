@@ -11,7 +11,7 @@ TARGET = GUI
 
 TEMPLATE = app
 
-INCLUDEPATH += ../
+INCLUDEPATH += ../ ../DB
 DEPENDPATH += ../
 
 LIBS += -L/usr/lib/ -lpq
@@ -23,15 +23,15 @@ DEFINES += WITH_PGSQL=1
 
 HEADERS += \
     main.h \
-    db.h \
-    creatorConnection.h \
-    dbtypes.h \
-    db_listener.h \
-    date.h \
-    database.h \
-    sqlstream.h \
-    sqlquery.h \
-    pgConnection.h \
+    #db.h \
+    #creatorConnection.h \
+    #dbtypes.h \
+    #db_listener.h \
+    #date.h \
+    #database.h \
+    #sqlstream.h \
+    #sqlquery.h \
+    #pgConnection.h \
     login.h \
     mail_displayer.h \
     app_config.h \
@@ -92,13 +92,13 @@ HEADERS += \
 
 SOURCES += \
     main.cpp \
-    db.cpp \
-    creatorConnection.cpp \
-    date.cpp \
-    sqlstream.cpp \
-    sqlquery.cpp \
-    pgConnection.cpp \
-    db_listener.cpp \
+    #db.cpp \
+    #creatorConnection.cpp \
+    #date.cpp \
+    #sqlstream.cpp \
+    #sqlquery.cpp \
+    #pgConnection.cpp \
+    #db_listener.cpp \
     login.cpp \
     mail_displayer.cpp \
     app_config.cpp \

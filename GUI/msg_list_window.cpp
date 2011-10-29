@@ -3078,7 +3078,7 @@ void
 msg_list_window::timer_idle()
 {
   int max_ahead = get_config().get_number("fetch_ahead_max_msgs");
-  if (max_ahead==0 || !db_cnx::idle())
+  if (max_ahead==0 || !db_cnx::all_is_idle())
     return;			// do nothing if we're busy with the db already
   std::vector<mail_msg*> v;
   m_qlist->get_selected(v);

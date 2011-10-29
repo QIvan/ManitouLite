@@ -6,6 +6,7 @@
 
 #QT       += core, gui, network, sql
 QT += network
+#CONFIG += staticlib
 CONFIG += staticlib
 TARGET = DB
 TEMPLATE = lib

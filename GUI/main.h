@@ -29,7 +29,7 @@
 #endif
 
 #include "config.h"
-#include "dbtypes.h"
+#include <dbtypes.h>
 #include "message.h"
 
 #ifndef CHECK_PTR
@@ -105,6 +105,7 @@ extern manitou_application* gl_pApplication;
 namespace service_f
 {
     QString toCodingDb(const QString &s);
+    QString GetNameDb (const char* conninfo);
 }
 
 #endif // INC_MAIN_H

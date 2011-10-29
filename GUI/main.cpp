@@ -345,3 +345,14 @@ QString service_f::toCodingDb(const QString &s)
     }*/
     return s;
 }
+
+
+QString service_f::GetNameDb(const char *conninfo)
+{
+  QString str = conninfo;
+  QStringList list = str.split(QChar(' '));
+  list = list.first().split(QChar('='));
+  QString db_name = list[1];
+  db_name.append(".db");
+  return db_name;
+}

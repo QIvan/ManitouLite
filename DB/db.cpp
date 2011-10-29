@@ -88,41 +88,41 @@ db_cnx::cdatab() const {
   return m_cnx->m_db.get();
 }
 
-//int
-//db_cnx::lo_creat(int mode)
-//{
-//    //return ::lo_creat(this->connection()->m_db->connection(), mode);
-//}
+int
+db_cnx::lo_creat(int mode)
+{
+    //return ::lo_creat(this->connection()->m_db->connection(), mode);
+}
 
-//int
-//db_cnx::lo_open(uint lobjId, int mode)
-//{
-//    //return ::lo_open(this->connection()->m_db->connection(), lobjId, mode);
-//}
+int
+db_cnx::lo_open(uint lobjId, int mode)
+{
+    //return ::lo_open(this->connection()->m_db->connection(), lobjId, mode);
+}
 
-//int
-//db_cnx::lo_read(int fd, char *buf, size_t len)
-//{
-//    //return ::lo_read(this->connection()->m_db->connection(), fd, buf, len);
-//}
+int
+db_cnx::lo_read(int fd, char *buf, size_t len)
+{
+    //return ::lo_read(this->connection()->m_db->connection(), fd, buf, len);
+}
 
-//int
-//db_cnx::lo_write(int fd, const char *buf, size_t len)
-//{
-//    //return ::lo_write(this->connection()->m_db->connection(), fd, buf, len);
-//}
+int
+db_cnx::lo_write(int fd, const char *buf, size_t len)
+{
+    //return ::lo_write(this->connection()->m_db->connection(), fd, buf, len);
+}
 
-//int
-//db_cnx::lo_import(const char *filename)
-//{
-//    //return ::lo_import(this->connection()->m_db->connection(), filename);
-//}
+int
+db_cnx::lo_import(const char *filename)
+{
+    //return ::lo_import(this->connection()->m_db->connection(), filename);
+}
 
-//int
-//db_cnx::lo_close(int fd)
-//{
-//    //return ::lo_close(this->connection()->m_db->connection(), fd);
-//}
+int
+db_cnx::lo_close(int fd)
+{
+    //return ::lo_close(this->connection()->m_db->connection(), fd);
+}
 
 void
 db_cnx::cancelRequest()
