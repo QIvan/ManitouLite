@@ -221,8 +221,14 @@ $$;
 
 
 ------------------------------------------------------------------------- Создание SEQUENCE 
--- TODO: в SQLite нет sequence. нужно создать таблицу и запихать их туда.
 
+--Примечание: в SQLite нет sequence. нужно создавать таблицу и запихивать их туда.
+CREATE TABLE SEQUENCE (
+	seq_name text,
+	curr_val integer
+);
+
+INSERT INTO SEQUENCE VALUES ('seq_addr_id', 1);
 CREATE SEQUENCE seq_addr_id
     START WITH 1
     INCREMENT BY 1
@@ -230,6 +236,7 @@ CREATE SEQUENCE seq_addr_id
     NO MINVALUE
     CACHE 1;
 
+INSERT INTO SEQUENCE VALUES ('seq_attachment_id', 1);
 CREATE SEQUENCE seq_attachment_id
     START WITH 1
     INCREMENT BY 1
@@ -237,6 +244,7 @@ CREATE SEQUENCE seq_attachment_id
     NO MINVALUE
     CACHE 1;
 
+INSERT INTO SEQUENCE VALUES ('jobs_queue_job_id_seq', 1);
 CREATE SEQUENCE jobs_queue_job_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -244,6 +252,7 @@ CREATE SEQUENCE jobs_queue_job_id_seq
     NO MINVALUE
     CACHE 1;
 
+INSERT INTO SEQUENCE VALUES ('seq_mail_id', 1);
 CREATE SEQUENCE seq_mail_id
     START WITH 1
     INCREMENT BY 1
@@ -251,6 +260,7 @@ CREATE SEQUENCE seq_mail_id
     NO MINVALUE
     CACHE 1;
 
+INSERT INTO SEQUENCE VALUES ('seq_thread_id', 1);
 CREATE SEQUENCE seq_thread_id
     START WITH 1
     INCREMENT BY 1
@@ -258,7 +268,7 @@ CREATE SEQUENCE seq_thread_id
     NO MINVALUE
     CACHE 1;
 
-
+INSERT INTO SEQUENCE VALUES ('seq_word_id', 1);
 CREATE SEQUENCE seq_word_id
     START WITH 1
     INCREMENT BY 1
@@ -266,6 +276,7 @@ CREATE SEQUENCE seq_word_id
     NO MINVALUE
     CACHE 1;
 
+INSERT INTO SEQUENCE VALUES ('seq_tag_id', 1);
 CREATE SEQUENCE seq_tag_id
     START WITH 1
     INCREMENT BY 1
