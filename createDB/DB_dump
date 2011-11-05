@@ -1,29 +1,11 @@
---
--- PostgreSQL database dump
---
-
-SET statement_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET escape_string_warning = off;
-
---
--- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: postgres
---
-
-CREATE PROCEDURAL LANGUAGE plpgsql;
 
 
-ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
+------------------------------------------------------------------------- Создание функций и Тригеров.
+-- TODO: их нужно распихать по коду, что нельзя оставить тут.
 
-SET search_path = public, pg_catalog;
 
---
--- Name: delete_mail(); Type: FUNCTION; Schema: public; Owner: ivan
---
 
+-- Этот тригер можно оставить как есть. Такие тригеры SQLite поддерживает
 CREATE FUNCTION delete_mail() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -34,12 +16,8 @@ END;
 $$;
 
 
-ALTER FUNCTION public.delete_mail() OWNER TO ivan;
 
---
--- Name: delete_msg(integer); Type: FUNCTION; Schema: public; Owner: ivan
---
-
+-- TODO эта функция используется в delete_msg_set
 CREATE FUNCTION delete_msg(integer) RETURNS integer
     LANGUAGE plpgsql
     AS $_$
@@ -85,13 +63,6 @@ BEGIN
 END;
 $_$;
 
-
-ALTER FUNCTION public.delete_msg(integer) OWNER TO ivan;
-
---
--- Name: delete_msg_set(integer[]); Type: FUNCTION; Schema: public; Owner: ivan
---
-
 CREATE FUNCTION delete_msg_set(in_array_mail_id integer[]) RETURNS integer
     LANGUAGE plpgsql
     AS $$
@@ -107,11 +78,8 @@ END;
 $$;
 
 
-ALTER FUNCTION public.delete_msg_set(in_array_mail_id integer[]) OWNER TO ivan;
 
---
--- Name: insert_mail(); Type: FUNCTION; Schema: public; Owner: ivan
---
+
 
 CREATE FUNCTION insert_mail() RETURNS trigger
     LANGUAGE plpgsql
@@ -124,9 +92,6 @@ BEGIN
 	RETURN new;
 END;
 $$;
-
-
-ALTER FUNCTION public.insert_mail() OWNER TO ivan;
 
 --
 -- Name: trash_msg(integer, integer); Type: FUNCTION; Schema: public; Owner: ivan
@@ -144,9 +109,6 @@ BEGIN
 END;
 $$;
 
-
-ALTER FUNCTION public.trash_msg(in_mail_id integer, in_op integer) OWNER TO ivan;
-
 --
 -- Name: trash_msg_set(integer[], integer); Type: FUNCTION; Schema: public; Owner: ivan
 --
@@ -162,9 +124,6 @@ BEGIN
   return cnt;
 END;
 $$;
-
-
-ALTER FUNCTION public.trash_msg_set(in_array_mail_id integer[], in_op integer) OWNER TO ivan;
 
 --
 -- Name: untrash_msg(integer, integer); Type: FUNCTION; Schema: public; Owner: ivan
@@ -182,8 +141,6 @@ BEGIN
 END;
 $$;
 
-
-ALTER FUNCTION public.untrash_msg(in_mail_id integer, in_op integer) OWNER TO ivan;
 
 --
 -- Name: update_mail(); Type: FUNCTION; Schema: public; Owner: ivan
@@ -216,8 +173,6 @@ END;
 $$;
 
 
-ALTER FUNCTION public.update_mail() OWNER TO ivan;
-
 --
 -- Name: update_note_flag(); Type: FUNCTION; Schema: public; Owner: ivan
 --
@@ -237,11 +192,44 @@ END;
 $$;
 
 
-ALTER FUNCTION public.update_note_flag() OWNER TO ivan;
 
---
--- Name: seq_addr_id; Type: SEQUENCE; Schema: public; Owner: ivan
---
+---------------- Непосредственно установка
+
+CREATE TRIGGER delete_mail
+    AFTER DELETE ON mail
+    FOR EACH ROW
+    EXECUTE PROCEDURE delete_mail();
+
+
+CREATE TRIGGER insert_mail
+    AFTER INSERT ON mail
+    FOR EACH ROW
+    EXECUTE PROCEDURE insert_mail();
+
+
+CREATE TRIGGER update_mail
+    AFTER UPDATE ON mail
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_mail();
+
+
+CREATE TRIGGER update_note
+    AFTER INSERT OR DELETE ON notes
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_note_flag();
+
+------------------------------------------------------------------------- Закончили с функциями
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------- Создание SEQUENCE 
+-- TODO: в SQLite нет sequence. нужно создать таблицу и запихать их туда.
 
 CREATE SEQUENCE seq_addr_id
     START WITH 1
@@ -250,23 +238,62 @@ CREATE SEQUENCE seq_addr_id
     NO MINVALUE
     CACHE 1;
 
+CREATE SEQUENCE seq_attachment_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
-ALTER TABLE public.seq_addr_id OWNER TO ivan;
+CREATE SEQUENCE jobs_queue_job_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
---
--- Name: seq_addr_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
+CREATE SEQUENCE seq_mail_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
-SELECT pg_catalog.setval('seq_addr_id', 3, true);
+CREATE SEQUENCE seq_thread_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
 
-SET default_tablespace = '';
+CREATE SEQUENCE seq_word_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
-SET default_with_oids = false;
+CREATE SEQUENCE seq_tag_id
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
 
---
--- Name: addresses; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
+
+------------------------------------------------------------------------- Закончили с SEQUENCE 
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------- Создание ТАБЛИЦ!!! 
 
 CREATE TABLE addresses (
     addr_id integer DEFAULT nextval('seq_addr_id'::regclass) NOT NULL,
@@ -282,46 +309,11 @@ CREATE TABLE addresses (
     nb_recv_from integer
 );
 
-
-ALTER TABLE public.addresses OWNER TO ivan;
-
---
--- Name: attachment_contents; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE attachment_contents (
     attachment_id integer,
     content oid,
     fingerprint text
 );
-
-
-ALTER TABLE public.attachment_contents OWNER TO ivan;
-
---
--- Name: seq_attachment_id; Type: SEQUENCE; Schema: public; Owner: ivan
---
-
-CREATE SEQUENCE seq_attachment_id
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.seq_attachment_id OWNER TO ivan;
-
---
--- Name: seq_attachment_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
-
-SELECT pg_catalog.setval('seq_attachment_id', 1, true);
-
-
---
--- Name: attachments; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE attachments (
     attachment_id integer DEFAULT nextval('seq_attachment_id'::regclass) NOT NULL,
@@ -333,25 +325,12 @@ CREATE TABLE attachments (
     mime_content_id text
 );
 
-
-ALTER TABLE public.attachments OWNER TO ivan;
-
---
--- Name: body; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE body (
     mail_id integer,
     bodytext text,
     bodyhtml text
 );
 
-
-ALTER TABLE public.body OWNER TO ivan;
-
---
--- Name: config; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE config (
     conf_key character varying(100) NOT NULL,
@@ -361,11 +340,6 @@ CREATE TABLE config (
 );
 
 
-ALTER TABLE public.config OWNER TO ivan;
-
---
--- Name: files; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE files (
     mail_id integer,
@@ -373,11 +347,6 @@ CREATE TABLE files (
 );
 
 
-ALTER TABLE public.files OWNER TO ivan;
-
---
--- Name: filter_action; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE filter_action (
     expr_id integer,
@@ -386,12 +355,6 @@ CREATE TABLE filter_action (
     action_type character varying(100)
 );
 
-
-ALTER TABLE public.filter_action OWNER TO ivan;
-
---
--- Name: filter_expr; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE filter_expr (
     expr_id integer NOT NULL,
@@ -403,12 +366,6 @@ CREATE TABLE filter_expr (
 );
 
 
-ALTER TABLE public.filter_expr OWNER TO ivan;
-
---
--- Name: filter_log; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE filter_log (
     expr_id integer,
     mail_id integer,
@@ -416,23 +373,11 @@ CREATE TABLE filter_log (
 );
 
 
-ALTER TABLE public.filter_log OWNER TO ivan;
-
---
--- Name: forward_addresses; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE forward_addresses (
     to_email_addr character varying(300),
     forward_to text
 );
 
-
-ALTER TABLE public.forward_addresses OWNER TO ivan;
-
---
--- Name: global_notepad; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE global_notepad (
     contents text,
@@ -440,23 +385,11 @@ CREATE TABLE global_notepad (
 );
 
 
-ALTER TABLE public.global_notepad OWNER TO ivan;
-
---
--- Name: header; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE header (
     mail_id integer,
     lines text
 );
 
-
-ALTER TABLE public.header OWNER TO ivan;
-
---
--- Name: identities; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE identities (
     email_addr character varying(200) NOT NULL,
@@ -466,12 +399,6 @@ CREATE TABLE identities (
 );
 
 
-ALTER TABLE public.identities OWNER TO ivan;
-
---
--- Name: inverted_word_index; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE inverted_word_index (
     word_id integer,
     part_no integer,
@@ -480,53 +407,12 @@ CREATE TABLE inverted_word_index (
 );
 
 
-ALTER TABLE public.inverted_word_index OWNER TO ivan;
-
---
--- Name: jobs_queue; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE jobs_queue (
     job_id integer NOT NULL,
     mail_id integer,
     job_type character varying(4),
     job_args text
 );
-
-
-ALTER TABLE public.jobs_queue OWNER TO ivan;
-
---
--- Name: jobs_queue_job_id_seq; Type: SEQUENCE; Schema: public; Owner: ivan
---
-
-CREATE SEQUENCE jobs_queue_job_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.jobs_queue_job_id_seq OWNER TO ivan;
-
---
--- Name: jobs_queue_job_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ivan
---
-
-ALTER SEQUENCE jobs_queue_job_id_seq OWNED BY jobs_queue.job_id;
-
-
---
--- Name: jobs_queue_job_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
-
-SELECT pg_catalog.setval('jobs_queue_job_id_seq', 1, false);
-
-
---
--- Name: mail; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE mail (
     mail_id integer,
@@ -548,12 +434,6 @@ CREATE TABLE mail (
 );
 
 
-ALTER TABLE public.mail OWNER TO ivan;
-
---
--- Name: mail_addresses; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE mail_addresses (
     mail_id integer,
     addr_id integer,
@@ -562,23 +442,11 @@ CREATE TABLE mail_addresses (
 );
 
 
-ALTER TABLE public.mail_addresses OWNER TO ivan;
-
---
--- Name: mail_status; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE mail_status (
     mail_id integer,
     status integer
 );
 
-
-ALTER TABLE public.mail_status OWNER TO ivan;
-
---
--- Name: mail_tags; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE mail_tags (
     mail_id integer,
@@ -588,23 +456,11 @@ CREATE TABLE mail_tags (
 );
 
 
-ALTER TABLE public.mail_tags OWNER TO ivan;
-
---
--- Name: mailboxes; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE mailboxes (
     mbox_id integer,
     name text
 );
 
-
-ALTER TABLE public.mailboxes OWNER TO ivan;
-
---
--- Name: mime_types; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE mime_types (
     suffix character varying(20) NOT NULL,
@@ -612,22 +468,10 @@ CREATE TABLE mime_types (
 );
 
 
-ALTER TABLE public.mime_types OWNER TO ivan;
-
---
--- Name: non_indexable_words; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE non_indexable_words (
     wordtext character varying(50)
 );
 
-
-ALTER TABLE public.non_indexable_words OWNER TO ivan;
-
---
--- Name: notes; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE notes (
     mail_id integer,
@@ -636,24 +480,11 @@ CREATE TABLE notes (
 );
 
 
-ALTER TABLE public.notes OWNER TO ivan;
-
---
--- Name: programs; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE programs (
     program_name character varying(256),
     content_type character varying(256),
     conf_name character varying(100)
 );
-
-
-ALTER TABLE public.programs OWNER TO ivan;
-
---
--- Name: raw_mail; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE raw_mail (
     mail_id integer,
@@ -661,107 +492,11 @@ CREATE TABLE raw_mail (
 );
 
 
-ALTER TABLE public.raw_mail OWNER TO ivan;
-
---
--- Name: runtime_info; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE runtime_info (
     rt_key character varying(100) NOT NULL,
     rt_value text
 );
 
-
-ALTER TABLE public.runtime_info OWNER TO ivan;
-
---
--- Name: seq_mail_id; Type: SEQUENCE; Schema: public; Owner: ivan
---
-
-CREATE SEQUENCE seq_mail_id
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.seq_mail_id OWNER TO ivan;
-
---
--- Name: seq_mail_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
-
-SELECT pg_catalog.setval('seq_mail_id', 6, true);
-
-
---
--- Name: seq_tag_id; Type: SEQUENCE; Schema: public; Owner: ivan
---
-
-CREATE SEQUENCE seq_tag_id
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.seq_tag_id OWNER TO ivan;
-
---
--- Name: seq_tag_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
-
-SELECT pg_catalog.setval('seq_tag_id', 1, true);
-
-
---
--- Name: seq_thread_id; Type: SEQUENCE; Schema: public; Owner: ivan
---
-
-CREATE SEQUENCE seq_thread_id
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.seq_thread_id OWNER TO ivan;
-
---
--- Name: seq_thread_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
-
-SELECT pg_catalog.setval('seq_thread_id', 1, false);
-
-
---
--- Name: seq_word_id; Type: SEQUENCE; Schema: public; Owner: ivan
---
-
-CREATE SEQUENCE seq_word_id
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.seq_word_id OWNER TO ivan;
-
---
--- Name: seq_word_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
---
-
-SELECT pg_catalog.setval('seq_word_id', 1, false);
-
-
---
--- Name: tags; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE tags (
     tag_id integer DEFAULT nextval('seq_tag_id'::regclass),
@@ -770,12 +505,6 @@ CREATE TABLE tags (
 );
 
 
-ALTER TABLE public.tags OWNER TO ivan;
-
---
--- Name: tags_words; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE tags_words (
     tag_id integer,
     word_id integer,
@@ -783,23 +512,12 @@ CREATE TABLE tags_words (
 );
 
 
-ALTER TABLE public.tags_words OWNER TO ivan;
-
---
--- Name: user_queries; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE user_queries (
     title text NOT NULL,
     sql_stmt text
 );
 
-
-ALTER TABLE public.user_queries OWNER TO ivan;
-
---
--- Name: users; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
 
 CREATE TABLE users (
     user_id integer NOT NULL,
@@ -813,19 +531,18 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE public.users OWNER TO ivan;
-
---
--- Name: words; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
---
-
 CREATE TABLE words (
     word_id integer NOT NULL,
     wordtext character varying(50)
 );
 
 
-ALTER TABLE public.words OWNER TO ivan;
+------------------------------------------------------------------------- Закончили с таблицами
+
+
+-------------------------------- Остальная настройка 
+-- TODO: 
+
 
 --
 -- Name: job_id; Type: DEFAULT; Schema: public; Owner: ivan
@@ -833,360 +550,6 @@ ALTER TABLE public.words OWNER TO ivan;
 
 ALTER TABLE jobs_queue ALTER COLUMN job_id SET DEFAULT nextval('jobs_queue_job_id_seq'::regclass);
 
-
---
--- Data for Name: addresses; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY addresses (addr_id, email_addr, name, nickname, last_sent_to, last_recv_from, notes, invalid, recv_pri, nb_sent_to, nb_recv_from) FROM stdin;
-1	ivan@vniins.ru	ivan		2011-08-04 18:38:43.653164+04	\N		0	0	2	\N
-3	boris@vniins.ru			2011-08-04 18:39:46.693713+04	\N		0	0	1	\N
-2	test@vniins.ru			2011-08-11 15:14:27.448168+04	\N		0	0	3	\N
-\.
-
-
---
--- Data for Name: attachment_contents; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY attachment_contents (attachment_id, content, fingerprint) FROM stdin;
-1	17076	Ui649HOkYgaNG+eewAwFFfXMj7M
-\.
-
-
---
--- Data for Name: attachments; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY attachments (attachment_id, mail_id, content_type, content_size, filename, charset, mime_content_id) FROM stdin;
-1	6	application/octet-stream	2111	config.h	\N	\N
-\.
-
-
---
--- Data for Name: body; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY body (mail_id, bodytext, bodyhtml) FROM stdin;
-1	\nfgdhsjagfjdksf	\N
-2	\nsdfghjkl;yrueiowq	\N
-3	\nmail to ivan	\N
-4	\nmail to test	\N
-5	mail to boooooooris\n	\N
-6	\n	\N
-\.
-
-
---
--- Data for Name: config; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY config (conf_key, value, conf_name, date_update) FROM stdin;
-body_clickable_urls	0	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-date_format	DD/MM/YYYY HH:MI	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-default_identity	ivan@vniins.ru	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-fetch/auto_incorporate_new_results	0	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-fetch/auto_refresh_messages_list	0	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-display/body/preferred_format	html	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-display/filters_trace	0	zemlyansky.vniins.ru-linux	\N
-display/msglist/column0_size	280	zemlyansky.vniins.ru-linux	\N
-display/msglist/column1_size	170	zemlyansky.vniins.ru-linux	\N
-display/msglist/column2_size	32	zemlyansky.vniins.ru-linux	\N
-display/msglist/column3_size	32	zemlyansky.vniins.ru-linux	\N
-display/msglist/column4_size	24	zemlyansky.vniins.ru-linux	\N
-display/msglist/column5_size	24	zemlyansky.vniins.ru-linux	\N
-display/msglist/column6_size	115	zemlyansky.vniins.ru-linux	\N
-display/msglist/columns_ordering	0123456	zemlyansky.vniins.ru-linux	\N
-display/msglist/height	600	zemlyansky.vniins.ru-linux	\N
-display/msglist/panel1_size	100	zemlyansky.vniins.ru-linux	\N
-display/msglist/panel2_size	358	zemlyansky.vniins.ru-linux	\N
-display/msglist/panel3_size	0	zemlyansky.vniins.ru-linux	\N
-display/msglist/width	800	zemlyansky.vniins.ru-linux	\N
-display/tags_in_headers	1	zemlyansky.vniins.ru-linux	\N
-show_tags	1	zemlyansky.vniins.ru-linux	\N
-display_threads	1	zemlyansky.vniins.ru-linux	\N
-show_headers_level	1	zemlyansky.vniins.ru-linux	\N
-\.
-
-
---
--- Data for Name: files; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY files (mail_id, filename) FROM stdin;
-\.
-
-
---
--- Data for Name: filter_action; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY filter_action (expr_id, action_order, action_arg, action_type) FROM stdin;
-\.
-
-
---
--- Data for Name: filter_expr; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY filter_expr (expr_id, name, user_lastmod, last_update, expression, direction) FROM stdin;
-\.
-
-
---
--- Data for Name: filter_log; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY filter_log (expr_id, mail_id, hit_date) FROM stdin;
-\.
-
-
---
--- Data for Name: forward_addresses; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY forward_addresses (to_email_addr, forward_to) FROM stdin;
-\.
-
-
---
--- Data for Name: global_notepad; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY global_notepad (contents, last_modified) FROM stdin;
-\.
-
-
---
--- Data for Name: header; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY header (mail_id, lines) FROM stdin;
-1	From: "ivan" <ivan@vniins.ru>\nTo: ivan@vniins.ru\nSubject: qweryui\nDate: Thu, 04 Aug 2011 13:24:56 +0400\nMessage-Id: <d550bf37-15a1-4d26-aa66-cdf3879a7546@mm>\nX-Mailer: Manitou v1.0.2\n
-2	From: "ivan" <ivan@vniins.ru>\nTo: test@vniins.ru\nSubject: 1234\nDate: Thu, 04 Aug 2011 14:12:57 +0400\nMessage-Id: <f363b843-6799-45f3-a330-83395b94e9aa@mm>\nX-Mailer: Manitou v1.0.2\n
-3	From: "ivan" <ivan@vniins.ru>\nTo: "ivan" <ivan@vniins.ru>\nSubject: ivan\nDate: Thu, 04 Aug 2011 18:38:43 +0400\nMessage-Id: <398330e3-945b-4ae9-94f3-849d7b4e64e5@mm>\nX-Mailer: Manitou v1.0.2\n
-4	From: "ivan" <ivan@vniins.ru>\nTo: test@vniins.ru\nSubject: test\nDate: Thu, 04 Aug 2011 18:38:59 +0400\nMessage-Id: <c8eb7129-faa6-4fae-83b8-63f39967f3a5@mm>\nX-Mailer: Manitou v1.0.2\n
-5	From: "ivan" <ivan@vniins.ru>\nTo: boris@vniins.ru\nSubject: boris\nDate: Thu, 04 Aug 2011 18:39:46 +0400\nMessage-Id: <79914bd3-4fcd-4dcd-8563-1dcb70856ff5@mm>\nX-Mailer: Manitou v1.0.2\n
-6	From: "ivan" <ivan@vniins.ru>\nTo: test@vniins.ru\nSubject: attach\n
-\.
-
-
---
--- Data for Name: identities; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY identities (email_addr, username, xface, signature) FROM stdin;
-ivan@vniins.ru	ivan		
-\.
-
-
---
--- Data for Name: inverted_word_index; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY inverted_word_index (word_id, part_no, mailvec, nz_offset) FROM stdin;
-\.
-
-
---
--- Data for Name: jobs_queue; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY jobs_queue (job_id, mail_id, job_type, job_args) FROM stdin;
-\.
-
-
---
--- Data for Name: mail; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY mail (mail_id, sender, toname, sender_fullname, subject, msg_date, sender_date, mbox_id, status, mod_user_id, thread_id, message_id, in_reply_to, date_processed, priority, flags) FROM stdin;
-1	ivan@vniins.ru	\N	ivan	qweryui	2011-08-04 13:24:56.789673+04	2011-08-04 13:24:56.789673+04	\N	145	1	\N	d550bf37-15a1-4d26-aa66-cdf3879a7546@mm	\N	\N	0	0
-2	ivan@vniins.ru	\N	ivan	1234	2011-08-04 14:12:57.229489+04	2011-08-04 14:12:57.229489+04	\N	177	1	\N	f363b843-6799-45f3-a330-83395b94e9aa@mm	\N	\N	0	0
-3	ivan@vniins.ru	\N	ivan	ivan	2011-08-04 18:38:43.653164+04	2011-08-04 18:38:43.653164+04	\N	129	1	\N	398330e3-945b-4ae9-94f3-849d7b4e64e5@mm	\N	\N	0	0
-4	ivan@vniins.ru	\N	ivan	test	2011-08-04 18:38:59.834486+04	2011-08-04 18:38:59.834486+04	\N	129	1	\N	c8eb7129-faa6-4fae-83b8-63f39967f3a5@mm	\N	\N	0	0
-5	ivan@vniins.ru	\N	ivan	boris	2011-08-04 18:39:46.693713+04	2011-08-04 18:39:46.693713+04	\N	129	1	\N	79914bd3-4fcd-4dcd-8563-1dcb70856ff5@mm	\N	\N	0	0
-6	ivan@vniins.ru	\N	ivan	attach	2011-08-11 15:14:27.448168+04	2011-08-11 15:14:27.448168+04	\N	129	1	\N	398330e3-945b-4ae9-94f3-849d7b4e64e5@mm	\N	\N	0	1
-\.
-
-
---
--- Data for Name: mail_addresses; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY mail_addresses (mail_id, addr_id, addr_type, addr_pos) FROM stdin;
-1	1	1	0
-1	1	2	0
-2	1	1	0
-2	2	2	0
-3	1	1	0
-3	1	2	0
-4	1	1	0
-4	2	2	0
-5	1	1	0
-5	3	2	0
-6	1	1	0
-6	2	2	0
-\.
-
-
---
--- Data for Name: mail_status; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY mail_status (mail_id, status) FROM stdin;
-3	129
-4	129
-5	129
-6	129
-\.
-
-
---
--- Data for Name: mail_tags; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY mail_tags (mail_id, tag, agent, date_insert) FROM stdin;
-4	1	1	2011-09-22 18:50:51.578987+04
-5	1	1	2011-10-27 16:01:21.895377+04
-\.
-
-
---
--- Data for Name: mailboxes; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY mailboxes (mbox_id, name) FROM stdin;
-\.
-
-
---
--- Data for Name: mime_types; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY mime_types (suffix, mime_type) FROM stdin;
-tar	application/x-tar
-bmp	image/bmp
-png	image/png
-pdf	application/pdf
-htm	text/html
-txt	text/plain
-zip	application/zip
-html	text/html
-jpg	image/jpeg
-xml	text/xml
-rtf	application/rtf
-doc	application/msword
-gif	image/gif
-xls	application/vnd.ms-excel
-\.
-
-
---
--- Data for Name: non_indexable_words; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY non_indexable_words (wordtext) FROM stdin;
-\.
-
-
---
--- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY notes (mail_id, note, last_changed) FROM stdin;
-\.
-
-
---
--- Data for Name: programs; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY programs (program_name, content_type, conf_name) FROM stdin;
-\.
-
-
---
--- Data for Name: raw_mail; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY raw_mail (mail_id, mail_text) FROM stdin;
-\.
-
-
---
--- Data for Name: runtime_info; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY runtime_info (rt_key, rt_value) FROM stdin;
-schema_version	1.0.2
-\.
-
-
---
--- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY tags (tag_id, name, parent_id) FROM stdin;
-1	myTag	\N
-\.
-
-
---
--- Data for Name: tags_words; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY tags_words (tag_id, word_id, counter) FROM stdin;
-\.
-
-
---
--- Data for Name: user_queries; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY user_queries (title, sql_stmt) FROM stdin;
-mail_subject_test	SELECT m.mail_id FROM mail m,mail_addresses ma1 WHERE ma1.addr_id='1' AND m.mail_id=ma1.mail_id AND status&16=0 AND m.subject='test'
-all	SELECT m.mail_id FROM mail m 
-\.
-
-
---
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY users (user_id, fullname, login, email, custom_field1, custom_field2, custom_field3) FROM stdin;
-1	\N	ivan	\N	\N	\N	\N
-\.
-
-
---
--- Data for Name: words; Type: TABLE DATA; Schema: public; Owner: ivan
---
-
-COPY words (word_id, wordtext) FROM stdin;
-\.
-
-
---
--- Data for Name: BLOBS; Type: BLOBS; Schema: -; Owner: 
---
-
-SET search_path = pg_catalog;
-
-BEGIN;
-
-SELECT lo_open(lo_create(17076), 131072);
-SELECT pg_catalog.lowrite(0, '/* config.h.  Generated from config.h.in by configure.  */\\012/* config.h.in.  Generated from configure.in by autoheader.  */\\012\\012/* Define to 1 if you have the declaration of `getopt_long'', and to 0 if you\\012   don''t. */\\012#define HAVE_DECL_GETOPT_LONG 1\\012\\012/* Define to 1 if you have the declaration of `strerror_r'', and to 0 if you\\012   don''t. */\\012#define HAVE_DECL_STRERROR_R 1\\012\\012/* Define to 1 if you have the <inttypes.h> header file. */\\012#define HAVE_INTTYPES_H 1\\012\\012/* Define to 1 if you have the <libpq-fe.h> header file. */\\012#define HAVE_LIBPQ_FE_H 1\\012\\012/* Define to 1 if you have the <memory.h> header file. */\\012#define HAVE_MEMORY_H 1\\012\\012/* Use postgres backend */\\012#define HAVE_PGSQL 1\\012\\012/* Define to 1 if you have the <stdint.h> header file. */\\012#define HAVE_STDINT_H 1\\012\\012/* Define to 1 if you have the <stdlib.h> header file. */\\012#define HAVE_STDLIB_H 1\\012\\012/* Define to 1 if you have the `strerror_r'' function. */\\012#define HAVE_STRERROR_R 1\\012\\012/* Define to 1 if you have the <strings.h> header file. */\\012#define HAVE_STRINGS_H 1\\012\\012/* Define to 1 if you have the <string.h> header file. */\\012#define HAVE_STRING_H 1\\012\\012/* Define to 1 if you have the <sys/stat.h> header file. */\\012#define HAVE_SYS_STAT_H 1\\012\\012/* Define to 1 if you have the <sys/types.h> header file. */\\012#define HAVE_SYS_TYPES_H 1\\012\\012/* Define to 1 if you have the <unistd.h> header file. */\\012#define HAVE_UNISTD_H 1\\012\\012/* Name of package */\\012#define PACKAGE "manitou"\\012\\012/* Define to the address where bug reports for this package should be sent. */\\012#define PACKAGE_BUGREPORT ""\\012\\012/* Define to the full name of this package. */\\012#define PACKAGE_NAME ""\\012\\012/* Define to the full name and version of this package. */\\012#define PACKAGE_STRING ""\\012\\012/* Define to the one symbol short name of this package. */\\012#define PACKAGE_TARNAME ""\\012\\012/* Define to the home page for this package. */\\012#define PACKAGE_URL ""\\012\\012/* Define to the version of this package. */\\012#define PACKAGE_VERSION ""\\012\\012/* Define to 1 if you have the ANSI C header files. */\\012#define STDC_HEADERS 1\\012\\012/* Define to 1 if strerror_r returns char *. */\\012#define STRERROR_R_CHAR_P 1\\012\\012/* Version number of package */\\012#define VERSION "1.0.2"\\012');
-SELECT lo_close(0);
-
-COMMIT;
-
---
--- Data for Name: BLOB COMMENTS; Type: BLOB COMMENTS; Schema: -; Owner: 
---
-
-
-SET search_path = public, pg_catalog;
 
 --
 -- Name: addresses_email_addr_key; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
@@ -1439,44 +802,6 @@ CREATE UNIQUE INDEX users_login_idx ON users USING btree (login);
 CREATE UNIQUE INDEX wordtext_idx ON words USING btree (wordtext);
 
 
---
--- Name: delete_mail; Type: TRIGGER; Schema: public; Owner: ivan
---
-
-CREATE TRIGGER delete_mail
-    AFTER DELETE ON mail
-    FOR EACH ROW
-    EXECUTE PROCEDURE delete_mail();
-
-
---
--- Name: insert_mail; Type: TRIGGER; Schema: public; Owner: ivan
---
-
-CREATE TRIGGER insert_mail
-    AFTER INSERT ON mail
-    FOR EACH ROW
-    EXECUTE PROCEDURE insert_mail();
-
-
---
--- Name: update_mail; Type: TRIGGER; Schema: public; Owner: ivan
---
-
-CREATE TRIGGER update_mail
-    AFTER UPDATE ON mail
-    FOR EACH ROW
-    EXECUTE PROCEDURE update_mail();
-
-
---
--- Name: update_note; Type: TRIGGER; Schema: public; Owner: ivan
---
-
-CREATE TRIGGER update_note
-    AFTER INSERT OR DELETE ON notes
-    FOR EACH ROW
-    EXECUTE PROCEDURE update_note_flag();
 
 
 --
@@ -1606,18 +931,4 @@ ALTER TABLE ONLY tags_words
 ALTER TABLE ONLY tags_words
     ADD CONSTRAINT tags_words_word_id_fkey FOREIGN KEY (word_id) REFERENCES words(word_id);
 
-
---
--- Name: public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- PostgreSQL database dump complete
---
 
