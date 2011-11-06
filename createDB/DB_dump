@@ -88,8 +88,14 @@ CREATE TABLE addresses (
     invalid integer DEFAULT 0,
     recv_pri integer DEFAULT 0,
     nb_sent_to integer,
-    nb_recv_from integer
+    nb_recv_from integer,
+    CONSTRAINT addresses_email_addr_key UNIQUE (email_addr)
 );
+
+/*
+ALTER TABLE ONLY addresses
+    ADD CONSTRAINT addresses_email_addr_key UNIQUE (email_addr);
+*/
 
 CREATE TABLE attachment_contents (
     attachment_id integer,
@@ -324,10 +330,8 @@ CREATE TABLE words (
 
 
 
-
-
 ------------------------------------------------------------------------- Создание функций и Тригеров.
--- TODO: их нужно распихать по коду, что нельзя оставить тут.
+-- TODO: их нужно распихать по коду, всё что нельзя оставить тут.
 
 
 --\/--------------------------------- ТРИГЕРЫ ---------------------------------------\/--
@@ -548,9 +552,6 @@ $$;
 --
 -- Name: addresses_email_addr_key; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
 --
-
-ALTER TABLE ONLY addresses
-    ADD CONSTRAINT addresses_email_addr_key UNIQUE (email_addr);
 
 
 
