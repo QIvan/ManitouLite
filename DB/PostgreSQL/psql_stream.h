@@ -28,6 +28,11 @@
 
 class db_cnx;
 
+#ifdef NO_PG
+#error wrong headers included
+#endif
+
+
 /// sql Exception class
 class db_excpt
 {

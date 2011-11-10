@@ -12,26 +12,17 @@ TARGET = GUI
 TEMPLATE = app
 
 INCLUDEPATH += ../ ../DB
-DEPENDPATH += ../
+DEPENDPATH += ../ ../DB
+
+DEFINES += NO_PG
+#DEFINES += NO_SQLITE
 
 LIBS += -L/usr/lib/ -lpq
-LIBS += -L/usr/lib/ -lcppunit
+LIBS += -L/usr/lib/ -lsqlite3
 LIBS += -L../DB -lDB
-
-
-DEFINES += WITH_PGSQL=1
 
 HEADERS += \
     main.h \
-    #db.h \
-    #creatorConnection.h \
-    #dbtypes.h \
-    #db_listener.h \
-    #date.h \
-    #database.h \
-    #sqlstream.h \
-    #sqlquery.h \
-    #pgConnection.h \
     login.h \
     mail_displayer.h \
     app_config.h \
@@ -92,13 +83,6 @@ HEADERS += \
 
 SOURCES += \
     main.cpp \
-    #db.cpp \
-    #creatorConnection.cpp \
-    #date.cpp \
-    #sqlstream.cpp \
-    #sqlquery.cpp \
-    #pgConnection.cpp \
-    #db_listener.cpp \
     login.cpp \
     mail_displayer.cpp \
     app_config.cpp \

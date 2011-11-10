@@ -273,21 +273,21 @@ main(int argc, char **argv)
     dlg.set_focus();
     do {
       if (dlg.exec()==1) {
-	qcs = dlg.connect_string();
+        qcs = dlg.connect_string();
       }
       else {
-	helper::close();
-	exit(0); // exit if connection dialog closed with 'Cancel'
+        helper::close();
+        exit(0); // exit if connection dialog closed with 'Cancel'
       }    
       QString errstr;
       if (!(connected=ConnectDb(qcs.toLocal8Bit(), &errstr))) {
-	QMessageBox::critical(NULL, QObject::tr("Fatal database error"), QObject::tr("Error while connecting to the database:\n")+errstr);
+        QMessageBox::critical(NULL, QObject::tr("Fatal database error"), QObject::tr("Error while connecting to the database:\n")+errstr);
       }
       else {
-	settings.setValue("login", dlg.login());
-	settings.setValue("dbname", dlg.dbnames()); // stringlist
-	settings.setValue("host", dlg.host());
-	settings.setValue("params", dlg.params());
+        settings.setValue("login", dlg.login());
+        settings.setValue("dbname", dlg.dbnames()); // stringlist
+        settings.setValue("host", dlg.host());
+        settings.setValue("params", dlg.params());
       }
     } while (!connected);
   }

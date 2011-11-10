@@ -22,7 +22,7 @@
 #include <QSocketNotifier>
 #include "db.h"
 #include "main.h"
-#include "pgConnection.h"
+//#include "pgConnection.h"
 #include "sqlstream.h"
 #include "db_listener.h"
 

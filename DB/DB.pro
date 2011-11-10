@@ -6,17 +6,11 @@
 
 #QT       += core, gui, network, sql
 QT += network
-#CONFIG += staticlib
 CONFIG += staticlib
 TARGET = DB
 TEMPLATE = lib
 
-LIBS += -L/usr/lib/ -lpq
-LIBS += -L/usr/ -lsqlite3
 INCLUDEPATH += /usr/include/ , /usr/include/c++/4.4.4/ , /usr/include/postgresql
-INCLUDEPATH += ./PostgreSQL , ./SQLite
-
-
 
 CONFIG(debug, debug|release) {
  } else {
@@ -45,7 +39,7 @@ HEADERS += \
     connection.h \
 
 
-include(PostgreSQL/PostgreSQL.pri)
-#include(SQLite/SQLite.pri)
+#include(PostgreSQL/PostgreSQL.pri)
+include(SQLite/SQLite.pri)
 
 
