@@ -551,7 +551,14 @@ mail_address_list::fetchLike(const QString pattern,
 bool
 mail_address_list::fetch_completions(const QString substring)
 {
-  QString query=QString("SELECT addr_id,email_addr,name FROM addresses WHERE (last_sent_to is not null or last_recv_from is not null) AND (lower(name) ~ ('[[:<:]]'||lower(:p1)) OR email_addr ~ ('^'||lower(:p2))) AND coalesce(invalid,0)=0 ORDER BY greatest(last_sent_to,last_recv_from) DESC");
+  QString query=QString("SELECT addr_id,email_addr,name \
+                        FROM addresses WHERE \
+                        (last_sent_to is not null or last_recv_from is not null) \
+                        AND \
+                        (lower(name) ~ ('[[:<:]]'||lower(:p1)) \
+                        OR email_addr ~ ('^'||lower(:p2))) \
+                        AND coalesce(invalid,0)=0 \
+                        ORDER BY greatest(last_sent_to,last_recv_from) DESC");
   db_cnx db;
   try {
     sql_stream s(query, db);

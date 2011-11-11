@@ -258,9 +258,13 @@ sql_stream::find_param()
       int rightPos = pos;
       while ((++rightPos < sQuery.size()) && sQuery.at(rightPos).isLetterOrNumber());
       int replaceCount = rightPos - pos;
-      sQuery.replace(pos, replaceCount,
-                     "%" + QString::number(m_nArgCount));
-      ++m_nArgCount;
+      if (replaceCount > 1) { //length variable > 1
+        sQuery.replace(pos, replaceCount,
+                       "%" + QString::number(m_nArgCount));
+        ++m_nArgCount;
+      }
+      else
+        pos += 1;
     }
     else
       pos += 2;

@@ -46,8 +46,8 @@ identities::fetch(bool force/*=false*/)
       mail_identity id;
       s >> id.m_email_addr >> id.m_name >> id.m_xface >> id.m_signature;
       if (id.m_email_addr.isEmpty()) {
-	// Ignore identities with no email to be safe. This shouldn't happen.
-	continue;
+        // Ignore identities with no email to be safe. This shouldn't happen.
+        continue;
       }
       id.m_internal_id=start_id++; // unused, remove later. FIXME
       id.m_fetched=true;

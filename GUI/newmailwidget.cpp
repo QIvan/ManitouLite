@@ -574,8 +574,8 @@ new_mail_widget::load_identities(QMenu* m)
       m_identities_group->addAction(action);
       action->setCheckable(true);
       if (!default_email.isEmpty() && p->m_email_addr==default_email) {
-	action->setChecked(true);
-	m_from = default_email;
+        action->setChecked(true);
+        m_from = default_email;
       }
       m_identities_actions.insert(action, p);
     }
@@ -1334,7 +1334,9 @@ new_mail_widget::insert_signature()
 QString
 new_mail_widget::expand_signature(const QString sig, const mail_identity& identity)
 {
-  QString esig=sig;
+  QString esig (sig);
+  if (esig.isEmpty())
+    esig = "\n";
   bool user_fetched = false;
   user u;
   int pos=0;
@@ -1344,7 +1346,7 @@ new_mail_widget::expand_signature(const QString sig, const mail_identity& identi
     if (!user_fetched && field.startsWith("operator")) {
       int user_id = user::current_user_id();
       if (user_id>0)
-	u.fetch(user_id);
+      u.fetch(user_id);
     }
 
     QString field_val;
@@ -1356,7 +1358,7 @@ new_mail_widget::expand_signature(const QString sig, const mail_identity& identi
     else if (field=="operator_firstname") {
       int bpos = u.m_fullname.indexOf(' ');
       if (bpos>=1) {
-	field_val = u.m_fullname.left(bpos);
+        field_val = u.m_fullname.left(bpos);
       }
     }
     else if (field=="operator_fullname") {

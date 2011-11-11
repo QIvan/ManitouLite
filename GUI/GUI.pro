@@ -14,8 +14,10 @@ TEMPLATE = app
 INCLUDEPATH += ../ ../DB
 DEPENDPATH += ../ ../DB
 
-DEFINES += NO_PG
-#DEFINES += NO_SQLITE
+#DEFINES += NO_PG
+DEFINES += NO_SQLITE
+DEFINES += WITH_PGSQL
+
 
 LIBS += -L/usr/lib/ -lpq
 LIBS += -L/usr/lib/ -lsqlite3
