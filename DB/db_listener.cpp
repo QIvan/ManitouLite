@@ -32,15 +32,22 @@ db_listener::db_listener(db_cnx& db, const QString notif_name)
 {
   m_socket_notifier = NULL;
   m_db = db.datab();
-  sql_stream s1("SELECT quote_ident(:p1)", db);
-  s1 << notif_name;
-  if (!s1.isEmpty()) {
-    s1 >> m_notif_name;
+  try {
+    /*sql_stream s1("SELECT quote_ident(:p1)", db);
+
+    s1 << notif_name;
+    if (!s1.isEmpty()) {
+      s1 >> m_notif_name;
+    }
+    if (!m_notif_name.isEmpty()) {
+      m_db->add_listener(this);
+      setup_notification();
+      setup_db();
+    }*/
   }
-  if (!m_notif_name.isEmpty()) {
-    m_db->add_listener(this);
-    setup_notification();
-    setup_db();
+  catch (db_excpt e)
+  {
+    DBEXCPT(e);
   }
 }
 

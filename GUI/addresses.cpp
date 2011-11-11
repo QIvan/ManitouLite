@@ -346,11 +346,11 @@ mail_address::update_last_used(const QString type)
       return false;
     }
     if (type=="sent") {
-      sql_stream s("UPDATE addresses SET last_sent_to=now(), nb_sent_to=1+coalesce(nb_sent_to,0) WHERE addr_id=:id", db);
+      sql_stream s("UPDATE addresses SET last_sent_to=:now:, nb_sent_to=1+coalesce(nb_sent_to,0) WHERE addr_id=:id", db);
       s << m_id;
     }
     else if (type=="recv") {
-      sql_stream s("UPDATE addresses SET last_recv_from=now() WHERE addr_id=:id", db);
+      sql_stream s("UPDATE addresses SET last_recv_from=:now: WHERE addr_id=:id", db);
       s << m_id;
     }
   }

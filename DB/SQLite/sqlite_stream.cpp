@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QDebug>
 
 #include "db.h"
 #include "connection.h"
@@ -254,12 +255,11 @@ sql_stream::find_param()
   {
     if (sQuery.at(pos+1) != ':')
     {
-      int rightPos = std::max(sQuery.indexOf(' ', pos+1), sQuery.indexOf(',', pos+1));
-      if (rightPos < 0)
-        rightPos = sQuery.length();
+      int rightPos = pos;
+      while ((++rightPos < sQuery.size()) && sQuery.at(rightPos).isLetterOrNumber());
       int replaceCount = rightPos - pos;
       sQuery.replace(pos, replaceCount,
-                     "%" + QString::number(m_nArgCount) + " ");
+                     "%" + QString::number(m_nArgCount));
       ++m_nArgCount;
     }
     else

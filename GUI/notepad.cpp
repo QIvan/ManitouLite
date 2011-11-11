@@ -163,11 +163,11 @@ notepad::save()
   try {
     sql_stream s1("SELECT 1 FROM global_notepad", db);
     if (s1.isEmpty()) {
-      sql_stream s2("INSERT INTO global_notepad(contents,last_modified) VALUES(:p1, now())", db);
+      sql_stream s2("INSERT INTO global_notepad(contents,last_modified) VALUES(:p1, :now:)", db);
       s2 << t;
     }
     else {
-      sql_stream s2("UPDATE global_notepad SET contents=:p1,last_modified=now()", db);
+      sql_stream s2("UPDATE global_notepad SET contents=:p1,last_modified=:now:", db);
       s2 << t;
     }
   }

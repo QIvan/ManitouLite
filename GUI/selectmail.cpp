@@ -485,7 +485,8 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
       select = "SELECT DISTINCT m.mail_id,sender,subject,to_char(msg_date,'YYYYMMDDHH24MISS'),thread_id,m.status,in_reply_to,sender_fullname,priority,flags,msg_date";
     }
     else {
-      select = "SELECT m.mail_id,sender,subject,to_char(msg_date,'YYYYMMDDHH24MISS'),thread_id,m.status,in_reply_to,sender_fullname,priority,flags";
+      /// @todo Проверить как работает без to_char
+      select = "SELECT m.mail_id,sender,subject, msg_date, thread_id,m.status,in_reply_to,sender_fullname,priority,flags";
     }
     q.start(select);
     if (m_sql_stmt.isEmpty())
