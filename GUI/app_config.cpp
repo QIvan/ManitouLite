@@ -244,46 +244,46 @@ app_config::diff_update(const app_config& newconf)
   const char* q_update;
   const char* q_delete;
   if (m_name.isEmpty()) {
-    q_update="UPDATE config SET value=:p1,date_update=now() WHERE conf_key=:p2 AND conf_name is null";
-    q_insert="INSERT INTO config(value,conf_key,date_update) VALUES(:p1,:p2,now())";
+    q_update="UPDATE config SET value=:p1,date_update=:now: WHERE conf_key=:p2 AND conf_name is null";
+    q_insert="INSERT INTO config(value,conf_key,date_update) VALUES(:p1,:p2,:now:)";
     q_delete="DELETE FROM config WHERE conf_key=:p1 AND conf_name is null";
   }
   else {
-    q_update="UPDATE config SET value=:p1,date_update=now() WHERE conf_key=:p2 AND conf_name=:p3";
-    q_insert="INSERT INTO config(value,conf_key,conf_name,date_update) VALUES(:p1,:p2,:p3,now())";
+    q_update="UPDATE config SET value=:p1,date_update=:now: WHERE conf_key=:p2 AND conf_name=:p3";
+    q_insert="INSERT INTO config(value,conf_key,conf_name,date_update) VALUES(:p1,:p2,:p3,:now:)";
     q_delete="DELETE FROM config WHERE conf_key=:p1 AND conf_name=:p2";
   }
 
   db_cnx db;
   try {
     db.begin_transaction();
-    sql_stream su(q_update, db);
-    sql_stream si(q_insert, db);
-    sql_stream sd(q_delete, db);
     const_iter iter;
     for (iter=newconf.map().begin(); iter!=newconf.map().end(); ++iter) {
       /* update or insert entries */
       const QString our_value=get_string(iter->first);
       if (iter->second != our_value) {
-  if (iter->second.isEmpty()) {
-    // if the new value is empty then delete the entry
-    sd << iter->first;
-    if (!m_name.isEmpty())
-      sd << m_name;
-  }
-  else {
-    su << iter->second << iter->first;
-    if (!m_name.isEmpty())
-      su << m_name;
-    /* If nothing has been updated (no entry), then insert a new entry.
-       This will happen if the entry has been deleted after we fetched
-       it into 'this' */
-    if (su.affected_rows()==0) {
-      si << iter->second << iter->first;
-      if (!m_name.isEmpty())
-        si << m_name;
-    }
-  }
+        if (iter->second.isEmpty()) {
+          // if the new value is empty then delete the entry
+          sql_stream sd(q_delete, db);
+          sd << iter->first;
+          if (!m_name.isEmpty())
+            sd << m_name;
+        }
+        else {
+          sql_stream su(q_update, db);
+          su << iter->second << iter->first;
+          if (!m_name.isEmpty())
+            su << m_name;
+          /* If nothing has been updated (no entry), then insert a new entry.
+             This will happen if the entry has been deleted after we fetched
+             it into 'this' */
+          if (su.affected_rows()==0) {
+            sql_stream si(q_insert, db);
+            si << iter->second << iter->first;
+            if (!m_name.isEmpty())
+              si << m_name;
+          }
+        }
       }
     }
     db.commit_transaction();

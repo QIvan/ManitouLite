@@ -71,9 +71,9 @@ user::create_if_missing(const QString fullname)
     if (s.isEmpty()) {
       sql_stream si("INSERT INTO users(user_id,login,fullname) SELECT 1+coalesce(max(user_id),0), current_user, :p1 FROM users", db);
       if (!fullname.isEmpty())
-	si << fullname;
+        si << fullname;
       else
-	si << sql_null();
+        si << sql_null();
     }
   }
   catch(db_excpt& p) {

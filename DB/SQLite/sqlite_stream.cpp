@@ -286,6 +286,8 @@ sql_stream::next_param(QString value)
   check_params();
   m_query = m_query.arg(value);
   ++m_nArgPos;
+  if (m_nArgPos == m_nArgCount)
+    execute();
   return *this;
 }
 
