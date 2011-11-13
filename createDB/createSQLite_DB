@@ -314,6 +314,7 @@ CREATE TABLE users (
     custom_field1 text,
     custom_field2 text,
     custom_field3 text,
+    current_user text,	-- TODO: ХАК! Проверить и желательно исправить
     CONSTRAINT users_user_id_check CHECK ((user_id > 0))
 );
 
