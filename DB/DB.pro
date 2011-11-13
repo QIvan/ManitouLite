@@ -39,7 +39,7 @@ HEADERS += \
     connection.h \
 
 
-#include(PostgreSQL/PostgreSQL.pri)
-include(SQLite/SQLite.pri)
+include(PostgreSQL/PostgreSQL.pri)
+#include(SQLite/SQLite.pri)
 
 
