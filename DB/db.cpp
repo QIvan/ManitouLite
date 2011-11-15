@@ -138,9 +138,9 @@ db_cnx::next_seq_val(const char* seqName, int* id)
 {
   try {
     begin_transaction();
-    sql_stream update(QString("UPDATE sequence set value=value+1 where name='%1'").arg(seqName),
+    sql_stream update(QString("UPDATE SEQUENCE set curr_val=curr_val+1 where name='%1'").arg(seqName),
                       *this);
-    sql_stream select(QString("SELECT value from sequence where name='%1'").arg(seqName),
+    sql_stream select(QString("SELECT curr_val from sequence where name='%1'").arg(seqName),
                       *this);
     commit_transaction();
     select >> *id;

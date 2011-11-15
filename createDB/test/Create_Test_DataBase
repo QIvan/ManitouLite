@@ -1,0 +1,20 @@
+CREATE TABLE SEQUENCE (
+	name text,
+	curr_val integer
+);
+
+INSERT INTO SEQUENCE (name, curr_val) VALUES ('sequence_id', 1);
+
+CREATE TABLE test_table (
+	test_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	test_text text,
+	test_char200 character varying(200),
+	test_date timestamp with time zone,
+	test_int_not_null integer NOT NULL
+);
+
+CREATE TABLE table_for_thread (
+    field integer PRIMARY KEY AUTOINCREMENT,
+    temp_collumn text
+);
+
