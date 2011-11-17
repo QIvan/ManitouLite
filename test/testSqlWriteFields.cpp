@@ -50,7 +50,8 @@ void test_sql_write_fields::insert()
         assertNumerateString (2);
 
         //проверяем что добавилось
-        sql_stream check("SELECT test_id, test_text, test_char200, TO_CHAR(test_date,'YYYYMMDDHH24MISS'), test_int_not_null FROM test_table",*m_DB);
+        /// @todo: было так: TO_CHAR(test_date,'YYYYMMDDHH24MISS') !!!
+        sql_stream check("SELECT test_id, test_text, test_char200, test_date, test_int_not_null FROM test_table",*m_DB);
         int id, int_not_null;
         QString text, char200, dateStr;
         check >> id >> text >> char200 >> dateStr >> int_not_null;
@@ -67,8 +68,9 @@ void test_sql_write_fields::insert()
         CPPUNIT_ASSERT(text == "Insert Te");
         CPPUNIT_ASSERT(char200 == AddSpace_("Insert Text 2", 200));
         /// @todo: если свалится на этом ассерте, то просто запусти тест ещё раз
-        CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
-                               dateDate.FullOutput() == dateDate2.FullOutput());
+        CPPUNIT_ASSERT(dateDate.OutputHM(1) == dateDate2.OutputHM(1));
+        dbTime.truncate(dbTime.indexOf('.', dbTime.indexOf(' ')));
+        dbTime2.truncate(dbTime2.indexOf('.', dbTime2.indexOf(' ')));
         CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
                                dbTime == dbTime2);
         CPPUNIT_ASSERT(int_not_null == 2);

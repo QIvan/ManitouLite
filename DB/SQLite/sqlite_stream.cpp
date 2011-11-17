@@ -315,7 +315,7 @@ sql_stream::next_result()
 void
 sql_stream::check_results(int code_error, const QString& errmsg)
 {
-  if (m_status == SQLITE_MISUSE)
+  if ((m_status == SQLITE_MISUSE) || (m_status == SQLITE_ERROR))
     throw db_excpt(m_query, m_db);
 
   if (code_error != SQLITE_OK)

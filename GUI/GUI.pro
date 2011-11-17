@@ -12,11 +12,7 @@ TARGET = GUI
 TEMPLATE = app
 
 INCLUDEPATH += ../ ../DB
-DEPENDPATH += ../ ../DB
-
-DEFINES += NO_PG
-#DEFINES += NO_SQLITE
-#DEFINES += WITH_PGSQL
+DEPENDPATH += ../
 
 
 LIBS += -L/usr/lib/ -lpq
