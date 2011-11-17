@@ -16,7 +16,7 @@ void test_sql_write_fields::insert()
         #ifdef WITH_PGSQL
         sql_stream reset_id("ALTER SEQUENCE sequence_id RESTART",*m_DB);
         #endif
-        //РїРµСЂРІС‹Р№ Р·Р°РїСЂРѕСЃ
+        //первый запрос
         sql_write_fields fiedls(m_DB->cdatab()->encoding());
         assertNumerateString (0);
         int next_id;
@@ -35,7 +35,7 @@ void test_sql_write_fields::insert()
         CPPUNIT_ASSERT(m_DB->datab()->fetchServerDate(dbTime));
         assertNumerateString (1);
 
-        //РІС‚РѕСЂРѕР№ Р·Р°РїСЂРѕСЃ
+        //второй запрос
         db_cnx db(true);
         sql_write_fields fiedls2(db.cdatab()->encoding());
         fiedls2.add_if_not_empty("test_text", "Insert Text 2", 9);//Insert Te
@@ -51,7 +51,7 @@ void test_sql_write_fields::insert()
         CPPUNIT_ASSERT(m_DB->datab()->fetchServerDate(dbTime2));
         assertNumerateString (2);
 
-        //РїСЂРѕРІРµСЂСЏРµРј С‡С‚Рѕ РґРѕР±Р°РІРёР»РѕСЃСЊ
+        //проверяем что добавилось
         sql_stream check("SELECT test_id, test_text, test_char200, TO_CHAR(test_date,'YYYYMMDDHH24MISS'), test_int_not_null FROM test_table",*m_DB);
         int id, int_not_null;
         QString text, char200, dateStr;
@@ -68,10 +68,10 @@ void test_sql_write_fields::insert()
         CPPUNIT_ASSERT(id == 2);
         CPPUNIT_ASSERT(text == "Insert Te");
         CPPUNIT_ASSERT(char200 == AddSpace_("Insert Text 2", 200));
-        /// @todo: РµСЃР»Рё СЃРІР°Р»РёС‚СЃСЏ РЅР° СЌС‚РѕРј Р°СЃСЃРµСЂС‚Рµ, С‚Рѕ РїСЂРѕСЃС‚Рѕ Р·Р°РїСѓСЃС‚Рё С‚РµСЃС‚ РµС‰С‘ СЂР°Р·
-        CPPUNIT_ASSERT_MESSAGE("Р•СЃР»Рё СЌС‚РѕС‚ assert СЃРІР°Р»РёР»СЃСЏ - РїРµСЂРµР·Р°РїСѓСЃС‚Рё С‚РµСЃС‚",
+        /// @todo: если свалится на этом ассерте, то просто запусти тест ещё раз
+        CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
                                dateDate.FullOutput() == dateDate2.FullOutput());
-        CPPUNIT_ASSERT_MESSAGE("Р•СЃР»Рё СЌС‚РѕС‚ assert СЃРІР°Р»РёР»СЃСЏ - РїРµСЂРµР·Р°РїСѓСЃС‚Рё С‚РµСЃС‚",
+        CPPUNIT_ASSERT_MESSAGE("Если этот assert свалился - перезапусти тест",
                                dbTime == dbTime2);
         CPPUNIT_ASSERT(int_not_null == 2);
 
