@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <QMessageBox>
 #include <QDebug>
+#include <QDateTime>
 
 #include "db.h"
 #include "connection.h"
@@ -203,10 +204,27 @@ sql_stream::init (const char *query)
   m_bExecuted = false;
 
   service_f::replace_random_param(m_query);
-  find_and_replace_param(query);
+  find_key_word();
+  find_and_replace_param(m_query.toLocal8Bit().constData());
 
   if(m_nArgCount == 0)
     execute();
+}
+
+void
+sql_stream::find_key_word()
+{
+  QString sQuery = m_query;
+  const QString NOW = ":now:";
+  int pos_now = sQuery.indexOf(NOW);
+  if (pos_now != -1)
+  {
+    sQuery = sQuery.replace(NOW,
+                            '\'' + QDateTime::currentDateTime().
+                                   toString("dd-MM-yyyy hh::mm::ss.zzzz")
+                            + '\'');
+  }
+  m_query = sQuery;
 }
 
 void
@@ -233,6 +251,7 @@ sql_stream::find_and_replace_param(const char* query)
       pos += 2;
     pos = sQuery.indexOf(':', pos);
   }
+  sQuery.replace("::", ":");
   m_query = sQuery;
 }
 
