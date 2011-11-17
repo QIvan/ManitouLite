@@ -1,1 +1,0 @@
-CREATE TABLE test_table (test_id INTEGER PRIMARY KEY AUTOINCREMENT, test_text text, test_char200 character varying(200), test_date timestamp with time zone, test_int_not_null integer NOT NULL);

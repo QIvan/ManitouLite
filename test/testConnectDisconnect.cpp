@@ -13,7 +13,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(testDisconnect, TestNames::disconnect());
 void testConnect::connect()
 {
     QString errstr;
-    /// @todo: РІ СЌС‚РѕР№ С„СѓРЅРєС†РёРё СѓС‚РµС‡РєР°
+    /// @todo: в этой функции утечка
     CPPUNIT_ASSERT (ConnectDb("dbname=test_db_api user=ivan", &errstr));
 }
 
@@ -26,7 +26,7 @@ void testConnect::ping()
 /*============================ testDisconnect ====================================*/
 void testDisconnect::disconnect()
 {
-    /// @todo: РІ СЌС‚РѕР№ С„СѓРЅРєС†РёРё СѓС‚РµС‡РєР°
+    /// @todo: в этой функции утечка
     DisconnectDb();
 }
 

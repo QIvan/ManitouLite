@@ -298,25 +298,25 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
     main_table="mail m";
     if (m_tag_name == "(No tag set)") {
       /* optimize the cases of "no tag set" condition AND'ed with
-	 some particular values for the status */
+         some particular values for the status */
       if (m_status == -1 && !m_in_trash && m_status_set==0 && m_status_unset == mail_msg::statusArchived) {
-	// current and not tagged
-	q.add_clause(QString("m.mail_id in (SELECT ms.mail_id FROM mail_status ms"
-			     " LEFT OUTER JOIN mail_tags mt ON mt.mail_id=ms.mail_id"
-			     " WHERE  mt.mail_id is null AND ms.status&%1=0)")
-		     .arg(mail_msg::statusArchived|mail_msg::statusTrashed));
-	done_with_status=true;
+        // current and not tagged
+        q.add_clause(QString("m.mail_id in (SELECT ms.mail_id FROM mail_status ms"
+                 " LEFT OUTER JOIN mail_tags mt ON mt.mail_id=ms.mail_id"
+                 " WHERE  mt.mail_id is null AND ms.status&%1=0)")
+               .arg(mail_msg::statusArchived|mail_msg::statusTrashed));
+        done_with_status=true;
       }
       else if (m_status==0) {
-	// new and not tagged
-	q.add_clause(QString("m.mail_id in (SELECT ms.mail_id FROM mail_status ms"
-			     " LEFT OUTER JOIN mail_tags mt ON mt.mail_id=ms.mail_id"
-			     " WHERE  mt.mail_id is null AND ms.status=0)"));
-	done_with_status=true;
+        // new and not tagged
+        q.add_clause(QString("m.mail_id in (SELECT ms.mail_id FROM mail_status ms"
+                 " LEFT OUTER JOIN mail_tags mt ON mt.mail_id=ms.mail_id"
+                 " WHERE  mt.mail_id is null AND ms.status=0)"));
+        done_with_status=true;
       }
       else {
-	main_table += " LEFT OUTER JOIN mail_tags mt ON mt.mail_id=m.mail_id";
-	q.add_clause(" mt.mail_id is null");
+        main_table += " LEFT OUTER JOIN mail_tags mt ON mt.mail_id=m.mail_id";
+        q.add_clause(" mt.mail_id is null");
       }
     }
     q.add_table(main_table);
@@ -324,18 +324,18 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
     // bounds. m_mail_id_bound and m_date_bound should be either both set or both unset
     if (fetch_more && m_mail_id_bound>0) {
       if (m_order>0) {
-	q.add_clause(QString("m.mail_id>%1").arg(m_mail_id_bound));
+        q.add_clause(QString("m.mail_id>%1").arg(m_mail_id_bound));
       }
       else
-	q.add_clause(QString("m.mail_id<%1").arg(m_mail_id_bound));
+        q.add_clause(QString("m.mail_id<%1").arg(m_mail_id_bound));
     }
     if (fetch_more && !m_date_bound.isEmpty()) {
       if (m_order>0) {
-	// msgs fetched from oldest to newest
-	q.add_clause(QString("msg_date>=to_date('%1','YYYYMMDDHH24MISS')").arg(m_date_bound));
+        // msgs fetched from oldest to newest
+        q.add_clause(QString("msg_date>=to_date('%1','YYYYMMDDHH24MISS')").arg(m_date_bound));
       }
       else {
-	q.add_clause(QString("msg_date<=to_date('%1','YYYYMMDDHH24MISS')").arg(m_date_bound));  
+        q.add_clause(QString("msg_date<=to_date('%1','YYYYMMDDHH24MISS')").arg(m_date_bound));
       }
     }
 
@@ -349,27 +349,27 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
     if (!m_sAddress.isEmpty()) {
       int addr_type;
       switch(m_nAddrType) {
-	// is it really necessary to translate here? TODO: find a way
-	// to get the caller to pass an addr_type from the mail_address enum
-      case rFrom:
-	addr_type = mail_address::addrFrom;
-	break;
-      case rTo:
-	addr_type = mail_address::addrTo;
-	break;
-      case rCc:
-	addr_type = mail_address::addrCc;
-	break;
-      default:
-	addr_type = 0; // any
-	break;
-      }
-      if (!add_address_selection(q, m_sAddress, addr_type))
-	return 2;
+        // is it really necessary to translate here? TODO: find a way
+        // to get the caller to pass an addr_type from the mail_address enum
+        case rFrom:
+          addr_type = mail_address::addrFrom;
+          break;
+              case rTo:
+          addr_type = mail_address::addrTo;
+          break;
+              case rCc:
+          addr_type = mail_address::addrCc;
+          break;
+              default:
+          addr_type = 0; // any
+          break;
+        }
+        if (!add_address_selection(q, m_sAddress, addr_type))
+          return 2;
     }
     if (!m_addr_to.isEmpty()) {
       if (!add_address_selection(q, m_addr_to, mail_address::addrTo))
-	return 2;
+        return 2;
     }
     //    if (!m_tag_name.isEmpty() && m_tag_name!="(No tag set)") {
     if (m_tag_id!=0) {
@@ -385,10 +385,10 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
     if (!m_date_min.isNull() && m_date_min.isValid()) {
       QString date_clause;
       if (!m_date_max.isNull() && m_date_max.isValid()) {
-	date_clause = QString("msg_date >= '%1'::date and msg_date<'%2'::date+1::int").arg(m_date_min.toString("yyyy/M/d")).arg(m_date_max.toString("yyyy/M/d"));
+        date_clause = QString("msg_date >= '%1'::date and msg_date<'%2'::date+1::int").arg(m_date_min.toString("yyyy/M/d")).arg(m_date_max.toString("yyyy/M/d"));
       }
       else {
-	date_clause = QString("msg_date>='%1'::date").arg(m_date_min.toString("yyyy/M/d"));
+        date_clause = QString("msg_date>='%1'::date").arg(m_date_min.toString("yyyy/M/d"));
       }
       q.add_clause(date_clause);
     }
@@ -421,7 +421,7 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
 
     if (m_mailId) {
       //sWhere.sprintf(" WHERE mail_id=%d", m_mailId);
-      q.add_clause("mail_id", (int)m_mailId);
+      q.add_clause("m.mail_id", (int)m_mailId);
     }
     if (m_newer_than) {
       QString s;
@@ -468,7 +468,7 @@ msgs_filter::build_query(sql_query& q, bool fetch_more/*=false*/)
     QString sFinal="ORDER BY msg_date";
     if (m_order<0)
       sFinal+=" DESC";
-    sFinal+=",mail_id";
+    sFinal+=",m.mail_id";
     if (m_order<0)
       sFinal+=" DESC";
     if (m_max_results>0) {
@@ -571,10 +571,10 @@ msgs_filter::fetch(mail_listview* qlv, bool fetch_more/*=false*/)
         m_fetch_results=NULL;
       }
       catch(db_excpt e) {
-	DBG_PRINTF(2, "PQexec error");
-	m_exec_time=-1;
+        DBG_PRINTF(2, "PQexec error");
+        m_exec_time=-1;
         m_errmsg = e.errmsg();
-	QMessageBox::warning(NULL, APP_NAME, QObject::tr("Unable to execute query.") + QString("\n")+ m_errmsg);
+        QMessageBox::warning(NULL, APP_NAME, QObject::tr("Unable to execute query.") + QString("\n")+ m_errmsg);
       }
     }
     else if (r==0) {

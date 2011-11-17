@@ -3,7 +3,7 @@
 
 --Примечание: в SQLite нет sequence. нужно создавать таблицу и запихивать их туда.
 CREATE TABLE SEQUENCE (
-	seq_name text,
+	name text,
 	curr_val integer
 );
 
