@@ -47,6 +47,7 @@ public:
   void cancelRequest();
   bool next_seq_val(const char*, int*);
   bool next_seq_val(const char*, unsigned int*);
+  bool reset_seq(QString seqName);
   // overrides database's methods
   void begin_transaction();
   void commit_transaction();

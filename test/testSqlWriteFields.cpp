@@ -13,9 +13,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(test_sql_write_fields, TestNames::sql_wirt
 void test_sql_write_fields::insert()
 {
     try{
-        #ifdef WITH_PGSQL
-        sql_stream reset_id("ALTER SEQUENCE sequence_id RESTART",*m_DB);
-        #endif
+        m_DB->reset_seq("sequence_id");
         //первый запрос
         sql_write_fields fiedls(m_DB->cdatab()->encoding());
         assertNumerateString (0);

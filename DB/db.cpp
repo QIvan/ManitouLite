@@ -130,9 +130,7 @@ db_cnx::cancelRequest()
   this->connection()->m_db->cancelRequest();
 }
 
-namespace service_f
-{
-}
+
 bool
 db_cnx::next_seq_val(const char* seqName, int* id)
 {
@@ -157,9 +155,29 @@ bool
 db_cnx::next_seq_val(const char* seqName, unsigned int* id)
 {
   try {
-    QString query = QString("SELECT nextval('%1')").arg(seqName);
-    sql_stream s(query, *this);
-    s >> *id;
+    begin_transaction();
+    sql_stream update(QString("UPDATE SEQUENCE set curr_val=curr_val+1 where name='%1'").arg(seqName),
+                      *this);
+    sql_stream select(QString("SELECT curr_val from sequence where name='%1'").arg(seqName),
+                      *this);
+    commit_transaction();
+    select >> *id;
+    -- *id;
+  }
+  catch(db_excpt& p) {
+    DBEXCPT(p);
+    return false;
+  }
+  return true;
+}
+
+bool
+db_cnx::reset_seq(QString seqName)
+{
+  try {
+    sql_stream update(QString("UPDATE SEQUENCE set curr_val=1 where name='%1'").arg(seqName),
+                      *this);
+
   }
   catch(db_excpt& p) {
     DBEXCPT(p);
