@@ -105,12 +105,12 @@ headers_groupview::init(const std::list<unsigned int>& id_list)
       //DBG_PRINTF(3, "%s\n", s.latin1());
       v_it = m_map_val.find(s);
       if (v_it==m_map_val.end()) {
-	std::set<mail_id_t> mset;
-	mset.insert(*iter);
-	m_map_val[s] = mset;
+        std::set<mail_id_t> mset;
+        mset.insert(*iter);
+        m_map_val[s] = mset;
       }
       else {
-	v_it->second.insert(*iter); // update m_map_val
+        v_it->second.insert(*iter); // update m_map_val
       }
       mit->second.insert(s);	// update m_map_id
     }
@@ -198,12 +198,12 @@ header_item::setOpen(bool b)
       // Now create the child entries
       header_item* qitem;
       for (lmap_it=lmap.begin(); lmap_it!=lmap.end(); ++lmap_it) {
-	if (lmap_it->second >= 2 && lmap_it->first!=hs) {
-	  qitem = new header_item(this, lmap_it->second, lmap_it->first,
-				  m_id_set.size());
-	  qitem->setExpandable(true);
-	  qitem->m_pmap_id = m_pmap_id;
-	}
+        if (lmap_it->second >= 2 && lmap_it->first!=hs) {
+          qitem = new header_item(this, lmap_it->second, lmap_it->first,
+                m_id_set.size());
+          qitem->setExpandable(true);
+          qitem->m_pmap_id = m_pmap_id;
+        }
       }
     }
   }
