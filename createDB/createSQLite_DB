@@ -1,62 +1,62 @@
 
-------------------------------------------------------------------------- Создание SEQUENCE 
+------------------------------------------------------------------------- Создание Sequence 
 
---Примечание: в SQLite нет sequence. нужно создавать таблицу и запихивать их туда.
-CREATE TABLE SEQUENCE (
+--Примечание: в SQLite нет Sequence. нужно создавать таблицу и запихивать их туда.
+CREATE TABLE Sequence (
 	name text,
 	curr_val integer
 );
 
-INSERT INTO SEQUENCE VALUES ('seq_addr_id', 1);
-/*CREATE SEQUENCE seq_addr_id
+INSERT INTO Sequence VALUES ('seq_addr_id', 1);
+/*CREATE Sequence seq_addr_id
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
 */
-INSERT INTO SEQUENCE VALUES ('seq_attachment_id', 1);
-/*CREATE SEQUENCE seq_attachment_id
+INSERT INTO Sequence VALUES ('seq_attachment_id', 1);
+/*CREATE Sequence seq_attachment_id
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
 */
-INSERT INTO SEQUENCE VALUES ('jobs_queue_job_id_seq', 1);
-/*CREATE SEQUENCE jobs_queue_job_id_seq
+INSERT INTO Sequence VALUES ('jobs_queue_job_id_seq', 1);
+/*CREATE Sequence jobs_queue_job_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
 */
-INSERT INTO SEQUENCE VALUES ('seq_mail_id', 1);
-/*CREATE SEQUENCE seq_mail_id
+INSERT INTO Sequence VALUES ('seq_mail_id', 1);
+/*CREATE Sequence seq_mail_id
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
 */
-INSERT INTO SEQUENCE VALUES ('seq_thread_id', 1);
-/*CREATE SEQUENCE seq_thread_id
+INSERT INTO Sequence VALUES ('seq_thread_id', 1);
+/*CREATE Sequence seq_thread_id
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
 */
-INSERT INTO SEQUENCE VALUES ('seq_word_id', 1);
-/*CREATE SEQUENCE seq_word_id
+INSERT INTO Sequence VALUES ('seq_word_id', 1);
+/*CREATE Sequence seq_word_id
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
 */
-INSERT INTO SEQUENCE VALUES ('seq_tag_id', 1);
-/*CREATE SEQUENCE seq_tag_id
+INSERT INTO Sequence VALUES ('seq_tag_id', 1);
+/*CREATE Sequence seq_tag_id
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
@@ -64,7 +64,7 @@ INSERT INTO SEQUENCE VALUES ('seq_tag_id', 1);
     CACHE 1;
 */
 
-------------------------------------------------------------------------- Закончили с SEQUENCE 
+------------------------------------------------------------------------- Закончили с Sequence 
 
 
 
@@ -78,7 +78,7 @@ INSERT INTO SEQUENCE VALUES ('seq_tag_id', 1);
 ------------------------------------------------------------------------- Создание ТАБЛИЦ!!! 
 
 CREATE TABLE addresses (
-    addr_id integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+    addr_id integer PRIMARY KEY,
     email_addr character varying(300),
     name character varying(300),
     nickname character varying(300),
@@ -92,6 +92,12 @@ CREATE TABLE addresses (
     CONSTRAINT addresses_email_addr_key UNIQUE (email_addr)
 );
 
+CREATE TRIGGER autoincrement_addresses AFTER INSERT ON addresses 
+  BEGIN
+    UPDATE addresses SET addr_id=(select curr_val+1 from Sequence where name='seq_addr_id') where addr_id is null;
+    UPDATE Sequence SET curr_val=curr_val+1 where             		 name='seq_addr_id';
+  END;
+
 /*
 ALTER TABLE ONLY addresses
     ADD CONSTRAINT addresses_email_addr_key UNIQUE (email_addr);
@@ -104,7 +110,7 @@ CREATE TABLE attachment_contents (
 );
 
 CREATE TABLE attachments (
-    attachment_id integer PRIMARY KEY AUTOINCREMENT NOT NULL, --DEFAULT nextval('seq_attachment_id'::regclass) NOT NULL,
+    attachment_id integer PRIMARY KEY, --DEFAULT nextval('seq_attachment_id'::regclass) NOT NULL,
     mail_id integer,
     content_type character varying(300),
     content_size integer,
@@ -112,6 +118,12 @@ CREATE TABLE attachments (
     charset character varying(30),
     mime_content_id text
 );
+
+CREATE TRIGGER autoincrement_attachments AFTER INSERT ON attachments 
+       BEGIN 
+         	UPDATE attachments SET attachment_id=(select curr_val+1 from Sequence where name='seq_attachment_id') where attachment_id is null; 
+        	UPDATE Sequence SET curr_val=curr_val+1 where           		    name='seq_attachment_id'; 
+       END;
 
 CREATE TABLE body (
     mail_id integer,
@@ -195,14 +207,20 @@ CREATE TABLE inverted_word_index (
 
 
 CREATE TABLE jobs_queue (
-    job_id integer PRIMARY KEY AUTOINCREMENT NOT NULL, --DEFAULT nextval('jobs_queue_job_id_seq'::regclass) NOT NULL,
+    job_id integer PRIMARY KEY, --DEFAULT nextval('jobs_queue_job_id_seq'::regclass) NOT NULL,
     mail_id integer,
     job_type character varying(4),
     job_args text
 );
 
+CREATE TRIGGER autoincrement_jobs_queue AFTER INSERT ON jobs_queue 
+       BEGIN 
+         	UPDATE jobs_queue SET job_id=(select curr_val+1 from Sequence where name='jobs_queue_job_id_seq') where job_id is null; 
+        	UPDATE Sequence SET curr_val=curr_val+1 where           		 name='jobs_queue_job_id_seq'; 
+       END;
+
 CREATE TABLE mail (
-    mail_id integer,
+    mail_id integer PRIMARY KEY,
     sender text,
     toname text,
     sender_fullname text,
@@ -219,6 +237,12 @@ CREATE TABLE mail (
     priority integer DEFAULT 0,
     flags integer DEFAULT 0
 );
+
+CREATE TRIGGER autoincrement_mail AFTER INSERT ON mail 
+       BEGIN 
+         	UPDATE mail SET mail_id=(select curr_val+1 from Sequence where name='seq_mail_id') where mail_id is null; 
+        	UPDATE Sequence SET curr_val=curr_val+1 where           		 name='seq_mail_id'; 
+       END;
 
 
 CREATE TABLE mail_addresses (
@@ -286,11 +310,16 @@ CREATE TABLE runtime_info (
 
 
 CREATE TABLE tags (
-    tag_id integer PRIMARY KEY AUTOINCREMENT, --DEFAULT nextval('seq_tag_id'::regclass),
+    tag_id integer PRIMARY KEY, --DEFAULT nextval('seq_tag_id'::regclass),
     name character varying(300),
     parent_id integer
 );
 
+CREATE TRIGGER autoincrement_tags AFTER INSERT ON tags 
+       BEGIN 
+         	UPDATE tags SET tag_id=(select curr_val+1 from Sequence where name='seq_tag_id') where tag_id is null; 
+        	UPDATE Sequence SET curr_val=curr_val+1 where           		 name='seq_tag_id'; 
+       END;
 
 CREATE TABLE tags_words (
     tag_id integer,
