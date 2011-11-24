@@ -1,4 +1,3 @@
-#include <QApplication>
 #include <QDebug>
 #include <QString>
 #include <QStringList>
@@ -26,7 +25,6 @@ int global_debug_level;
 int main(int argn, char** args)
 {
   global_debug_level=0;
-    QApplication a(argn, args);
     //global_debug_level = 3;
     CPPUNIT_NS :: TestResult testresult;
 
