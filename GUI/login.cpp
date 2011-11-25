@@ -102,7 +102,7 @@ login_dialog::help()
 
 
 QString
-login_dialog::connect_string()
+login_dialog::connect_string() const
 {
   QString res;
   if (!m_dbname->currentText().isEmpty()) {

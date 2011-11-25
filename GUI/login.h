@@ -32,7 +32,7 @@ class login_dialog: public QDialog
 public:
   login_dialog();
   virtual ~login_dialog();
-  QString connect_string();
+  QString connect_string() const;
   void set_login(const QString login);
   void set_dbname(const QString dbname); // list of values separated by ';'
   void set_params(const QString params);
