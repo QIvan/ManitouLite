@@ -17,6 +17,22 @@
    Boston, MA 02111-1307, USA.
 */
 
+
+
+
+
+
+/**
+
+  @todo : Это всё надо выпилить из DB
+  в библиотеке файлов main.* быть не должно!
+
+  */
+
+
+
+
+
 #ifndef INC_MAIN_H
 #define INC_MAIN_H
 

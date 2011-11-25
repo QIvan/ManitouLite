@@ -20,6 +20,7 @@
 #include "users.h"
 #include "db.h"
 #include "sqlstream.h"
+#include "app_config.h"
 
 /* cached value of USERS.user_id for the user connected to the database
    -1 => user unknown yet
@@ -41,11 +42,12 @@ user::current_user_id()
   if (m_current_user_id<0) {
     db_cnx db;
     try {
-      sql_stream s("SELECT user_id FROM users WHERE login=current_user", db);
+      sql_stream s("SELECT user_id FROM users WHERE login=:p1", db);
+      s << get_config().get_string("current_user");
       if (!s.isEmpty())
-	s >> m_current_user_id;
+        s >> m_current_user_id;
       else
-	m_current_user_id=0;
+        m_current_user_id=0;
     }
     catch(db_excpt& p) {
       DBEXCPT (p);
@@ -67,9 +69,11 @@ user::create_if_missing(const QString fullname)
 {
   db_cnx db;
   try {
-    sql_stream s("SELECT user_id FROM users WHERE login=current_user", db);
+    sql_stream s("SELECT user_id FROM users WHERE login=:p1", db);
+    s << get_config().get_string("current_user");
     if (s.isEmpty()) {
-      sql_stream si("INSERT INTO users(user_id,login,fullname) SELECT 1+coalesce(max(user_id),0), current_user, :p1 FROM users", db);
+      sql_stream si("INSERT INTO users(user_id,login,fullname) SELECT 1+coalesce(max(user_id),0), :p1, :p2 FROM users", db);
+      si << get_config().get_string("current_user");
       if (!fullname.isEmpty())
         si << fullname;
       else

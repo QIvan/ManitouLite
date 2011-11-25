@@ -106,6 +106,7 @@ namespace service_f
 {
     QString toCodingDb(const QString &s);
     QString GetNameDb (const char* conninfo);
+    QString ParseCurrentUser (QString connect_string);
 }
 
 #endif // INC_MAIN_H

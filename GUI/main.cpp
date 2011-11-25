@@ -260,6 +260,7 @@ main(int argc, char **argv)
     conf_name = hostname + "-" + uname;
   }
 
+  QString connect_string = cnx_string;
   int connected=0;
   if (cnx_string==NULL) {
     // get the connection parameters from a dialog box
@@ -290,6 +291,7 @@ main(int argc, char **argv)
         settings.setValue("params", dlg.params());
       }
     } while (!connected);
+    connect_string = dlg.connect_string();
   }
   else {
     QString errstr;
@@ -308,6 +310,7 @@ main(int argc, char **argv)
   global_conf.set_name(conf_name);
   global_conf.init();
   global_conf.apply();
+  global_conf.set_string("current_user", service_f::ParseCurrentUser(connect_string));
 
   msgs_filter filter;
 #ifdef WITH_PGSQL
@@ -355,4 +358,16 @@ QString service_f::GetNameDb(const char *conninfo)
   QString db_name = list[1];
   db_name.append(".db");
   return db_name;
+}
+
+QString service_f::ParseCurrentUser (QString connect_string)
+{
+  const QString USER = "user";
+  QString user = "";
+  QStringList list = connect_string.split(QChar(' '));
+  list = list.filter(USER);
+  qDebug() << list;
+  user = list.at(0);
+  user.remove(USER + "=");
+  return user;
 }

@@ -1,7 +1,6 @@
 #ifndef SQLITECONNECTION_H
 #define SQLITECONNECTION_H
 #include <sqlite3.h>
-#include <libpq-fe.h>
 #include "database.h"
 
 class sqliteConnection : public database

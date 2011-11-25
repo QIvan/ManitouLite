@@ -984,7 +984,7 @@ prefs_dialog::done(int code)
     get_config().diff_replace(newconf);
     get_config().apply();
     if (m_viewers_updated && !update_viewers_db())
-	return;
+      return;
     if (!update_identities_db())
       return;
   }
@@ -1113,10 +1113,10 @@ prefs_dialog::new_identity()
     int c=cb->count();
     for (int i=0; i<c; i++) {
       if (cb->itemText(i)=="") {
-	cb->setCurrentIndex(i);
-	m_curr_ident=p;
-	ident_to_widgets();
-	return;
+        cb->setCurrentIndex(i);
+        m_curr_ident=p;
+        ident_to_widgets();
+        return;
       }
     }
   }
@@ -1147,7 +1147,7 @@ bool
 prefs_dialog::update_identities_db()
 {
   db_cnx db;
-  bool in_trans=false;
+  bool in_transaction=false;
 
   try {
     /* Identities that have their email changed are completely removed
@@ -1158,8 +1158,8 @@ prefs_dialog::update_identities_db()
        when doing the first update. While doing a first pass with
        updates, we're collecting such identities in 'ri_list' */
     QList<mail_identity*> ri_list;
-
     QList<mail_identity*>::iterator it;
+
     mail_identity* p;
     identities::iterator iter;
     // identities (original emails) that have been processed
@@ -1168,35 +1168,35 @@ prefs_dialog::update_identities_db()
     for (it=m_ids.begin(); it!=m_ids.end(); ++it) {
       p=(*it);
       if (p->m_email_addr.isEmpty())
-	continue;			// ignore empty identities, shouldn't happen
+        continue;			// ignore empty identities, shouldn't happen
       done_set.insert(p->m_orig_email_addr);
       if (p->m_orig_email_addr != p->m_email_addr) {
-	// when an identity is newly created, its p->m_orig_email_addr is empty
-	// ri_list includes those new identities as well as renamed identities
-	ri_list.append(p);
+        // when an identity is newly created, its p->m_orig_email_addr is empty
+        // ri_list includes those new identities as well as renamed identities
+        ri_list.append(p);
       }
       else {
-	// update db
-	iter=m_ids_map.find(p->m_email_addr);
-	if (iter!=m_ids_map.end()) {
-	  mail_identity* ps = &(iter->second); // before change
-	  if ((ps->m_name != p->m_name ||
-	       ps->m_signature != p->m_signature ||
-	       ps->m_xface != p->m_xface)) {
-	    if (!in_trans) {
-	      db.begin_transaction();
-	      in_trans=true;
-	    }
-	    p->update_db();
-	  }
-	}
-	else {
-	  /* If the identity is not to be found in the list before
-	     editing let's process it later by insert. Currently this
-	     case shouldn't happen anyway since it's m_orig_email_addr
-	     should be empty */
-	  ri_list.append(p);
-	}
+        // update db
+        iter=m_ids_map.find(p->m_email_addr);
+        if (iter!=m_ids_map.end()) {
+          mail_identity* ps = &(iter->second); // before change
+          if ((ps->m_name != p->m_name ||
+               ps->m_signature != p->m_signature ||
+               ps->m_xface != p->m_xface)) {
+            if (!in_transaction) {
+              db.begin_transaction();
+              in_transaction=true;
+            }
+            p->update_db();
+          }
+        }
+        else {
+          /* If the identity is not to be found in the list before
+             editing let's process it later by insert. Currently this
+             case shouldn't happen anyway since it's m_orig_email_addr
+             should be empty */
+          ri_list.append(p);
+        }
       }
     }
 
@@ -1204,41 +1204,41 @@ prefs_dialog::update_identities_db()
     sql_stream sd("DELETE FROM identities WHERE email_addr=:p1", db);
     for (iter=m_ids_map.begin(); iter!=m_ids_map.end(); ++iter) {
       if (done_set.find(iter->first) == done_set.end()) {
-	if (!in_trans) {
-	  db.begin_transaction();
-	  in_trans=true;
-	}
-	sd << iter->second.m_email_addr;
+        if (!in_transaction) {
+          db.begin_transaction();
+          in_transaction=true;
+        }
+        sd << iter->second.m_email_addr;
       }
     }
 
     /* Now process 'ri_list' */
     if (!ri_list.isEmpty()) {
-      if (!in_trans) {
-	db.begin_transaction();
-	in_trans=true;
+      if (!in_transaction) {
+        db.begin_transaction();
+        in_transaction=true;
       }
 
       for (it=ri_list.begin(); it!=ri_list.end(); ++it) {
-	p=*it;
-	if (!p->m_orig_email_addr.isEmpty())
-	  sd << p->m_email_addr;
+        p=*it;
+        if (!p->m_orig_email_addr.isEmpty())
+          sd << p->m_email_addr;
       }
 
       for (it=ri_list.begin(); it!=ri_list.end(); ++it) {
-	p=*it;
-	/* update_db() will do an insert because the row, if it existed, has
-	   been deleted just above */
-	p->update_db();
+        p=*it;
+        /* update_db() will do an insert because the row, if it existed, has
+           been deleted just above */
+        p->update_db();
       }
     }
 
-    if (in_trans) {
+    if (in_transaction) {
       db.commit_transaction();
     }
   }
   catch(db_excpt& p) {
-    if (in_trans)
+    if (in_transaction)
       db.rollback_transaction();
     DBEXCPT(p);
     return false;
