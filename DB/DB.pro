@@ -39,9 +39,11 @@ HEADERS += \
     connection.h \
 
 
-include(PostgreSQL/PostgreSQL.pri)
-#include(SQLite/SQLite.pri)
+#include(PostgreSQL/PostgreSQL.pri)
+include(SQLite/SQLite.pri)
 
 OTHER_FILES += \
-    ../createDB/createSQLite_DB \
-    ../createDB/test/Create_Test_DataBase
+    ../createDB/createSQLite_DB.sql \
+    ../createDB/createPostgreSQL_DB.sql \
+    ../createDB/test/Create_Test_DataBase_SQLite.sql \
+    ../createDB/test/Create_Test_DataBase_PostgreSQL.sql
