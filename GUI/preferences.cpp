@@ -1200,14 +1200,14 @@ prefs_dialog::update_identities_db()
       }
     }
 
-    /* Delete the identities that were present initially but not in the end map */
-    sql_stream sd("DELETE FROM identities WHERE email_addr=:p1", db);
     for (iter=m_ids_map.begin(); iter!=m_ids_map.end(); ++iter) {
       if (done_set.find(iter->first) == done_set.end()) {
         if (!in_transaction) {
           db.begin_transaction();
           in_transaction=true;
         }
+        /* Delete the identities that were present initially but not in the end map */
+        sql_stream sd("DELETE FROM identities WHERE email_addr=:p1", db);
         sd << iter->second.m_email_addr;
       }
     }
@@ -1222,7 +1222,11 @@ prefs_dialog::update_identities_db()
       for (it=ri_list.begin(); it!=ri_list.end(); ++it) {
         p=*it;
         if (!p->m_orig_email_addr.isEmpty())
+        {
+          /* Delete the identities that were present initially but not in the end map */
+          sql_stream sd("DELETE FROM identities WHERE email_addr=:p1", db);
           sd << p->m_email_addr;
+        }
       }
 
       for (it=ri_list.begin(); it!=ri_list.end(); ++it) {
