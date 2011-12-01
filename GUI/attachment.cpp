@@ -95,8 +95,8 @@ attachment::sha1_to_base64(unsigned int digest[5])
       mask = 0x3f >> nbd;
       idx = (digest[4-i/32] & mask) << nbd;
       if (i/32>0) {  // if we're not at the rightmost word
-	mask = ((1<<(nbd+1))-1) << (32-nbd);
-	idx += (digest[1+4-i/32] & mask) >> (32-nbd);
+        mask = ((1<<(nbd+1))-1) << (32-nbd);
+        idx += (digest[1+4-i/32] & mask) >> (32-nbd);
       }
     }
     res.append(alpha[idx]);
@@ -118,7 +118,7 @@ attachment::compute_sha1_fp()
       unsigned char buf[8192];
       qint64 n_read;
       while ((n_read=f.read((char*)buf, sizeof(buf))) >0) {
-	sha1.Input(buf, (unsigned int)n_read);	
+        sha1.Input(buf, (unsigned int)n_read);
       }
     }
     if (!f.error()) {
@@ -135,17 +135,17 @@ attachment::application() const
 {
   db_cnx db;
   try {
-    sql_stream s("SELECT program_name FROM programs WHERE content_type=':p1' AND conf_name=:p2", db);
+    sql_stream s("SELECT program_name FROM programs WHERE content_type=:p1 AND conf_name=:p2", db);
     s << m_mime_type << get_config().name();
     QString prog;
     if (!s.isEmpty()) {
       s >> prog;
     }
     else {
-      sql_stream s2("SELECT program_name FROM programs WHERE content_type=':p1' AND conf_name is null", db);
+      sql_stream s2("SELECT program_name FROM programs WHERE content_type=:p1 AND conf_name is null", db);
       s2 << m_mime_type;
       if (!s2.isEmpty()) {
-	s2 >> prog;
+        s2 >> prog;
       }
     }
     return prog;
@@ -466,7 +466,7 @@ attachment::store(uint mail_id)
       compute_sha1_fp();
     }
 
-    sql_stream s("INSERT INTO attachments(attachment_id, mail_id, content_type, content_size, filename,mime_content_id) VALUES (:p1, :p2, ':p3', :p4, ':p5', :cid)", db);
+    sql_stream s("INSERT INTO attachments(attachment_id, mail_id, content_type, content_size, filename,mime_content_id) VALUES (:p1, :p2, :p3, :p4, :p5, :cid)", db);
     QString basename;
     int idx = m_filename.lastIndexOf("/");
     if (idx >= 0) {

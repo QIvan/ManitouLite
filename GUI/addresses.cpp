@@ -88,16 +88,16 @@ mail_address::ExtractAddresses(const char* addr,
       start_addr=addr;
       c=*addr++;
       while (c && c!=' ' && c!='\t' && c!='>')
-	c=*addr++;
+        c=*addr++;
       switch(c) {
       case '>':
-	result.push_back (part_string (start_addr, addr-start_addr-1));
-	result1.push_back(QString(""));
-	c=*addr++;
-	break;
+        result.push_back (part_string (start_addr, addr-start_addr-1));
+        result1.push_back(QString(""));
+        c=*addr++;
+        break;
       default:
-	err=1;
-	return err;
+        err=1;
+        return err;
       }
       break;
     case '\'':
@@ -106,37 +106,37 @@ mail_address::ExtractAddresses(const char* addr,
       start1_addr=addr;
       c=*addr++;
       while (c && c!=enclose_char)
-	c=*addr++;
+        c=*addr++;
       if (!c) {
-	err=1;
-	return err;
+        err=1;
+        return err;
       }
       result1.push_back (part_string (start1_addr,addr-start1_addr-1));
       c=*addr++;
       while (c==' ' || c=='\t')
-	c=*addr++;
+        c=*addr++;
       if (!c) {			// empty address: \".*\"([ \t])*
-	result.push_back(QString(""));
-	break;
+        result.push_back(QString(""));
+        break;
       }
       if (c!='<') {
-	//err=2;  // "foo bar" not followed by <foo@here.org>
-	//return err;
-	while ((c=*(++addr))!='<') {
-	  if (!c) {
-	    err=2;
-	    return err;
-	  }
-	}
-	addr++;
+        //err=2;  // "foo bar" not followed by <foo@here.org>
+        //return err;
+        while ((c=*(++addr))!='<') {
+          if (!c) {
+            err=2;
+            return err;
+          }
+        }
+        addr++;
       }
       start_addr=addr;
       c=*addr++;
       while (c && c!='>')
-	c=*addr++;
+        c=*addr++;
       if (!c) {
-	err=1;
-	return err;
+        err=1;
+        return err;
       }
       result.push_back (part_string (start_addr, addr-start_addr-1));
       c=*addr++;
@@ -147,76 +147,76 @@ mail_address::ExtractAddresses(const char* addr,
       start1_addr=addr-1;
       c=*addr++;
       while (c && (enclose || c!=' ') && c!='\t' && c!=',') // && c!='\'')
-	c=*addr++;
+        c=*addr++;
       if (!c || c==',') {
-	// email alone
-	result.push_back(part_string (start_addr, addr-start_addr-1));
-	result1.push_back(QString(""));
+        // email alone
+        result.push_back(part_string (start_addr, addr-start_addr-1));
+        result1.push_back(QString(""));
       }
       else {
-	//  'Name firstname <email>' or 'email (name firstname)'
-	// addr
-	end_addr = addr;
-	c=*addr++;
-	while (c==' ' || c=='\t')
-	  c=*addr++;
-	switch(c) {
-	case '\0':
-	  err=1;
-	  return err;
-	case '<':
-	  {
-	    QString name1(start1_addr);
-	    name1.truncate(addr-start1_addr-1);
-	    // strip trailing white spaces from the name
-	    result1.push_back (name1.trimmed());
-	  }
-	  start_addr=addr;
-	  c=*addr++;
-	  while (c && c!='>')
-	    c=*addr++;
-	  if (!c) {
-	    err=1;
-	    return err;
-	  }
-	  result.push_back (part_string (start_addr, addr-start_addr-1));
-	  c=*addr++;
-	  break;
-	case '(':
-	  start1_addr=addr;
-	  c=*addr++;
-	  while (c && c!=')')
-	    c=*addr++;
-	  if (!c) {
-	    err=1;
-	    return err;
-	  }
-	  result.push_back(part_string(start_addr,end_addr-start_addr-1));
-	  result1.push_back(part_string (start1_addr, addr-start1_addr-1));
-	  c=*addr++;
-	  break;
-	default:	// Name firstname <email>
-	  c=*addr++;
-	  while (c && c!='<')
-	    c=*addr++;
-	  if (!c) {
-	    err=1;
-	    return err;
-	  }
-	  end1_addr=addr-1;
-	  start_addr=addr;
-	  c=*addr++;
-	  while (c && c!='>')
-	    c=*addr++;
-	  if (!c) {
-	    err=1;
-	    return err;
-	  }
-	  result.push_back(part_string(start_addr,addr-start_addr-1));
-	  result1.push_back(part_string(start1_addr, end1_addr-start1_addr-1));
-	  c=*addr++;
-	  break;
-	}
+        //  'Name firstname <email>' or 'email (name firstname)'
+        // addr
+        end_addr = addr;
+        c=*addr++;
+        while (c==' ' || c=='\t')
+          c=*addr++;
+        switch(c) {
+        case '\0':
+          err=1;
+          return err;
+        case '<':
+          {
+            QString name1(start1_addr);
+            name1.truncate(addr-start1_addr-1);
+            // strip trailing white spaces from the name
+            result1.push_back (name1.trimmed());
+          }
+          start_addr=addr;
+          c=*addr++;
+          while (c && c!='>')
+            c=*addr++;
+          if (!c) {
+            err=1;
+            return err;
+          }
+          result.push_back (part_string (start_addr, addr-start_addr-1));
+          c=*addr++;
+          break;
+        case '(':
+          start1_addr=addr;
+          c=*addr++;
+          while (c && c!=')')
+            c=*addr++;
+          if (!c) {
+            err=1;
+            return err;
+          }
+          result.push_back(part_string(start_addr,end_addr-start_addr-1));
+          result1.push_back(part_string (start1_addr, addr-start1_addr-1));
+          c=*addr++;
+          break;
+        default:	// Name firstname <email>
+          c=*addr++;
+          while (c && c!='<')
+            c=*addr++;
+          if (!c) {
+            err=1;
+            return err;
+          }
+          end1_addr=addr-1;
+          start_addr=addr;
+          c=*addr++;
+          while (c && c!='>')
+            c=*addr++;
+          if (!c) {
+            err=1;
+            return err;
+          }
+          result.push_back(part_string(start_addr,addr-start_addr-1));
+          result1.push_back(part_string(start1_addr, end1_addr-start1_addr-1));
+          c=*addr++;
+          break;
+        }
       }
       break;
     }
@@ -250,9 +250,9 @@ mail_address::join_address_lines(QString& line)
     if (line.at(pos)=='\n' || line.at(pos)==',') {
       lastpos=pos;
       while (pos<len && (line.at(pos)=='\n' ||line.at(pos)==','))
-	pos++;
+        pos++;
       if (pos<len) {
-	d.append(", ");
+        d.append(", ");
       }
     }
     else {
@@ -305,25 +305,25 @@ mail_address::store()
     if (m_id) {
       sql_stream s("UPDATE addresses SET email_addr=:p1,name=:p2,notes=:p3,nickname=:p4,invalid=:p5 WHERE addr_id=:id", db);
       s << m_address << m_name << m_notes << m_nickname << m_invalid;
-/*
-      if (!m_date_last_sent.isEmpty())
-	s << m_date_last_sent;
-      else
-	s << sql_null();
-*/
-      s << m_id;
-    }
-    else {
-      if (!db.next_seq_val("seq_addr_id", &m_id))
-	return false;
-      sql_stream s("INSERT INTO addresses(addr_id,email_addr,name,notes,nickname,invalid) VALUES (:p1,:p2,:p3,:p4,:p5, :p6)", db);
-      s << m_id << m_address << m_name << m_notes << m_nickname << m_invalid;
-/*
-      if (!m_date_last_sent.isEmpty())
-	s << m_date_last_sent;
-      else
-	s << sql_null();
-*/
+      /*
+            if (!m_date_last_sent.isEmpty())
+        s << m_date_last_sent;
+            else
+        s << sql_null();
+      */
+            s << m_id;
+          }
+          else {
+            if (!db.next_seq_val("seq_addr_id", &m_id))
+        return false;
+            sql_stream s("INSERT INTO addresses(addr_id,email_addr,name,notes,nickname,invalid) VALUES (:p1,:p2,:p3,:p4,:p5, :p6)", db);
+            s << m_id << m_address << m_name << m_notes << m_nickname << m_invalid;
+      /*
+            if (!m_date_last_sent.isEmpty())
+        s << m_date_last_sent;
+            else
+        s << sql_null();
+      */
     }
   }
   catch(db_excpt& p) {
@@ -485,13 +485,13 @@ mail_address::fetch_aliases (std::list<mail_address>* alist)
       sql_stream s("SELECT addr_id,email_addr FROM addresses WHERE owner_id=:p1", db);
       s << id;
       while (!s.isEmpty()) {
-	int id;
-	QString a_email;
-	s >> id >> a_email;
-	mail_address a;
-	a.set (a_email);
-	a.setId (id);
-	alist->push_back (a);
+        int id;
+        QString a_email;
+        s >> id >> a_email;
+        mail_address a;
+        a.set (a_email);
+        a.setId (id);
+        alist->push_back (a);
       }
     }
   }
@@ -552,13 +552,13 @@ bool
 mail_address_list::fetch_completions(const QString substring)
 {
   QString query=QString("SELECT addr_id,email_addr,name \
-                        FROM addresses WHERE \
-                        (last_sent_to is not null or last_recv_from is not null) \
-                        AND \
-                        (lower(name) ~ ('[[:<:]]'||lower(:p1)) \
-                        OR email_addr ~ ('^'||lower(:p2))) \
-                        AND coalesce(invalid,0)=0 \
-                        ORDER BY greatest(last_sent_to,last_recv_from) DESC");
+                            FROM addresses WHERE \
+                            (last_sent_to is not null or last_recv_from is not null) \
+                            AND \
+                            (lower(name) like (lower(:p1)||'%') OR lower(name) like ('% '||lower(:p1)||'%')) \
+                            OR (email_addr like (lower(:p2)||'%')) \
+                            AND coalesce(invalid,0)=0 \
+                            ORDER BY last_sent_to,last_recv_from DESC");
   db_cnx db;
   try {
     sql_stream s(query, db);
@@ -622,10 +622,10 @@ mail_address_list::fetchFromMail(mail_id_t mail_id, int/*mail_address::t_addrTyp
   db_cnx db;
   try {
     sql_stream s("SELECT a.addr_id,a.email_addr,a.name"
-		" FROM addresses a, mail_addresses ma"
-		" WHERE ma.mail_id=:p1"
-		" AND a.addr_id=ma.addr_id"
-		" AND ma.addr_type=:p2", db);
+                 " FROM addresses a, mail_addresses ma"
+                 " WHERE ma.mail_id=:p1"
+                 " AND a.addr_id=ma.addr_id"
+                 " AND ma.addr_type=:p2", db);
     s << mail_id << addr_type;
     while (!s.isEmpty()) {
       mail_address addr;
@@ -653,9 +653,9 @@ mail_address_list::fetch()
   QString percent_pattern;
   percent_pattern = QString("%%") + m_search.m_email + "%%";
 
-    query = "SELECT addr_id,email_addr,nb_recv_from,nb_sent_to FROM addresses WHERE email_addr ilike :p1";
+  query = "SELECT addr_id,email_addr,nb_recv_from,nb_sent_to FROM addresses WHERE email_addr ilike :p1";
 
-    db_cnx db;
+  db_cnx db;
   try {
     sql_stream s(query, db);
     s << percent_pattern;
@@ -706,7 +706,7 @@ mail_address::diff_update(const mail_address& to_update)
     int nvar=1;
     for (; it1 != fields.end(); ++it1) {
       if (nvar>1)
-	query.append(",");
+        query.append(",");
       query.append(*it1);
       query.append("=");
       query.append(QString(":p%1").arg(nvar++));
@@ -716,7 +716,7 @@ mail_address::diff_update(const mail_address& to_update)
       query.append(" WHERE email_addr=:email");
       sql_stream s(query, db);
       for (; it2 != values.end(); ++it2) {
-	s << *it2;
+        s << *it2;
       }
       s << m_address;
     }
@@ -778,9 +778,9 @@ mail_address_list::fetch_recent(int type, int count/*=10*/, int offset/*=0*/)
       addr.m_recv_pri=pri;
       date d(sdate);
       if (type==2)
-	addr.set_last_recv(d);
+        addr.set_last_recv(d);
       else
-	addr.set_last_sent(d);
+        addr.set_last_sent(d);
       push_back(addr);
     }
   }

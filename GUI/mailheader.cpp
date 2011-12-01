@@ -170,7 +170,7 @@ mail_header::store()
   make();
   store_addresses();
   db_cnx db;
-  sql_stream s("INSERT INTO header(mail_id,lines) VALUES (:p1, ':p2')",
+  sql_stream s("INSERT INTO header(mail_id,lines) VALUES (:p1, :p2)",
 	      db);
   s << m_mail_id << m_lines;
   return true;
