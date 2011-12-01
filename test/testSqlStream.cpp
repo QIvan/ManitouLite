@@ -63,6 +63,24 @@ void testSqlStream::withVariable()
     }
 }
 
+void testSqlStream::with2Variable()
+{
+    try {
+        InsertString_(3);
+        sql_stream query_2_param ("SELECT test_int_not_null FROM test_table \
+                                   WHERE (test_text like :p1||'%') \
+                                   AND \
+                                   (test_char200 like :p1||'%')" ,*m_DB);
+        query_2_param << "Test";
+        CheckInts_(query_2_param);
+
+    }
+    catch(db_excpt e)
+    {
+        DebugExept_(e);
+    }
+}
+
 void testSqlStream::hardQuery()
 {
   try {

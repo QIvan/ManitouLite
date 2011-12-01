@@ -114,11 +114,11 @@ sql_stream::~sql_stream()
     sqlite3_finalize(m_sqlRes);
   if(!m_bExecuted)
   {
-#ifdef QT_DEBUG
+/*#ifndef QT_DEBUG
     throw db_excpt(m_query, "QUERY NOT EXECUTE!");
-#else
+#else*/
     DBG_PRINTF(1, "QUERY NOT EXECUTE!");
-#endif
+//#endif
   }
 }
 
@@ -229,6 +229,30 @@ sql_stream::affected_rows() const
 
 //======================== private ===============================
 
+namespace service_f {
+bool isBetweenQuote(QString str, int pos)
+{
+  QList<int> quoteList;
+  int quotePos = str.indexOf('\'');
+  while (quotePos != -1)
+  {
+    quoteList.append(quotePos);
+    quotePos = str.indexOf('\'', quotePos+1);
+  }
+
+  bool result = false;
+  while (!quoteList.isEmpty())
+  {
+    int firstQuote = quoteList.takeFirst();
+    if (quoteList.isEmpty())
+      throw "bad query!";
+    int secondQuote = quoteList.takeFirst();
+    if ((firstQuote < pos) && (pos < secondQuote))
+      result = true;
+  }
+  return result;
+}
+}
 
 void
 sql_stream::find_key_word()
@@ -250,25 +274,18 @@ void
 sql_stream::find_param()
 {
   QString sQuery = m_query;
-  int pos = sQuery.indexOf(':');
-  while (pos != -1)
+  QRegExp reg(":[A-Za-z]{,5}[0-9]{,2}");
+  int pos = 0;
+  while (reg.indexIn(sQuery, pos) != -1)
   {
-    if (sQuery.at(pos+1) != ':')
+    QString param = reg.cap();
+    if (!service_f::isBetweenQuote(sQuery, sQuery.indexOf(param)))
     {
-      int rightPos = pos;
-      while ((++rightPos < sQuery.size()) && sQuery.at(rightPos).isLetterOrNumber());
-      int replaceCount = rightPos - pos;
-      if (replaceCount > 1) { //length variable > 1
-        sQuery.replace(pos, replaceCount,
-                       "%" + QString::number(m_nArgCount));
-        ++m_nArgCount;
-      }
-      else
-        pos += 1;
+      sQuery.replace(param, "%"+QString::number(m_nArgCount));
+      ++m_nArgCount;
     }
-    else
-      pos += 2;
-    pos = sQuery.indexOf(':', pos);
+
+    pos += reg.matchedLength();
   }
   m_query = sQuery;
 }
