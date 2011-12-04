@@ -60,17 +60,17 @@ void DBEXCPT(db_excpt& p)
 //___________________________________db_excpt______________________________________//
 
 
-//================================== sql_stream ====================================//
+//================================== sqlite_stream ====================================//
 //***************** Callback functions
 /*int
-sql_stream::callback (void* voidThis, int count, char** values, char** columnNames)
+sqlite_stream::callback (void* voidThis, int count, char** values, char** columnNames)
 {
-  sql_stream* This = static_cast<sql_stream*> (voidThis);
+  sqlite_stream* This = static_cast<sqlite_stream*> (voidThis);
   return This->callback(count, values, columnNames);
 }
 
 int
-sql_stream::callback(int count, char** values, char** columnNames)
+sqlite_stream::callback(int count, char** values, char** columnNames)
 {
   m_callback = true;
   if (count == 0)
@@ -85,123 +85,37 @@ sql_stream::callback(int count, char** values, char** columnNames)
 }
 */
 //======================== public ===============================
-namespace service_f {
-  void replace_random_param (QString &str)
-  {
-    str = str.replace("%", "\1");
-  }
-  void return_random_param (QString &str)
-  {
-    str = str.replace("\1", "%");
-  }
-}
 
-sql_stream::sql_stream (const QString query, db_cnx& db) :
-  m_db(db), m_query(query), m_nArgPos(0), m_nArgCount(0),
-  m_bExecuted(false), m_sqlRes(NULL)
+
+sqlite_stream::sqlite_stream (db_cnx& db) :
+  m_db(db),m_sqlRes(NULL)
 {
-  service_f::replace_random_param(m_query);
-  find_key_word();
-  find_param();
 
-  if(m_nArgCount == 0)
-    execute();
 }
 
-sql_stream::~sql_stream()
+sqlite_stream::~sqlite_stream()
 {
   if (m_sqlRes)
     sqlite3_finalize(m_sqlRes);
-  if(!m_bExecuted)
-  {
-/*#ifndef QT_DEBUG
-    throw db_excpt(m_query, "QUERY NOT EXECUTE!");
-#else*/
-    DBG_PRINTF(1, "QUERY NOT EXECUTE!");
-//#endif
-  }
 }
-
-
-// operators <<
-sql_stream&
-sql_stream::operator<<(const QString &s)
-{
-  return next_param('\'' + s + '\'');
-}
-
-sql_stream&
-sql_stream::operator<<(const char* s)
-{
-  return next_param('\'' + QString(s) + '\'');
-}
-
-sql_stream&
-sql_stream::operator<<(sql_null n _UNUSED_)
-{
-  return next_param(QString("null"));
-}
-
-//operators >>
-sql_stream&
-sql_stream::operator>>(int& i)
-{
-  i = next_result().toInt();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator>>(unsigned int& i)
-{
-  i = next_result().toUInt();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator>>(char& c)
-{
-  c = next_result().at(0).cell();
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator>>(char* p)
-{
-  strcpy(next_result().toLocal8Bit().data(), p);
-  return *this;
-}
-
-sql_stream&
-sql_stream::operator>>(QString& s)
-{
-  s = next_result();
-  return *this;
-}
-//______________end operators
 
 void
-sql_stream::execute()
+sqlite_stream::execute(QString query)
 {
-  if (m_nArgPos < m_nArgCount)
-    throw db_excpt(m_query, "Not all variables bound");
-
-  DBG_PRINTF(5,"execute: %s", m_query.toLocal8Bit().constData());
-
-  service_f::return_random_param(m_query);
   const char *errmsg = 0;
   int rc = 0;
   bool isLocked = false;
   do
   {
     rc = sqlite3_prepare(m_db.connection()->m_db->connection(),
-                         m_query.toLocal8Bit().constData(),
+                         query.toLocal8Bit().constData(),
                          -1, &m_sqlRes, &errmsg);
     m_status = sqlite3_step(m_sqlRes);
     isLocked = (rc == SQLITE_BUSY) || (m_status == SQLITE_LOCKED);
     if (isLocked)
       sleep(1);
   } while (isLocked);
-  check_results(rc, errmsg);
+  check_results(query, rc, errmsg);
   m_affected_rows = sqlite3_changes(m_db.connection()->m_db->connection());
 
   m_rowNumber=0;
@@ -210,18 +124,15 @@ sql_stream::execute()
 }
 
 int
-sql_stream::isEmpty()
+sqlite_stream::isEmpty()
 {
-  if (!m_bExecuted)
-    execute();
-
   if (m_colNumber+1 < sqlite3_data_count(m_sqlRes))
     return false;
   return m_status == SQLITE_DONE;
 }
 
 int
-sql_stream::affected_rows() const
+sqlite_stream::affected_rows() const
 {
   return m_affected_rows;
 }
@@ -229,97 +140,10 @@ sql_stream::affected_rows() const
 
 //======================== private ===============================
 
-namespace service_f {
-bool isBetweenQuote(QString str, int pos)
-{
-  QList<int> quoteList;
-  int quotePos = str.indexOf('\'');
-  while (quotePos != -1)
-  {
-    quoteList.append(quotePos);
-    quotePos = str.indexOf('\'', quotePos+1);
-  }
-
-  bool result = false;
-  while (!quoteList.isEmpty())
-  {
-    int firstQuote = quoteList.takeFirst();
-    if (quoteList.isEmpty())
-      throw "bad query!";
-    int secondQuote = quoteList.takeFirst();
-    if ((firstQuote < pos) && (pos < secondQuote))
-      result = true;
-  }
-  return result;
-}
-}
-
-void
-sql_stream::find_key_word()
-{
-  QString sQuery = m_query;
-  const QString NOW = ":now:";
-  int pos_now = sQuery.indexOf(NOW);
-  if (pos_now != -1)
-  {
-    sQuery = sQuery.replace(NOW,
-                            '\'' + QDateTime::currentDateTime().
-                                   toString("dd.MM.yyyy hh::mm::ss.zzzz")
-                            + '\'');
-  }
-  m_query = sQuery;
-}
-
-void
-sql_stream::find_param()
-{
-  QString sQuery = m_query;
-  QRegExp reg(":[A-Za-z]{,5}[0-9]{,2}");
-  int pos = 0;
-  while (reg.indexIn(sQuery, pos) != -1)
-  {
-    QString param = reg.cap();
-    if (!service_f::isBetweenQuote(sQuery, sQuery.indexOf(param)))
-    {
-      sQuery.replace(param, "%"+QString::number(m_nArgCount));
-      ++m_nArgCount;
-    }
-
-    pos += reg.matchedLength();
-  }
-  m_query = sQuery;
-}
-
-void
-sql_stream::check_params() const
-{
-  if (m_nArgPos >= m_nArgCount)
-    throw db_excpt(m_query, "Mismatch between bound variables and query");
-}
-
-sql_stream&
-sql_stream::next_param(QString value)
-{
-  check_params();
-  m_query = m_query.arg(value);
-  ++m_nArgPos;
-  if (m_nArgPos == m_nArgCount)
-    execute();
-  return *this;
-}
-
-void
-sql_stream::check_end_of_stream()
-{
-  if (isEmpty())
-    throw db_excpt(m_query, "End of stream reached");
-}
-
 QString
-sql_stream::next_result()
+sqlite_stream::next_result()
 {
   QString result;
-  check_end_of_stream();
   if (m_status == SQLITE_ROW)
   {
     result = QString(((const char*)sqlite3_column_text(m_sqlRes, m_colNumber)));
@@ -330,17 +154,17 @@ sql_stream::next_result()
 }
 
 void
-sql_stream::check_results(int code_error, const QString& errmsg)
+sqlite_stream::check_results(QString query, int code_error, const QString& errmsg)
 {
   if ((m_status == SQLITE_MISUSE) || (m_status == SQLITE_ERROR))
-    throw db_excpt(m_query, m_db);
+    throw db_excpt(query, m_db);
 
   if (code_error != SQLITE_OK)
-    throw db_excpt(m_query, errmsg, QString::number(code_error));
+    throw db_excpt(query, errmsg, QString::number(code_error));
 }
 
 void
-sql_stream::increment_position()
+sqlite_stream::increment_position()
 {
   if (m_status != SQLITE_DONE)
   {

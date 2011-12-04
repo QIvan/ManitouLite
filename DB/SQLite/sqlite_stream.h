@@ -52,53 +52,34 @@ private:
   QString m_err_code;
 };
 
-void DBEXCPT(db_excpt& p);	// db.cpp
+void DBEXCPT(db_excpt& p);
+
+
+
+
+
 
 /**
-   sql_stream class. Allows the parametrized execution of a query
+   sqlite_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
 */
-class sql_stream
+class sqlite_stream
 {
 public:
-  sql_stream(const QString query, db_cnx& db);
-  virtual ~sql_stream();
-
-  template<typename T>
-  sql_stream& operator<<(T param)
-  {
-    return next_param(QString("%1").arg(param));
-  }
-  sql_stream& operator<<(const QString& );
-  sql_stream& operator<<(const char* );
-  sql_stream& operator<<(sql_null);
-
-  sql_stream& operator>>(int&);
-  sql_stream& operator>>(unsigned int&);
-  sql_stream& operator>>(char*);
-  sql_stream& operator>>(char&);
-  sql_stream& operator>>(QString&);
+  sqlite_stream(db_cnx& db);
+  virtual ~sqlite_stream();
 
   /** send the query to the server */
-  void execute();
+  void execute(QString query);
   /** true if there are no more results to read from the stream */
   int isEmpty(); //no const
   int affected_rows() const;
-private:
-  void find_param();
-  void find_key_word();
-  void check_params() const;
-  sql_stream& next_param(QString value);
-  void check_end_of_stream();
   QString next_result();
-  void check_results(int code_error, const QString& errmsg);
+private:
+  void check_results(QString query, int code_error, const QString& errmsg);
   void increment_position();
 
   db_cnx& m_db;
-  QString m_query;
-  // query parametrs
-  int m_nArgPos;
-  int m_nArgCount;
   // results
   bool m_bExecuted;
   sqlite3_stmt* m_sqlRes;

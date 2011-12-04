@@ -24,10 +24,91 @@
   #include "PostgreSQL/psql_stream.h"
 #else
   #include "SQLite/sqlite_stream.h"
+  #ifdef NO_SQLITE
+  #error wrong headers included
+  #endif
 #endif
-#include "sqlquery.h"
-#include "database.h"
-#include "db.h"
+
+#include <QString>
+#include "dbtypes.h"
+
+class db_cnx;
+/*
+/// sql Exception class
+class db_excpt
+{
+public:
+  db_excpt() {}
+  db_excpt(const QString query, db_cnx& d);
+  db_excpt(const QString query, const QString msg, QString code=QString::null);
+  virtual ~db_excpt() {}
+  QString query() const { return m_query; }
+  QString errmsg() const { return m_err_msg; }
+  QString errcode() const { return m_err_code; }
+  bool unique_constraint_violation() const {
+    return m_err_code=="23505";
+  }
+private:
+  QString m_query;
+  QString m_err_msg;
+  QString m_err_code;
+};
+
+void DBEXCPT(db_excpt& p);	// db.cpp
+*/
+/**
+   sql_stream class. Allows the parametrized execution of a query
+   and easy retrieval of results
+*/
+class sql_stream
+{
+public:
+  sql_stream(const QString query, db_cnx& db);
+  virtual ~sql_stream();
+
+  template<typename T>
+  sql_stream& operator<<(T param)
+  {
+    return next_param(QString("%1").arg(param));
+  }
+  sql_stream& operator<<(const QString& );
+  sql_stream& operator<<(const char* );
+  sql_stream& operator<<(sql_null);
+
+  sql_stream& operator>>(int&);
+  sql_stream& operator>>(unsigned int&);
+  sql_stream& operator>>(char*);
+  sql_stream& operator>>(char&);
+  sql_stream& operator>>(QString&);
+
+  /** send the query to the server */
+  void execute();
+  /** true if there are no more results to read from the stream */
+  int isEmpty(); //no const
+  int affected_rows() const;
+private:
+  void find_param();
+  void find_key_word();
+  void check_params() const;
+  sql_stream& next_param(QString value);
+  void check_end_of_stream();
+  QString next_result();
+
+
+  QString m_query;
+  // query parametrs
+  int m_nArgPos;
+  int m_nArgCount;
+  bool m_bExecuted;
+
+
+private:
+  sqlite_stream m_sqlite;
+};
+
+
+
+
 
 
 #endif // INC_SQLSTREAM_H
