@@ -12,6 +12,7 @@ class testSqlStream : public testBaseTestDB
     CPPUNIT_TEST(withVariable);
     CPPUNIT_TEST(with2Variable);
     CPPUNIT_TEST(hardQuery);
+    CPPUNIT_TEST_EXCEPTION(throwQuote, db_excpt);
     CPPUNIT_TEST_SUITE_END();
 public:
     void empty();
@@ -19,6 +20,7 @@ public:
     void withVariable();
     void with2Variable();
     void hardQuery();
+    void throwQuote();
 };
 
 

@@ -17,10 +17,6 @@
    Boston, MA 02111-1307, USA.
 */
 
-#include <string>
-#include <iostream>
-#include <ctype.h>
-#include <stdlib.h>
 #include <QDateTime>
 #include <QDebug>
 #include <QRegExp>
@@ -29,33 +25,6 @@
 #include "sqlstream.h"
 
 
-
-
-//================================== sql_stream ====================================//
-//***************** Callback functions
-/*int
-sql_stream::callback (void* voidThis, int count, char** values, char** columnNames)
-{
-  sql_stream* This = static_cast<sql_stream*> (voidThis);
-  return This->callback(count, values, columnNames);
-}
-
-int
-sql_stream::callback(int count, char** values, char** columnNames)
-{
-  m_callback = true;
-  if (count == 0)
-    return SQLITE_ERROR;
-  Rec rec;
-  for (int i=0; i<count; ++i)
-  {
-    rec.insert(columnNames[i], values[i]);
-  }
-  m_resultData.append(rec);
-  return 0;
-}
-*/
-//======================== public ===============================
 namespace service_f {
   void replace_random_param (QString &str)
   {
@@ -201,7 +170,7 @@ bool isBetweenQuote(QString str, int pos)
   {
     int firstQuote = quoteList.takeFirst();
     if (quoteList.isEmpty())
-      throw "bad query!";
+      throw db_excpt(str, "bad query!");
     int secondQuote = quoteList.takeFirst();
     if ((firstQuote < pos) && (pos < secondQuote))
       result = true;

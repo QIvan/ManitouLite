@@ -98,3 +98,8 @@ void testSqlStream::hardQuery()
     DebugExept_(e);
   }
 }
+
+void testSqlStream::throwQuote()
+{
+  sql_stream bad_query ("Select * from test_table where test_text='Test", *m_DB);
+}
