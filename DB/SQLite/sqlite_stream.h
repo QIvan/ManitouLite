@@ -32,33 +32,6 @@ class db_cnx;
 #error wrong headers included
 #endif
 
-/// sql Exception class
-class db_excpt
-{
-public:
-  db_excpt() {}
-  db_excpt(const QString query, db_cnx& d);
-  db_excpt(const QString query, const QString msg, QString code=QString::null);
-  virtual ~db_excpt() {}
-  QString query() const { return m_query; }
-  QString errmsg() const { return m_err_msg; }
-  QString errcode() const { return m_err_code; }
-  bool unique_constraint_violation() const {
-    return m_err_code=="23505";
-  }
-private:
-  QString m_query;
-  QString m_err_msg;
-  QString m_err_code;
-};
-
-void DBEXCPT(db_excpt& p);
-
-
-
-
-
-
 /**
    sqlite_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
@@ -66,7 +39,7 @@ void DBEXCPT(db_excpt& p);
 class sqlite_stream
 {
 public:
-  sqlite_stream(db_cnx& db);
+  sqlite_stream(db_cnx& db): m_db(db), m_sqlRes(NULL) { }
   virtual ~sqlite_stream();
 
   /** send the query to the server */

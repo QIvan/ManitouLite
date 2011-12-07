@@ -1,6 +1,8 @@
 #SQLite
-LIBS += -L/usr/lib/ -lsqlite3
+
 INCLUDEPATH += ./SQLite
+LIBS += -L/usr/lib/ -lsqlite3
+DEFINES += NO_PG
 
 SOURCES +=  \
     SQLite/sqlite_stream.cpp \
@@ -10,4 +12,3 @@ HEADERS += \
     SQLite/sqlite_stream.h \
     SQLite/sqliteConnection.h
 
-DEFINES += NO_PG

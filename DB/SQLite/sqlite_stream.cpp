@@ -29,35 +29,9 @@
 #include "connection.h"
 #include "main.h"
 #include "SQLite/sqlite_stream.h"
+#include "db_excpt.h"
 
-//================================== db_excpt ====================================//
-db_excpt::db_excpt(const QString query,
-			 const QString msg,
-			 QString code/*=QString::null*/)
-{
-  m_query=query;
-  m_err_msg=msg;
-  m_err_code=code;
-  DBG_PRINTF(3, "db_excpt: query='%s', err='%s'",
-             m_query.toLocal8Bit().constData(), m_err_msg.toLocal8Bit().constData());
-}
 
-db_excpt::db_excpt(const QString query, db_cnx& d)
-{
-  m_query=query;
-  const char* pg_msg = sqlite3_errmsg(d.connection()->m_db->connection());
-  if (pg_msg!=NULL)
-    m_err_msg = QString::fromUtf8(pg_msg);
-}
-
-void DBEXCPT(db_excpt& p)
-{
-  //  std::cerr << p.query() << ":" << p.errmsg() << std::endl;
-  QString err = p.query() + ":\n";
-  err+=p.errmsg();
-  QMessageBox::warning(NULL, QObject::tr("Database error"), err);
-}
-//___________________________________db_excpt______________________________________//
 
 
 //================================== sqlite_stream ====================================//
@@ -85,14 +59,6 @@ sqlite_stream::callback(int count, char** values, char** columnNames)
 }
 */
 //======================== public ===============================
-
-
-sqlite_stream::sqlite_stream (db_cnx& db) :
-  m_db(db),m_sqlRes(NULL)
-{
-
-}
-
 sqlite_stream::~sqlite_stream()
 {
   if (m_sqlRes)

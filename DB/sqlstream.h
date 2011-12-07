@@ -22,40 +22,21 @@
 
 #ifdef WITH_PGSQL
   #include "PostgreSQL/psql_stream.h"
+  typedef psql_stream sql_stream_exec;
 #else
   #include "SQLite/sqlite_stream.h"
-  #ifdef NO_SQLITE
-  #error wrong headers included
-  #endif
+  typedef sqlite_stream sql_stream_exec;
 #endif
 
 #include <QString>
+#include "db.h"
+#include "database.h"
+#include "sqlquery.h"
 #include "dbtypes.h"
+#include "db_excpt.h"
 
 class db_cnx;
-/*
-/// sql Exception class
-class db_excpt
-{
-public:
-  db_excpt() {}
-  db_excpt(const QString query, db_cnx& d);
-  db_excpt(const QString query, const QString msg, QString code=QString::null);
-  virtual ~db_excpt() {}
-  QString query() const { return m_query; }
-  QString errmsg() const { return m_err_msg; }
-  QString errcode() const { return m_err_code; }
-  bool unique_constraint_violation() const {
-    return m_err_code=="23505";
-  }
-private:
-  QString m_query;
-  QString m_err_msg;
-  QString m_err_code;
-};
 
-void DBEXCPT(db_excpt& p);	// db.cpp
-*/
 /**
    sql_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
@@ -94,16 +75,14 @@ private:
   void check_end_of_stream();
   QString next_result();
 
-
   QString m_query;
   // query parametrs
   int m_nArgPos;
   int m_nArgCount;
   bool m_bExecuted;
 
-
 private:
-  sqlite_stream m_sqlite;
+  sql_stream_exec m_sqlite;
 };
 
 

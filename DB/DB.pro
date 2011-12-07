@@ -24,7 +24,8 @@ SOURCES +=  \
     database.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    sqlstream.cpp
+    sqlstream.cpp \
+    db_excpt.cpp
 
 HEADERS += \
     main.h \
@@ -38,10 +39,12 @@ HEADERS += \
     database.h \
     creatorConnection.h \
     connection.h \
+    db_excpt.h
 
 
-#include(PostgreSQL/PostgreSQL.pri)
-include(SQLite/SQLite.pri)
+
+include(PostgreSQL/PostgreSQL.pri)
+#include(SQLite/SQLite.pri)
 
 OTHER_FILES += \
     ../createDB/createSQLite_DB.sql \
