@@ -38,12 +38,13 @@ HEADERS += \
     database.h \
     creatorConnection.h \
     connection.h \
-    db_excpt.h
+    db_excpt.h \
+    IStreamExec.h
 
 
 
-include(PostgreSQL/PostgreSQL.pri)
-#include(SQLite/SQLite.pri)
+#include(PostgreSQL/PostgreSQL.pri)
+include(SQLite/SQLite.pri)
 
 OTHER_FILES += \
     ../createDB/createSQLite_DB.sql \

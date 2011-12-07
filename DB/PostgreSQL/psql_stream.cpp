@@ -85,9 +85,7 @@ psql_stream::next_result()
   {
     result = QString(PQgetvalue(m_pgRes, m_rowNumber, m_colNumber));
   }
-  m_colNumber = ((m_colNumber+1) % PQnfields(m_pgRes));
-  if (m_colNumber==0)
-    m_rowNumber++;
+  increment_position();
   return result;
 }
 
@@ -106,4 +104,11 @@ psql_stream::check_results(QString query)
     throw db_excpt(query, PQresultErrorMessage(m_pgRes),
        QString(PQresultErrorField(m_pgRes, PG_DIAG_SQLSTATE)));
   }
+}
+
+void psql_stream::increment_position()
+{
+  m_colNumber = ((m_colNumber+1) % PQnfields(m_pgRes));
+  if (m_colNumber==0)
+    m_rowNumber++;
 }

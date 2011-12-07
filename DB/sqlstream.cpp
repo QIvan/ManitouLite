@@ -42,7 +42,7 @@ sql_stream::sql_stream (const QString query, db_cnx& db) :
 {
   service_f::replace_random_param(m_query);
   find_key_word();
-  find_param();
+  find_and_replace_param();
 
   if(m_nArgCount == 0)
     execute();
@@ -196,7 +196,7 @@ sql_stream::find_key_word()
 }
 
 void
-sql_stream::find_param()
+sql_stream::find_and_replace_param()
 {
   QString sQuery = m_query;
   QRegExp reg(":[A-Za-z]{,5}[0-9]{,2}");
@@ -212,6 +212,7 @@ sql_stream::find_param()
 
     pos += reg.matchedLength();
   }
+  sQuery.replace("::", ":");
   m_query = sQuery;
 }
 

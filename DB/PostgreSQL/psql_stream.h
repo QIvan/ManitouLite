@@ -22,7 +22,7 @@
 
 #include <libpq-fe.h>
 #include <QString>
-#include "dbtypes.h"
+#include "IStreamExec.h"
 
 class db_cnx;
 
@@ -34,15 +34,13 @@ class db_cnx;
    sql_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
 */
-class psql_stream
+class psql_stream : public IStreamExec
 {
 public:
   psql_stream(db_cnx& db): m_db(db), m_pgRes(NULL) { }
   virtual ~psql_stream();
 
-  /** send the query to the server */
   void execute(QString query);
-  /** true if there are no more results to read from the stream */
   int isEmpty(); //no const
   int affected_rows() const;
   QString next_result();

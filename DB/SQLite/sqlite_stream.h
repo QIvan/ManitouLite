@@ -24,7 +24,7 @@
 #include <QPair>
 #include <QString>
 #include <sqlite3.h>
-#include "dbtypes.h"
+#include "IStreamExec.h"
 
 class db_cnx;
 
@@ -36,15 +36,13 @@ class db_cnx;
    sqlite_stream class. Allows the parametrized execution of a query
    and easy retrieval of results
 */
-class sqlite_stream
+class sqlite_stream : IStreamExec
 {
 public:
   sqlite_stream(db_cnx& db): m_db(db), m_sqlRes(NULL) { }
   virtual ~sqlite_stream();
 
-  /** send the query to the server */
   void execute(QString query);
-  /** true if there are no more results to read from the stream */
   int isEmpty(); //no const
   int affected_rows() const;
   QString next_result();

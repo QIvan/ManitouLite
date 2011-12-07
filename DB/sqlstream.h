@@ -68,7 +68,7 @@ public:
   int isEmpty(); //no const
   int affected_rows() const;
 private:
-  void find_param();
+  void find_and_replace_param();
   void find_key_word();
   void check_params() const;
   sql_stream& next_param(QString value);
