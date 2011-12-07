@@ -44,6 +44,13 @@ DisconnectDb()
   creatorConnection::DisconnectDb();
 }
 
+void DBEXCPT(db_excpt& p)
+{
+  //  std::cerr << p.query() << ":" << p.errmsg() << std::endl;
+  QString err = p.query() + ":\n";
+  err+=p.errmsg();
+  QMessageBox::warning(NULL, QObject::tr("Database error"), err);
+}
 
 //=============================== db_cnx ============================================//
 db_cnx::db_cnx(bool other_thread) : m_cnx(NULL), m_other_thread(other_thread)

@@ -24,8 +24,7 @@ SOURCES +=  \
     database.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    sqlstream.cpp \
-    db_excpt.cpp
+    sqlstream.cpp
 
 HEADERS += \
     main.h \

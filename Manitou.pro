@@ -6,4 +6,3 @@ SUBDIRS += \
     test \
     GUI
 
-#include(DB/PostgreSQL/PostgreSQL.pri)
