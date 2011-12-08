@@ -12,12 +12,7 @@ class db_excpt
 public:
   db_excpt() {}
   db_excpt(const QString query, db_cnx& d);
-  db_excpt(const QString query, const QString msg, QString code=QString::null)
-               : m_query(query) , m_err_msg(msg) , m_err_code(code)
-  {
-    DBG_PRINTF(3, "db_excpt: query='%s', err='%s'",
-                  m_query.toLocal8Bit().constData(), m_err_msg.toLocal8Bit().constData());
-  }
+  db_excpt(const QString query, const QString msg, QString code=QString::null);
   virtual ~db_excpt() {}
   QString query() const { return m_query; }
   QString errmsg() const { return m_err_msg; }

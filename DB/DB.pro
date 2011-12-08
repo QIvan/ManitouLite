@@ -14,7 +14,7 @@ INCLUDEPATH += /usr/include/ , /usr/include/c++/4.4.4/ , /usr/include/postgresql
 
 CONFIG(debug, debug|release) {
  } else {
-    SOURCES += main.cpp
+    SOURCES +=
  }
 
 SOURCES +=  \
@@ -24,7 +24,8 @@ SOURCES +=  \
     database.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    sqlstream.cpp
+    sqlstream.cpp \
+    mainfunc.cpp
 
 HEADERS += \
     main.h \

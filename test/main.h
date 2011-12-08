@@ -42,6 +42,8 @@
 class QStringList;
 class mail_header;
 
+#error Error
+
 #include <map>
 //#include <string>
 

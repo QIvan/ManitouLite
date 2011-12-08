@@ -11,7 +11,7 @@ LIBS += -L/usr/lib/ -lsqlite3
 LIBS += -L/usr/lib/ -lcppunit
 LIBS += -L../DB -lDB
 
-HEADERS +=  main.h \
+HEADERS +=  \#main.h \
             RegistryTest.h \
             testConnectDisconnect.h \
             testSqlWriteFields.h \

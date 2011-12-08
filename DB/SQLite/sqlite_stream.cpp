@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QTextCodec>
 #include <QDebug>
 
 #include "db.h"
@@ -73,8 +74,13 @@ sqlite_stream::execute(QString query)
   bool isLocked = false;
   do
   {
+    QTextCodec *Codec = QTextCodec::codecForName("UTF-8");
+//    qDebug() << query;
+//    qDebug() << Codec->fromUnicode(query).constData();
+//    qDebug() << query.toLocal8Bit().constData();
+//    qDebug() << query.toUtf8().constData();
     rc = sqlite3_prepare(m_db.connection()->m_db->connection(),
-                         query.toLocal8Bit().constData(),
+                         Codec->fromUnicode(query).constData(),
                          -1, &m_sqlRes, &errmsg);
     m_status = sqlite3_step(m_sqlRes);
     isLocked = (rc == SQLITE_BUSY) || (m_status == SQLITE_LOCKED);
@@ -112,8 +118,8 @@ sqlite_stream::next_result()
   QString result;
   if (m_status == SQLITE_ROW)
   {
-    result = QString(((const char*)sqlite3_column_text(m_sqlRes, m_colNumber)));
-
+    result = QString::fromUtf8(((const char*)sqlite3_column_text(m_sqlRes, m_colNumber)));
+qDebug() << result;
     increment_position();
   }
   return result;

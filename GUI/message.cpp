@@ -843,6 +843,7 @@ mail_msg::store()
     QString sq = QString("INSERT INTO mail(%1) VALUES (%2)").arg(fields.fields()).arg(fields.values());
     const char* query;
     QByteArray qquery;
+    qDebug() << "Coding Base" << db.datab()->encoding();
     if (db.datab()->encoding()=="UTF8")
       qquery=sq.toUtf8();
     else

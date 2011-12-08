@@ -10,7 +10,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
 #include "db.h"
-#include "main.h"
+//#include "main.h"
 #include "RegistryTest.h"
 #include "testBaseTestDB.h"
 #include "sqlstream.h"
@@ -20,11 +20,11 @@ std::string TestNames::db_api() { return "DB_API";}
 
 CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 
-int global_debug_level;
+//int global_debug_level;
 
 int main()
 {
-  global_debug_level=1;
+  //global_debug_level=1;
     //global_debug_level = 3;
     CPPUNIT_NS :: TestResult testresult;
 
@@ -66,7 +66,7 @@ int main()
     return wasSucessful ? 0 : 1;*/
 }
 
-
+/*
 void
 debug_printf(int level, const char* file, int line, const char *fmt, ...)
 {
@@ -105,7 +105,7 @@ QString service_f::toCodingDb(const QString &s)
     }
     else {
       qb = s.toLocal8Bit();
-    }*/
+    }*//*
     return s;
 }
 
@@ -118,4 +118,4 @@ QString service_f::GetNameDb(const char* conninfo)
   db_name.append(".db");
   return db_name;
 }
-
+*/

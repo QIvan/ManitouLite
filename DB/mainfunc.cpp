@@ -55,9 +55,3 @@ QString service_f::GetNameDb(const char *conninfo)
   db_name.append(".db");
   return db_name;
 }
-
-int main()
-{
-  qDebug() << "Is release Manitou database module";
-  return 0;
-}

@@ -31,7 +31,8 @@
 #include <QStandardItem>
 
 #include "dbtypes.h"
-#include "db.h" // mail_msg
+#include "db.h"
+#include "message.h"
 
 #include <list>
 #include <map>

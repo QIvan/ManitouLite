@@ -4,6 +4,7 @@
 #include "db.h"
 #include "date.h"
 #include "database.h"
+#include "db_excpt.h"
 #include "sqlstream.h"
 
 
