@@ -3,7 +3,7 @@ CREATE TABLE Sequence (
 	curr_val integer
 );
 
-INSERT INTO Sequence (name, curr_val) VALUES ('sequence_id', 0);
+INSERT INTO Sequence (name, curr_val) VALUES ('sequence_id', 1);
 
 CREATE TABLE test_table (
 	test_id INTEGER,
