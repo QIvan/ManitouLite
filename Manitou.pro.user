@@ -91,7 +91,7 @@
    <valuemap key="ProjectExplorer.Target.DeployConfiguration.0" type="QVariantMap">
     <valuemap key="ProjectExplorer.BuildConfiguration.BuildStepList.0" type="QVariantMap">
      <valuemap key="ProjectExplorer.BuildStepList.Step.0" type="QVariantMap">
-      <value key="ProjectExplorer.ProcessStep.Arguments" type="QString">-f GUI/GUI</value>
+      <value key="ProjectExplorer.ProcessStep.Arguments" type="QString">-f GUI/GUI test/test</value>
       <value key="ProjectExplorer.ProcessStep.Command" type="QString">rm</value>
       <value key="ProjectExplorer.ProcessStep.Enabled" type="bool">true</value>
       <value key="ProjectExplorer.ProcessStep.WorkingDirectory" type="QString">%{buildDir}</value>

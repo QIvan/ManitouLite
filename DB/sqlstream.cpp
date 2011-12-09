@@ -199,7 +199,7 @@ void
 sql_stream::find_and_replace_param()
 {
   QString sQuery = m_query;
-  QRegExp reg(":[A-Za-z]{,5}[0-9]{,2}");
+  QRegExp reg(":[A-Za-z]{,255}[0-9]{,10}");
   int pos = 0;
   while (reg.indexIn(sQuery, pos) != -1)
   {

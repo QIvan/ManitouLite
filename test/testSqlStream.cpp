@@ -56,6 +56,10 @@ void testSqlStream::withVariable()
         query_text_param << "%1";
         CPPUNIT_ASSERT(query_text_param.isEmpty());
 
+        sql_stream query_big_param ("Select * from test_table where test_id=:verybigtestparam", *m_DB);
+        query_big_param << 1;
+        CPPUNIT_ASSERT(!query_big_param.isEmpty());
+
     }
     catch(db_excpt e)
     {
