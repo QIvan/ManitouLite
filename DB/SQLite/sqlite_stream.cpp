@@ -75,10 +75,6 @@ sqlite_stream::execute(QString query)
   do
   {
     QTextCodec *Codec = QTextCodec::codecForName("UTF-8");
-//    qDebug() << query;
-//    qDebug() << Codec->fromUnicode(query).constData();
-//    qDebug() << query.toLocal8Bit().constData();
-//    qDebug() << query.toUtf8().constData();
     rc = sqlite3_prepare(m_db.connection()->m_db->connection(),
                          Codec->fromUnicode(query).constData(),
                          -1, &m_sqlRes, &errmsg);
@@ -119,7 +115,6 @@ sqlite_stream::next_result()
   if (m_status == SQLITE_ROW)
   {
     result = QString::fromUtf8(((const char*)sqlite3_column_text(m_sqlRes, m_colNumber)));
-qDebug() << result;
     increment_position();
   }
   return result;
