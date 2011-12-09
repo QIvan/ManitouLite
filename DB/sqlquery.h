@@ -65,7 +65,7 @@ public:
   sql_write_fields(const QString encoding);
   ~sql_write_fields() {}
   void add(const char* field, int value);
-  void add(const char* field, const QString value, int maxlength=0);
+  void add(const char* field, QString value, int maxlength=0);
   void add(const char* field, sql_null n);
   void add_no_quote(const char* field, const QString value);
   void add_if_not_empty(const char* field, const QString value, int maxlength=0);

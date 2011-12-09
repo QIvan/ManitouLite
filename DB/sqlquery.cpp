@@ -167,52 +167,30 @@ sql_write_fields::add(const char* field, int value)
 }
 
 void
-sql_write_fields::add(const char* field, const QString value, int maxlength)
+sql_write_fields::add(const char* field, QString value, int maxlength)
 {
-  bool alloc=false;
-  if (m_fields_nb++>0) {
+  if (m_fields_nb++ > 0) {
     m_values+=",";
     m_fields+=",";
   }
-  const char *trunc_value;
-  QByteArray qvalue;
-  if (m_utf8)
-    qvalue=value.toUtf8();
-  else
-    qvalue=value.toLocal8Bit();
+  if(maxlength != 0)
+    if (value.size() > maxlength)
+      value.resize(maxlength);
 
-  trunc_value=qvalue.constData();
+  m_values += "'" + value + "'";
+  m_fields += field;
 
-  if (maxlength) {
-    if (strlen(trunc_value) > (uint)maxlength) {
-      char* p = (char*)malloc(maxlength+1);
-      alloc=true;
-      strncpy (p, trunc_value, maxlength);
-      p[maxlength] = '\0';
-      trunc_value = p;
-    }
-  }
-
-  if (m_utf8)
-    m_values+=QString("'") + escapeString(trunc_value, Coding_utf8) + QString("'");
-  else
-    m_values+=QString("'") + escapeString(trunc_value, Coding_local8bit) + QString("'");
-
-
-  m_fields+=field;
-  if (alloc)
-    free ((void*)trunc_value);
 }
 
 void
 sql_write_fields::add_no_quote(const char* field, const QString value)
 {
-  if (m_fields_nb++>0) {
+  if (m_fields_nb++ > 0) {
     m_values+=",";
     m_fields+=",";
   }
-  m_values+=value;
-  m_fields+=field;
+  m_values += value;
+  m_fields += field;
 }
 
 void

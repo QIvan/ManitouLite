@@ -821,39 +821,33 @@ mail_msg::store()
     fields.add_if_not_zero("in_reply_to", m_nInReplyTo);
     fields.add("flags", m_Attachments.size()>0?1:0);
     if (m_nInReplyTo) {
-      /* if it's a reply, then get the thread_id in order to put it
-	 into the thread */
-      sql_stream st ("SELECT coalesce(thread_id,0) FROM mail WHERE mail_id=:p1", db);
-      st << m_nInReplyTo;
-      if (!st.isEmpty()) {
-	st >> m_thread_id;
-	if (!m_thread_id) {
-	  /* the message we're replying to has no thread: open one */
-          if (!db.next_seq_val("seq_thread_id", &m_thread_id)) {
-	    // and link the original message to that thread
-	    sql_stream sru ("UPDATE mail SET thread_id=:p1 WHERE mail_id=:p2", db);
-	    sru << m_thread_id << m_nInReplyTo;
-	  }
-	}
-	fields.add_if_not_zero ("thread_id", m_thread_id);
-      }
-      // update the status of the message we're replying to
-      sql_stream sr ("UPDATE mail SET status=(status | :p1) WHERE mail_id=:p2", db);
-      sr << statusReplied+statusArchived << m_nInReplyTo;
+          /* if it's a reply, then get the thread_id in order to put it
+             into the thread */
+          sql_stream st ("SELECT coalesce(thread_id,0) FROM mail WHERE mail_id=:p1", db);
+          st << m_nInReplyTo;
+          if (!st.isEmpty()) {
+            st >> m_thread_id;
+            if (!m_thread_id) {
+              /* the message we're replying to has no thread: open one */
+                    if (!db.next_seq_val("seq_thread_id", &m_thread_id)) {
+                // and link the original message to that thread
+                sql_stream sru ("UPDATE mail SET thread_id=:p1 WHERE mail_id=:p2", db);
+                sru << m_thread_id << m_nInReplyTo;
+              }
+            }
+            fields.add_if_not_zero ("thread_id", m_thread_id);
+          }
+          // update the status of the message we're replying to
+          sql_stream sr ("UPDATE mail SET status=(status | :p1) WHERE mail_id=:p2", db);
+          sr << statusReplied+statusArchived << m_nInReplyTo;
     }
     fields.add("status", statusRead + statusOutgoing);
     QString sq = QString("INSERT INTO mail(%1) VALUES (%2)").arg(fields.fields()).arg(fields.values());
-    const char* query;
-    QByteArray qquery;
-    qDebug() << "Coding Base" << db.datab()->encoding();
-    if (db.datab()->encoding()=="UTF8")
-      qquery=sq.toUtf8();
-    else
-      qquery=sq.toLocal8Bit();
-    query=(const char*)qquery;
-    DBG_PRINTF(5, "%s\n", query);
+    qDebug() << "=================" << endl
+             << sq << endl
+             << "=================" << endl;
     db_cnx database;
-    sql_stream q(query, database);
+    sql_stream q(sq, database);
 
     msg_status_cache::update(get_id(), statusRead + statusOutgoing);
 
