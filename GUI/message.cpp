@@ -476,8 +476,10 @@ mail_msg::trash()
   db_cnx db;
   try {
     db.begin_transaction();
-    sql_stream s("SELECT trash_msg(:id,:userid)", db);
-    s << getId() << user::current_user_id();
+    sql_stream set_status("UPDATE mail SET status=status|16 , mod_user_id=:userid WHERE mail_id=:mailid;", db);
+    set_status << user::current_user_id() << getId();
+    sql_stream s("SELECT status FROM mail WHERE mail_id=:mailId;", db);
+    s << getId();
     s >> m_status;
     m_db_status |= m_status;
     db.commit_transaction();
