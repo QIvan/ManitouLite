@@ -376,6 +376,17 @@ CREATE TRIGGER delete_mail
 
 
 
+CREATE TRIGGER insert_mail
+    AFTER INSERT ON mail
+    FOR EACH ROW
+  BEGIN
+    INSERT INTO mail_status(mail_id,status) VALUES((select new.mail_id where NEW.status&(256+32+16)=0)  , (select new.status where NEW.status&(256+32+16)=0) );
+    DELETE FROM mail_status WHERE (mail_id is null) OR (status is null);
+
+  END;
+
+
+-- верхний триггер альтернатива нижнему. TODO: проверить!
 
 /*
 CREATE FUNCTION insert_mail() RETURNS trigger
