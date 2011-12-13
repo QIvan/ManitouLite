@@ -1,0 +1,25 @@
+project(transman)
+cmake_minimum_required(VERSION 2.6.4)
+set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(Boost)
+# if(NOT Boost_FOUND)
+#     message(STATUS "Boost library not found. Unpacking my own.")
+#     execute_process(COMMAND tar -xjf ${PROJECT_DIR}/misc/boost_1_47_0.tar.bz2 -C ${CMAKE_CURRENT_BINARY_DIR})
+#     set(Boost_DIR ${CMAKE_CURRENT_BINARY_DIR}/boost_1_47_0)
+#     set(BOOST_ROOT ${CMAKE_CURRENT_BINARY_DIR}/boost_1_47_0)
+#     find_package(Boost REQUIRED)
+# endif()
+include_directories(${Boost_INCLUDE_DIRS})
+
+enable_testing()
+
+# include(constant.cmake)
+# configure_file(constant.h.in ${CMAKE_CURRENT_SOURCE_DIR}/constant.h)
+
+set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(INTERFACE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/I)
+include_directories(${INTERFACE_DIR})
+
+add_subdirectory( I )
+add_subdirectory( src )
+add_subdirectory( test )
