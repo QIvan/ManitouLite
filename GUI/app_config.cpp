@@ -60,15 +60,15 @@ app_config::init()
       sql_stream s2("SELECT conf_key,value FROM config WHERE conf_name=:p1", db);
       s2 << m_name;
       while (!s2.isEmpty()) {
-	s2 >> key >> value;
-	m_mapconf[key] = value;
+        s2 >> key >> value;
+        m_mapconf[key] = value;
       }
     }
 
     const char** o=m_default_values;
     while (*o) {
       if (!exists(*o)) {
-	m_mapconf[*o] = QString(*(o+1));
+        m_mapconf[*o] = QString(*(o+1));
       }
       o+=2;
     }
@@ -91,7 +91,7 @@ app_config::get_all_conf_names(QStringList* l)
     while (!s.isEmpty()) {
       s >> confname;
       if (!confname.isEmpty())
-	l->append(confname);
+        l->append(confname);
     }
   }
   catch (db_excpt p) {
@@ -139,16 +139,16 @@ app_config::store(const QString key_prefix /* =QString::null */)
     const_iter iter;
     for (iter=m_mapconf.begin(); iter!=m_mapconf.end(); iter++) {
       if (key_prefix.isEmpty() || iter->first.indexOf(key_prefix)==0) {
-	const QString value=iter->second;
-	su << value << iter->first;
-	if (!m_name.isEmpty())
-	  su << m_name;
-	// if nothing has been updated (no entry), then insert a new entry
-	if (su.affected_rows()==0) {
-	  si << value << iter->first;
-	  if (!m_name.isEmpty())
-	    si << m_name;
-	}
+        const QString value=iter->second;
+        su << value << iter->first;
+        if (!m_name.isEmpty())
+          su << m_name;
+        // if nothing has been updated (no entry), then insert a new entry
+        if (su.affected_rows()==0) {
+          si << value << iter->first;
+          if (!m_name.isEmpty())
+            si << m_name;
+        }
       }
     }
     //    db.commit_transaction();
@@ -265,25 +265,25 @@ app_config::diff_update(const app_config& newconf)
       /* update or insert entries */
       const QString our_value=get_string(iter->first);
       if (iter->second != our_value) {
-	if (iter->second.isEmpty()) {
-	  // if the new value is empty then delete the entry
-	  sd << iter->first;
-	  if (!m_name.isEmpty())
-	    sd << m_name;
-	}
-	else {
-	  su << iter->second << iter->first;
-	  if (!m_name.isEmpty())
-	    su << m_name;
-	  /* If nothing has been updated (no entry), then insert a new entry.
-	     This will happen if the entry has been deleted after we fetched
-	     it into 'this' */
-	  if (su.affected_rows()==0) {
-	    si << iter->second << iter->first;
-	    if (!m_name.isEmpty())
-	      si << m_name;
-	  }
-	}
+  if (iter->second.isEmpty()) {
+    // if the new value is empty then delete the entry
+    sd << iter->first;
+    if (!m_name.isEmpty())
+      sd << m_name;
+  }
+  else {
+    su << iter->second << iter->first;
+    if (!m_name.isEmpty())
+      su << m_name;
+    /* If nothing has been updated (no entry), then insert a new entry.
+       This will happen if the entry has been deleted after we fetched
+       it into 'this' */
+    if (su.affected_rows()==0) {
+      si << iter->second << iter->first;
+      if (!m_name.isEmpty())
+        si << m_name;
+    }
+  }
       }
     }
     db.commit_transaction();

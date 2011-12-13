@@ -28,6 +28,10 @@
 
 class db_cnx;
 
+#ifdef NO_SQLITE
+#error wrong headers included
+#endif
+
 /// sql Exception class
 class db_excpt
 {

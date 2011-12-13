@@ -119,7 +119,7 @@ expr_list::update_db()
   db_cnx db;
   try {
     db.begin_transaction();
-    sql_stream s_upd("UPDATE filter_expr SET name=:name,expression=:expr, user_lastmod=:user, last_update=now(),direction=':d' WHERE expr_id=:id", db);
+    sql_stream s_upd("UPDATE filter_expr SET name=:name,expression=:expr, user_lastmod=:user, last_update=:now:,direction=':d' WHERE expr_id=:id", db);
     sql_stream s_del_expr("DELETE FROM filter_expr WHERE expr_id=:id", db);
     sql_stream s_ins("INSERT INTO filter_expr(expr_id,name,expression,direction) VALUES (:id,:name,:expr,':dir')", db);
     // TODO: use a sequence

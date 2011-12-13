@@ -7,6 +7,7 @@ INCLUDEPATH += ../ ../DB
 DEPENDPATH += ../
 
 LIBS += -L/usr/lib/ -lpq
+LIBS += -L/usr/lib/ -lsqlite3
 LIBS += -L/usr/lib/ -lcppunit
 LIBS += -L../DB -lDB
 

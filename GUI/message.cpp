@@ -573,11 +573,11 @@ mail_msg::store_note()
 	m_flags &= ~flag_has_note;
       }
       else {
-	query="UPDATE notes SET last_changed=now(), note=:p1 WHERE mail_id=:p2";
+  query="UPDATE notes SET last_changed=:now:, note=:p1 WHERE mail_id=:p2";
       }
     }
     else {
-      query="INSERT INTO notes(note,mail_id,last_changed) VALUES(:p1,:p2,now())";
+      query="INSERT INTO notes(note,mail_id,last_changed) VALUES(:p1,:p2,:now:)";
       m_flags |= flag_has_note;
     }
     if (query) {
@@ -812,10 +812,10 @@ mail_msg::store()
     fields.add("sender_fullname", m_cHeader.m_sender_fullname, 200);
     fields.add_if_not_empty("subject", m_cHeader.m_subject, 1000);
     fields.add_if_not_empty("message_id", m_cHeader.m_messageId, 100);
-    fields.add_no_quote("msg_date", "now()");
+    fields.add_no_quote("msg_date", ":now:");
     fields.add("mod_user_id", user::current_user_id());
     //    fields.add_no_quote("msg_day", "extract(days from now()-to_date('01/01/1970','DD/MM/YYYY'))");
-    fields.add_no_quote("sender_date", "now()");
+    fields.add_no_quote("sender_date", ":now:");
     fields.add_if_not_zero("in_reply_to", m_nInReplyTo);
     fields.add("flags", m_Attachments.size()>0?1:0);
     if (m_nInReplyTo) {
