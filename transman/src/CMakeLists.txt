@@ -15,6 +15,7 @@ set(transman_SOURCES
 
 
 set(transman_MOC_HEADERS
+    parser_I/cparser.h
 )
 
 FLEX_TARGET(TranScanner transscanner.l ${CMAKE_CURRENT_BINARY_DIR}/transscanner.cpp COMPILE_FLAGS "-8 -++ --yyclass=transman::parser::CParser --noyywrap")
