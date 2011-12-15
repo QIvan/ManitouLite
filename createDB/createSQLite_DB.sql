@@ -405,10 +405,28 @@ CREATE TRIGGER insert_mail
     AFTER INSERT ON mail
     FOR EACH ROW
     EXECUTE PROCEDURE insert_mail();
+*/
+
+CREATE TRIGGER update_note_flag_insert
+    AFTER INSERT  ON notes
+    FOR EACH ROW
+  BEGIN
+    UPDATE mail SET flags=flags|2 WHERE mail_id=NEW.mail_id;
+
+  END;
 
 
+CREATE TRIGGER update_note_flag_delete
+    AFTER DELETE ON notes
+    FOR EACH ROW
+  BEGIN
+    UPDATE mail SET flags=flags&(~2) WHERE mail_id=OLD.mail_id; --авторство сохранено
 
+  END;
 
+-- эти 2 альтернатива следующему триггеру
+
+/*
 CREATE FUNCTION update_note_flag() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -437,22 +455,22 @@ CREATE FUNCTION update_mail() RETURNS trigger
     AS $$
 DECLARE
  rc int4;
-BEGIN
+  BEGIN
    IF new.status!=old.status THEN
-	IF NEW.status&(256+32+16)=0 THEN
-	  -- The message is not yet sent, archived, or trashed
-	  UPDATE mail_status
-	    SET status = new.status
-	   WHERE mail_id = new.mail_id;
-	  GET DIAGNOSTICS rc = ROW_COUNT;
-	  if rc=0 THEN
-	    INSERT INTO mail_status(mail_id,status) VALUES(new.mail_id,new.status);
-	  END IF;
-	ELSE
-	  -- The mail has been "processed"
-	  DELETE FROM mail_status
-	   WHERE mail_id = new.mail_id;
-	END IF;
+    IF NEW.status&(256+32+16)=0 THEN
+      -- The message is not yet sent, archived, or trashed
+      UPDATE mail_status
+        SET status = new.status
+       WHERE mail_id = new.mail_id;
+      GET DIAGNOSTICS rc = ROW_COUNT;
+      if rc=0 THEN
+        INSERT INTO mail_status(mail_id,status) VALUES(new.mail_id,new.status);
+      END IF;
+    ELSE
+      -- The mail has been "processed"
+      DELETE FROM mail_status
+       WHERE mail_id = new.mail_id;
+    END IF;
    END IF;
    RETURN new;
 END;
