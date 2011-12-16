@@ -5,7 +5,7 @@
 using namespace transman::I;
 namespace transman {
     namespace parser {
-IOParser IOParserController::createParser(QIODevice *input_socket, StartMode::Mode start_mode ) {
+IOParser IOParserController::createParser(QIODevice *input_socket ) {
     Q_ASSERT( input_socket != NULL );
     CParser * ParserItem = new CParser( input_socket);
     return IOParser( (IOParserTag *) ParserItem );
