@@ -12,7 +12,7 @@ namespace parser {
 using namespace I;
 class IOParserController
 {
-    static IOParser createParser(QIODevice *input_socket, StartMode::Mode start_mode );
+    static IOParser createParser(QIODevice *input_socket );
 };
 
 
