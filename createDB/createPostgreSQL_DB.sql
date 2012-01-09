@@ -21,7 +21,7 @@ ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
 SET search_path = public, pg_catalog;
 
 --
--- Name: delete_mail(); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: delete_mail(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION delete_mail() RETURNS trigger
@@ -34,10 +34,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.delete_mail() OWNER TO ivan;
+ALTER FUNCTION public.delete_mail() OWNER TO postgres;
 
 --
--- Name: delete_msg(integer); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: delete_msg(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION delete_msg(integer) RETURNS integer
@@ -86,10 +86,10 @@ END;
 $_$;
 
 
-ALTER FUNCTION public.delete_msg(integer) OWNER TO ivan;
+ALTER FUNCTION public.delete_msg(integer) OWNER TO postgres;
 
 --
--- Name: delete_msg_set(integer[]); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: delete_msg_set(integer[]); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION delete_msg_set(in_array_mail_id integer[]) RETURNS integer
@@ -107,10 +107,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.delete_msg_set(in_array_mail_id integer[]) OWNER TO ivan;
+ALTER FUNCTION public.delete_msg_set(in_array_mail_id integer[]) OWNER TO postgres;
 
 --
--- Name: insert_mail(); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: insert_mail(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION insert_mail() RETURNS trigger
@@ -126,10 +126,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.insert_mail() OWNER TO ivan;
+ALTER FUNCTION public.insert_mail() OWNER TO postgres;
 
 --
--- Name: trash_msg(integer, integer); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: trash_msg(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION trash_msg(in_mail_id integer, in_op integer) RETURNS integer
@@ -145,10 +145,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.trash_msg(in_mail_id integer, in_op integer) OWNER TO ivan;
+ALTER FUNCTION public.trash_msg(in_mail_id integer, in_op integer) OWNER TO postgres;
 
 --
--- Name: trash_msg_set(integer[], integer); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: trash_msg_set(integer[], integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION trash_msg_set(in_array_mail_id integer[], in_op integer) RETURNS integer
@@ -164,10 +164,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.trash_msg_set(in_array_mail_id integer[], in_op integer) OWNER TO ivan;
+ALTER FUNCTION public.trash_msg_set(in_array_mail_id integer[], in_op integer) OWNER TO postgres;
 
 --
--- Name: untrash_msg(integer, integer); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: untrash_msg(integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION untrash_msg(in_mail_id integer, in_op integer) RETURNS integer
@@ -183,10 +183,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.untrash_msg(in_mail_id integer, in_op integer) OWNER TO ivan;
+ALTER FUNCTION public.untrash_msg(in_mail_id integer, in_op integer) OWNER TO postgres;
 
 --
--- Name: update_mail(); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: update_mail(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION update_mail() RETURNS trigger
@@ -216,10 +216,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.update_mail() OWNER TO ivan;
+ALTER FUNCTION public.update_mail() OWNER TO postgres;
 
 --
--- Name: update_note_flag(); Type: FUNCTION; Schema: public; Owner: ivan
+-- Name: update_note_flag(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION update_note_flag() RETURNS trigger
@@ -237,10 +237,10 @@ END;
 $$;
 
 
-ALTER FUNCTION public.update_note_flag() OWNER TO ivan;
+ALTER FUNCTION public.update_note_flag() OWNER TO postgres;
 
 --
--- Name: seq_addr_id; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: seq_addr_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE seq_addr_id
@@ -251,10 +251,10 @@ CREATE SEQUENCE seq_addr_id
     CACHE 1;
 
 
-ALTER TABLE public.seq_addr_id OWNER TO ivan;
+ALTER TABLE public.seq_addr_id OWNER TO postgres;
 
 --
--- Name: seq_addr_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: seq_addr_id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('seq_addr_id', 3, true);
@@ -265,7 +265,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: addresses; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: addresses; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE addresses (
@@ -283,10 +283,10 @@ CREATE TABLE addresses (
 );
 
 
-ALTER TABLE public.addresses OWNER TO ivan;
+ALTER TABLE public.addresses OWNER TO postgres;
 
 --
--- Name: attachment_contents; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: attachment_contents; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE attachment_contents (
@@ -296,10 +296,10 @@ CREATE TABLE attachment_contents (
 );
 
 
-ALTER TABLE public.attachment_contents OWNER TO ivan;
+ALTER TABLE public.attachment_contents OWNER TO postgres;
 
 --
--- Name: seq_attachment_id; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: seq_attachment_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE seq_attachment_id
@@ -310,17 +310,17 @@ CREATE SEQUENCE seq_attachment_id
     CACHE 1;
 
 
-ALTER TABLE public.seq_attachment_id OWNER TO ivan;
+ALTER TABLE public.seq_attachment_id OWNER TO postgres;
 
 --
--- Name: seq_attachment_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: seq_attachment_id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('seq_attachment_id', 1, true);
 
 
 --
--- Name: attachments; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: attachments; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE attachments (
@@ -334,10 +334,10 @@ CREATE TABLE attachments (
 );
 
 
-ALTER TABLE public.attachments OWNER TO ivan;
+ALTER TABLE public.attachments OWNER TO postgres;
 
 --
--- Name: body; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: body; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE body (
@@ -347,10 +347,10 @@ CREATE TABLE body (
 );
 
 
-ALTER TABLE public.body OWNER TO ivan;
+ALTER TABLE public.body OWNER TO postgres;
 
 --
--- Name: config; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: config; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE config (
@@ -361,10 +361,10 @@ CREATE TABLE config (
 );
 
 
-ALTER TABLE public.config OWNER TO ivan;
+ALTER TABLE public.config OWNER TO postgres;
 
 --
--- Name: files; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: files; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE files (
@@ -373,10 +373,10 @@ CREATE TABLE files (
 );
 
 
-ALTER TABLE public.files OWNER TO ivan;
+ALTER TABLE public.files OWNER TO postgres;
 
 --
--- Name: filter_action; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: filter_action; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE filter_action (
@@ -387,10 +387,10 @@ CREATE TABLE filter_action (
 );
 
 
-ALTER TABLE public.filter_action OWNER TO ivan;
+ALTER TABLE public.filter_action OWNER TO postgres;
 
 --
--- Name: filter_expr; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: filter_expr; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE filter_expr (
@@ -403,10 +403,10 @@ CREATE TABLE filter_expr (
 );
 
 
-ALTER TABLE public.filter_expr OWNER TO ivan;
+ALTER TABLE public.filter_expr OWNER TO postgres;
 
 --
--- Name: filter_log; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: filter_log; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE filter_log (
@@ -416,10 +416,10 @@ CREATE TABLE filter_log (
 );
 
 
-ALTER TABLE public.filter_log OWNER TO ivan;
+ALTER TABLE public.filter_log OWNER TO postgres;
 
 --
--- Name: forward_addresses; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: forward_addresses; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE forward_addresses (
@@ -428,10 +428,10 @@ CREATE TABLE forward_addresses (
 );
 
 
-ALTER TABLE public.forward_addresses OWNER TO ivan;
+ALTER TABLE public.forward_addresses OWNER TO postgres;
 
 --
--- Name: global_notepad; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: global_notepad; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE global_notepad (
@@ -440,10 +440,10 @@ CREATE TABLE global_notepad (
 );
 
 
-ALTER TABLE public.global_notepad OWNER TO ivan;
+ALTER TABLE public.global_notepad OWNER TO postgres;
 
 --
--- Name: header; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: header; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE header (
@@ -452,10 +452,10 @@ CREATE TABLE header (
 );
 
 
-ALTER TABLE public.header OWNER TO ivan;
+ALTER TABLE public.header OWNER TO postgres;
 
 --
--- Name: identities; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: identities; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE identities (
@@ -466,10 +466,10 @@ CREATE TABLE identities (
 );
 
 
-ALTER TABLE public.identities OWNER TO ivan;
+ALTER TABLE public.identities OWNER TO postgres;
 
 --
--- Name: inverted_word_index; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: inverted_word_index; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE inverted_word_index (
@@ -480,10 +480,10 @@ CREATE TABLE inverted_word_index (
 );
 
 
-ALTER TABLE public.inverted_word_index OWNER TO ivan;
+ALTER TABLE public.inverted_word_index OWNER TO postgres;
 
 --
--- Name: jobs_queue; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: jobs_queue; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE jobs_queue (
@@ -494,10 +494,10 @@ CREATE TABLE jobs_queue (
 );
 
 
-ALTER TABLE public.jobs_queue OWNER TO ivan;
+ALTER TABLE public.jobs_queue OWNER TO postgres;
 
 --
--- Name: jobs_queue_job_id_seq; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: jobs_queue_job_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE jobs_queue_job_id_seq
@@ -508,24 +508,24 @@ CREATE SEQUENCE jobs_queue_job_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.jobs_queue_job_id_seq OWNER TO ivan;
+ALTER TABLE public.jobs_queue_job_id_seq OWNER TO postgres;
 
 --
--- Name: jobs_queue_job_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ivan
+-- Name: jobs_queue_job_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE jobs_queue_job_id_seq OWNED BY jobs_queue.job_id;
 
 
 --
--- Name: jobs_queue_job_id_seq; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: jobs_queue_job_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('jobs_queue_job_id_seq', 1, false);
 
 
 --
--- Name: mail; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE mail (
@@ -548,10 +548,10 @@ CREATE TABLE mail (
 );
 
 
-ALTER TABLE public.mail OWNER TO ivan;
+ALTER TABLE public.mail OWNER TO postgres;
 
 --
--- Name: mail_addresses; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_addresses; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE mail_addresses (
@@ -562,10 +562,10 @@ CREATE TABLE mail_addresses (
 );
 
 
-ALTER TABLE public.mail_addresses OWNER TO ivan;
+ALTER TABLE public.mail_addresses OWNER TO postgres;
 
 --
--- Name: mail_status; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_status; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE mail_status (
@@ -574,10 +574,10 @@ CREATE TABLE mail_status (
 );
 
 
-ALTER TABLE public.mail_status OWNER TO ivan;
+ALTER TABLE public.mail_status OWNER TO postgres;
 
 --
--- Name: mail_tags; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_tags; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE mail_tags (
@@ -588,10 +588,10 @@ CREATE TABLE mail_tags (
 );
 
 
-ALTER TABLE public.mail_tags OWNER TO ivan;
+ALTER TABLE public.mail_tags OWNER TO postgres;
 
 --
--- Name: mailboxes; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mailboxes; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE mailboxes (
@@ -600,10 +600,10 @@ CREATE TABLE mailboxes (
 );
 
 
-ALTER TABLE public.mailboxes OWNER TO ivan;
+ALTER TABLE public.mailboxes OWNER TO postgres;
 
 --
--- Name: mime_types; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mime_types; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE mime_types (
@@ -612,10 +612,10 @@ CREATE TABLE mime_types (
 );
 
 
-ALTER TABLE public.mime_types OWNER TO ivan;
+ALTER TABLE public.mime_types OWNER TO postgres;
 
 --
--- Name: non_indexable_words; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: non_indexable_words; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE non_indexable_words (
@@ -623,10 +623,10 @@ CREATE TABLE non_indexable_words (
 );
 
 
-ALTER TABLE public.non_indexable_words OWNER TO ivan;
+ALTER TABLE public.non_indexable_words OWNER TO postgres;
 
 --
--- Name: notes; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: notes; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE notes (
@@ -636,10 +636,10 @@ CREATE TABLE notes (
 );
 
 
-ALTER TABLE public.notes OWNER TO ivan;
+ALTER TABLE public.notes OWNER TO postgres;
 
 --
--- Name: programs; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: programs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE programs (
@@ -649,10 +649,10 @@ CREATE TABLE programs (
 );
 
 
-ALTER TABLE public.programs OWNER TO ivan;
+ALTER TABLE public.programs OWNER TO postgres;
 
 --
--- Name: raw_mail; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: raw_mail; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE raw_mail (
@@ -661,10 +661,10 @@ CREATE TABLE raw_mail (
 );
 
 
-ALTER TABLE public.raw_mail OWNER TO ivan;
+ALTER TABLE public.raw_mail OWNER TO postgres;
 
 --
--- Name: runtime_info; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: runtime_info; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE runtime_info (
@@ -673,10 +673,10 @@ CREATE TABLE runtime_info (
 );
 
 
-ALTER TABLE public.runtime_info OWNER TO ivan;
+ALTER TABLE public.runtime_info OWNER TO postgres;
 
 --
--- Name: seq_mail_id; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: seq_mail_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE seq_mail_id
@@ -687,17 +687,17 @@ CREATE SEQUENCE seq_mail_id
     CACHE 1;
 
 
-ALTER TABLE public.seq_mail_id OWNER TO ivan;
+ALTER TABLE public.seq_mail_id OWNER TO postgres;
 
 --
--- Name: seq_mail_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: seq_mail_id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('seq_mail_id', 7, true);
 
 
 --
--- Name: seq_tag_id; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: seq_tag_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE seq_tag_id
@@ -708,17 +708,17 @@ CREATE SEQUENCE seq_tag_id
     CACHE 1;
 
 
-ALTER TABLE public.seq_tag_id OWNER TO ivan;
+ALTER TABLE public.seq_tag_id OWNER TO postgres;
 
 --
--- Name: seq_tag_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: seq_tag_id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('seq_tag_id', 1, true);
 
 
 --
--- Name: seq_thread_id; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: seq_thread_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE seq_thread_id
@@ -729,17 +729,17 @@ CREATE SEQUENCE seq_thread_id
     CACHE 1;
 
 
-ALTER TABLE public.seq_thread_id OWNER TO ivan;
+ALTER TABLE public.seq_thread_id OWNER TO postgres;
 
 --
--- Name: seq_thread_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: seq_thread_id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('seq_thread_id', 1, false);
 
 
 --
--- Name: seq_word_id; Type: SEQUENCE; Schema: public; Owner: ivan
+-- Name: seq_word_id; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE seq_word_id
@@ -750,17 +750,17 @@ CREATE SEQUENCE seq_word_id
     CACHE 1;
 
 
-ALTER TABLE public.seq_word_id OWNER TO ivan;
+ALTER TABLE public.seq_word_id OWNER TO postgres;
 
 --
--- Name: seq_word_id; Type: SEQUENCE SET; Schema: public; Owner: ivan
+-- Name: seq_word_id; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('seq_word_id', 1, false);
 
 
 --
--- Name: tags; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: tags; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE tags (
@@ -770,10 +770,10 @@ CREATE TABLE tags (
 );
 
 
-ALTER TABLE public.tags OWNER TO ivan;
+ALTER TABLE public.tags OWNER TO postgres;
 
 --
--- Name: tags_words; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: tags_words; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE tags_words (
@@ -783,10 +783,10 @@ CREATE TABLE tags_words (
 );
 
 
-ALTER TABLE public.tags_words OWNER TO ivan;
+ALTER TABLE public.tags_words OWNER TO postgres;
 
 --
--- Name: user_queries; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: user_queries; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE user_queries (
@@ -795,10 +795,10 @@ CREATE TABLE user_queries (
 );
 
 
-ALTER TABLE public.user_queries OWNER TO ivan;
+ALTER TABLE public.user_queries OWNER TO postgres;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE users (
@@ -813,10 +813,10 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE public.users OWNER TO ivan;
+ALTER TABLE public.users OWNER TO postgres;
 
 --
--- Name: words; Type: TABLE; Schema: public; Owner: ivan; Tablespace: 
+-- Name: words; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE words (
@@ -825,28 +825,28 @@ CREATE TABLE words (
 );
 
 
-ALTER TABLE public.words OWNER TO ivan;
+ALTER TABLE public.words OWNER TO postgres;
 
 --
--- Name: job_id; Type: DEFAULT; Schema: public; Owner: ivan
+-- Name: job_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE jobs_queue ALTER COLUMN job_id SET DEFAULT nextval('jobs_queue_job_id_seq'::regclass);
 
 
 --
--- Data for Name: addresses; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: addresses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY addresses (addr_id, email_addr, name, nickname, last_sent_to, last_recv_from, notes, invalid, recv_pri, nb_sent_to, nb_recv_from) FROM stdin;
-1	ivan@vniins.ru	ivan		2011-08-04 18:38:43.653164+04	\N		0	0	2	\N
+1	postgres@vniins.ru	postgres		2011-08-04 18:38:43.653164+04	\N		0	0	2	\N
 3	boris@vniins.ru			2011-08-04 18:39:46.693713+04	\N		0	0	1	\N
 2	test@vniins.ru			2011-08-11 15:14:27.448168+04	\N		0	0	3	\N
 \.
 
 
 --
--- Data for Name: attachment_contents; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: attachment_contents; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY attachment_contents (attachment_id, content, fingerprint) FROM stdin;
@@ -855,7 +855,7 @@ COPY attachment_contents (attachment_id, content, fingerprint) FROM stdin;
 
 
 --
--- Data for Name: attachments; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: attachments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY attachments (attachment_id, mail_id, content_type, content_size, filename, charset, mime_content_id) FROM stdin;
@@ -864,13 +864,13 @@ COPY attachments (attachment_id, mail_id, content_type, content_size, filename, 
 
 
 --
--- Data for Name: body; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: body; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY body (mail_id, bodytext, bodyhtml) FROM stdin;
 1	\nfgdhsjagfjdksf	\N
 2	\nsdfghjkl;yrueiowq	\N
-3	\nmail to ivan	\N
+3	\nmail to postgres	\N
 4	\nmail to test	\N
 5	mail to boooooooris\n	\N
 6	\n	\N
@@ -878,13 +878,13 @@ COPY body (mail_id, bodytext, bodyhtml) FROM stdin;
 
 
 --
--- Data for Name: config; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: config; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY config (conf_key, value, conf_name, date_update) FROM stdin;
 body_clickable_urls	0	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
 date_format	DD/MM/YYYY HH:MI	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
-default_identity	ivan@vniins.ru	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
+default_identity	postgres@vniins.ru	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
 fetch/auto_incorporate_new_results	0	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
 fetch/auto_refresh_messages_list	0	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
 display/body/preferred_format	html	zemlyansky.vniins.ru-linux	2011-08-04 13:24:12.083866+04
@@ -910,7 +910,7 @@ show_headers_level	1	zemlyansky.vniins.ru-linux	\N
 
 
 --
--- Data for Name: files; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: files; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY files (mail_id, filename) FROM stdin;
@@ -918,7 +918,7 @@ COPY files (mail_id, filename) FROM stdin;
 
 
 --
--- Data for Name: filter_action; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: filter_action; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY filter_action (expr_id, action_order, action_arg, action_type) FROM stdin;
@@ -926,7 +926,7 @@ COPY filter_action (expr_id, action_order, action_arg, action_type) FROM stdin;
 
 
 --
--- Data for Name: filter_expr; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: filter_expr; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY filter_expr (expr_id, name, user_lastmod, last_update, expression, direction) FROM stdin;
@@ -934,7 +934,7 @@ COPY filter_expr (expr_id, name, user_lastmod, last_update, expression, directio
 
 
 --
--- Data for Name: filter_log; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: filter_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY filter_log (expr_id, mail_id, hit_date) FROM stdin;
@@ -942,7 +942,7 @@ COPY filter_log (expr_id, mail_id, hit_date) FROM stdin;
 
 
 --
--- Data for Name: forward_addresses; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: forward_addresses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY forward_addresses (to_email_addr, forward_to) FROM stdin;
@@ -950,7 +950,7 @@ COPY forward_addresses (to_email_addr, forward_to) FROM stdin;
 
 
 --
--- Data for Name: global_notepad; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: global_notepad; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY global_notepad (contents, last_modified) FROM stdin;
@@ -958,30 +958,30 @@ COPY global_notepad (contents, last_modified) FROM stdin;
 
 
 --
--- Data for Name: header; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: header; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY header (mail_id, lines) FROM stdin;
-1	From: "ivan" <ivan@vniins.ru>\nTo: ivan@vniins.ru\nSubject: qweryui\nDate: Thu, 04 Aug 2011 13:24:56 +0400\nMessage-Id: <d550bf37-15a1-4d26-aa66-cdf3879a7546@mm>\nX-Mailer: Manitou v1.0.2\n
-2	From: "ivan" <ivan@vniins.ru>\nTo: test@vniins.ru\nSubject: 1234\nDate: Thu, 04 Aug 2011 14:12:57 +0400\nMessage-Id: <f363b843-6799-45f3-a330-83395b94e9aa@mm>\nX-Mailer: Manitou v1.0.2\n
-3	From: "ivan" <ivan@vniins.ru>\nTo: "ivan" <ivan@vniins.ru>\nSubject: ivan\nDate: Thu, 04 Aug 2011 18:38:43 +0400\nMessage-Id: <398330e3-945b-4ae9-94f3-849d7b4e64e5@mm>\nX-Mailer: Manitou v1.0.2\n
-4	From: "ivan" <ivan@vniins.ru>\nTo: test@vniins.ru\nSubject: test\nDate: Thu, 04 Aug 2011 18:38:59 +0400\nMessage-Id: <c8eb7129-faa6-4fae-83b8-63f39967f3a5@mm>\nX-Mailer: Manitou v1.0.2\n
-5	From: "ivan" <ivan@vniins.ru>\nTo: boris@vniins.ru\nSubject: boris\nDate: Thu, 04 Aug 2011 18:39:46 +0400\nMessage-Id: <79914bd3-4fcd-4dcd-8563-1dcb70856ff5@mm>\nX-Mailer: Manitou v1.0.2\n
-6	From: "ivan" <ivan@vniins.ru>\nTo: test@vniins.ru\nSubject: attach\n
+1	From: "postgres" <postgres@vniins.ru>\nTo: postgres@vniins.ru\nSubject: qweryui\nDate: Thu, 04 Aug 2011 13:24:56 +0400\nMessage-Id: <d550bf37-15a1-4d26-aa66-cdf3879a7546@mm>\nX-Mailer: Manitou v1.0.2\n
+2	From: "postgres" <postgres@vniins.ru>\nTo: test@vniins.ru\nSubject: 1234\nDate: Thu, 04 Aug 2011 14:12:57 +0400\nMessage-Id: <f363b843-6799-45f3-a330-83395b94e9aa@mm>\nX-Mailer: Manitou v1.0.2\n
+3	From: "postgres" <postgres@vniins.ru>\nTo: "postgres" <postgres@vniins.ru>\nSubject: postgres\nDate: Thu, 04 Aug 2011 18:38:43 +0400\nMessage-Id: <398330e3-945b-4ae9-94f3-849d7b4e64e5@mm>\nX-Mailer: Manitou v1.0.2\n
+4	From: "postgres" <postgres@vniins.ru>\nTo: test@vniins.ru\nSubject: test\nDate: Thu, 04 Aug 2011 18:38:59 +0400\nMessage-Id: <c8eb7129-faa6-4fae-83b8-63f39967f3a5@mm>\nX-Mailer: Manitou v1.0.2\n
+5	From: "postgres" <postgres@vniins.ru>\nTo: boris@vniins.ru\nSubject: boris\nDate: Thu, 04 Aug 2011 18:39:46 +0400\nMessage-Id: <79914bd3-4fcd-4dcd-8563-1dcb70856ff5@mm>\nX-Mailer: Manitou v1.0.2\n
+6	From: "postgres" <postgres@vniins.ru>\nTo: test@vniins.ru\nSubject: attach\n
 \.
 
 
 --
--- Data for Name: identities; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: identities; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY identities (email_addr, username, xface, signature) FROM stdin;
-ivan@vniins.ru	ivan		
+postgres@vniins.ru	postgres		
 \.
 
 
 --
--- Data for Name: inverted_word_index; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: inverted_word_index; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY inverted_word_index (word_id, part_no, mailvec, nz_offset) FROM stdin;
@@ -989,7 +989,7 @@ COPY inverted_word_index (word_id, part_no, mailvec, nz_offset) FROM stdin;
 
 
 --
--- Data for Name: jobs_queue; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: jobs_queue; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY jobs_queue (job_id, mail_id, job_type, job_args) FROM stdin;
@@ -997,21 +997,21 @@ COPY jobs_queue (job_id, mail_id, job_type, job_args) FROM stdin;
 
 
 --
--- Data for Name: mail; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: mail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY mail (mail_id, sender, toname, sender_fullname, subject, msg_date, sender_date, mbox_id, status, mod_user_id, thread_id, message_id, in_reply_to, date_processed, priority, flags) FROM stdin;
-1	ivan@vniins.ru	\N	ivan	qweryui	2011-08-04 13:24:56.789673+04	2011-08-04 13:24:56.789673+04	\N	145	1	\N	d550bf37-15a1-4d26-aa66-cdf3879a7546@mm	\N	\N	0	0
-2	ivan@vniins.ru	\N	ivan	1234	2011-08-04 14:12:57.229489+04	2011-08-04 14:12:57.229489+04	\N	177	1	\N	f363b843-6799-45f3-a330-83395b94e9aa@mm	\N	\N	0	0
-3	ivan@vniins.ru	\N	ivan	ivan	2011-08-04 18:38:43.653164+04	2011-08-04 18:38:43.653164+04	\N	129	1	\N	398330e3-945b-4ae9-94f3-849d7b4e64e5@mm	\N	\N	0	0
-4	ivan@vniins.ru	\N	ivan	test	2011-08-04 18:38:59.834486+04	2011-08-04 18:38:59.834486+04	\N	129	1	\N	c8eb7129-faa6-4fae-83b8-63f39967f3a5@mm	\N	\N	0	0
-5	ivan@vniins.ru	\N	ivan	boris	2011-08-04 18:39:46.693713+04	2011-08-04 18:39:46.693713+04	\N	129	1	\N	79914bd3-4fcd-4dcd-8563-1dcb70856ff5@mm	\N	\N	0	0
-6	ivan@vniins.ru	\N	ivan	attach	2011-08-11 15:14:27.448168+04	2011-08-11 15:14:27.448168+04	\N	129	1	\N	398330e3-945b-4ae9-94f3-849d7b4e64e5@mm	\N	\N	0	1
+1	postgres@vniins.ru	\N	postgres	qweryui	2011-08-04 13:24:56.789673+04	2011-08-04 13:24:56.789673+04	\N	145	1	\N	d550bf37-15a1-4d26-aa66-cdf3879a7546@mm	\N	\N	0	0
+2	postgres@vniins.ru	\N	postgres	1234	2011-08-04 14:12:57.229489+04	2011-08-04 14:12:57.229489+04	\N	177	1	\N	f363b843-6799-45f3-a330-83395b94e9aa@mm	\N	\N	0	0
+3	postgres@vniins.ru	\N	postgres	postgres	2011-08-04 18:38:43.653164+04	2011-08-04 18:38:43.653164+04	\N	129	1	\N	398330e3-945b-4ae9-94f3-849d7b4e64e5@mm	\N	\N	0	0
+4	postgres@vniins.ru	\N	postgres	test	2011-08-04 18:38:59.834486+04	2011-08-04 18:38:59.834486+04	\N	129	1	\N	c8eb7129-faa6-4fae-83b8-63f39967f3a5@mm	\N	\N	0	0
+5	postgres@vniins.ru	\N	postgres	boris	2011-08-04 18:39:46.693713+04	2011-08-04 18:39:46.693713+04	\N	129	1	\N	79914bd3-4fcd-4dcd-8563-1dcb70856ff5@mm	\N	\N	0	0
+6	postgres@vniins.ru	\N	postgres	attach	2011-08-11 15:14:27.448168+04	2011-08-11 15:14:27.448168+04	\N	129	1	\N	398330e3-945b-4ae9-94f3-849d7b4e64e5@mm	\N	\N	0	1
 \.
 
 
 --
--- Data for Name: mail_addresses; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: mail_addresses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY mail_addresses (mail_id, addr_id, addr_type, addr_pos) FROM stdin;
@@ -1031,7 +1031,7 @@ COPY mail_addresses (mail_id, addr_id, addr_type, addr_pos) FROM stdin;
 
 
 --
--- Data for Name: mail_status; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: mail_status; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY mail_status (mail_id, status) FROM stdin;
@@ -1043,7 +1043,7 @@ COPY mail_status (mail_id, status) FROM stdin;
 
 
 --
--- Data for Name: mail_tags; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: mail_tags; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY mail_tags (mail_id, tag, agent, date_insert) FROM stdin;
@@ -1053,7 +1053,7 @@ COPY mail_tags (mail_id, tag, agent, date_insert) FROM stdin;
 
 
 --
--- Data for Name: mailboxes; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: mailboxes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY mailboxes (mbox_id, name) FROM stdin;
@@ -1061,7 +1061,7 @@ COPY mailboxes (mbox_id, name) FROM stdin;
 
 
 --
--- Data for Name: mime_types; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: mime_types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY mime_types (suffix, mime_type) FROM stdin;
@@ -1083,7 +1083,7 @@ xls	application/vnd.ms-excel
 
 
 --
--- Data for Name: non_indexable_words; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: non_indexable_words; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY non_indexable_words (wordtext) FROM stdin;
@@ -1091,7 +1091,7 @@ COPY non_indexable_words (wordtext) FROM stdin;
 
 
 --
--- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY notes (mail_id, note, last_changed) FROM stdin;
@@ -1099,7 +1099,7 @@ COPY notes (mail_id, note, last_changed) FROM stdin;
 
 
 --
--- Data for Name: programs; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: programs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY programs (program_name, content_type, conf_name) FROM stdin;
@@ -1107,7 +1107,7 @@ COPY programs (program_name, content_type, conf_name) FROM stdin;
 
 
 --
--- Data for Name: raw_mail; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: raw_mail; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY raw_mail (mail_id, mail_text) FROM stdin;
@@ -1115,7 +1115,7 @@ COPY raw_mail (mail_id, mail_text) FROM stdin;
 
 
 --
--- Data for Name: runtime_info; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: runtime_info; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY runtime_info (rt_key, rt_value) FROM stdin;
@@ -1124,7 +1124,7 @@ schema_version	1.0.2
 
 
 --
--- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY tags (tag_id, name, parent_id) FROM stdin;
@@ -1133,7 +1133,7 @@ COPY tags (tag_id, name, parent_id) FROM stdin;
 
 
 --
--- Data for Name: tags_words; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: tags_words; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY tags_words (tag_id, word_id, counter) FROM stdin;
@@ -1141,7 +1141,7 @@ COPY tags_words (tag_id, word_id, counter) FROM stdin;
 
 
 --
--- Data for Name: user_queries; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: user_queries; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY user_queries (title, sql_stmt) FROM stdin;
@@ -1151,16 +1151,16 @@ all	SELECT m.mail_id FROM mail m
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY users (user_id, fullname, login, email, custom_field1, custom_field2, custom_field3) FROM stdin;
-1	\N	ivan	\N	\N	\N	\N
+1	\N	postgres	\N	\N	\N	\N
 \.
 
 
 --
--- Data for Name: words; Type: TABLE DATA; Schema: public; Owner: ivan
+-- Data for Name: words; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY words (word_id, wordtext) FROM stdin;
@@ -1189,7 +1189,7 @@ COMMIT;
 SET search_path = public, pg_catalog;
 
 --
--- Name: addresses_email_addr_key; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
+-- Name: addresses_email_addr_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY addresses
@@ -1197,7 +1197,7 @@ ALTER TABLE ONLY addresses
 
 
 --
--- Name: addresses_pkey; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
+-- Name: addresses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY addresses
@@ -1205,7 +1205,7 @@ ALTER TABLE ONLY addresses
 
 
 --
--- Name: attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
+-- Name: attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY attachments
@@ -1213,7 +1213,7 @@ ALTER TABLE ONLY attachments
 
 
 --
--- Name: filter_expr_pkey; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
+-- Name: filter_expr_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY filter_expr
@@ -1221,7 +1221,7 @@ ALTER TABLE ONLY filter_expr
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY users
@@ -1229,7 +1229,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: words_pkey; Type: CONSTRAINT; Schema: public; Owner: ivan; Tablespace: 
+-- Name: words_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY words
@@ -1237,210 +1237,210 @@ ALTER TABLE ONLY words
 
 
 --
--- Name: attach_ct_fp_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: attach_ct_fp_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX attach_ct_fp_idx ON attachment_contents USING btree (fingerprint);
 
 
 --
--- Name: attch_ct_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: attch_ct_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX attch_ct_idx ON attachment_contents USING btree (attachment_id);
 
 
 --
--- Name: expr_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: expr_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX expr_idx ON filter_expr USING btree (name);
 
 
 --
--- Name: filter_action_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: filter_action_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX filter_action_idx ON filter_action USING btree (expr_id, action_order);
 
 
 --
--- Name: fwa_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: fwa_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX fwa_idx ON forward_addresses USING btree (to_email_addr);
 
 
 --
--- Name: idx_attachments_mail_id; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: idx_attachments_mail_id; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX idx_attachments_mail_id ON attachments USING btree (mail_id);
 
 
 --
--- Name: idx_raw_mail; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: idx_raw_mail; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX idx_raw_mail ON raw_mail USING btree (mail_id);
 
 
 --
--- Name: iwi_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: iwi_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX iwi_idx ON inverted_word_index USING btree (word_id, part_no);
 
 
 --
--- Name: jobs_pk_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: jobs_pk_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX jobs_pk_idx ON jobs_queue USING btree (job_id);
 
 
 --
--- Name: mail_addresses_addrid_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_addresses_addrid_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX mail_addresses_addrid_idx ON mail_addresses USING btree (addr_id);
 
 
 --
--- Name: mail_addresses_mailid_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_addresses_mailid_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX mail_addresses_mailid_idx ON mail_addresses USING btree (mail_id);
 
 
 --
--- Name: mail_date_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_date_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX mail_date_idx ON mail USING btree (msg_date);
 
 
 --
--- Name: mail_in_replyto_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_in_replyto_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX mail_in_replyto_idx ON mail USING btree (in_reply_to);
 
 
 --
--- Name: mail_message_id_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_message_id_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX mail_message_id_idx ON mail USING btree (message_id);
 
 
 --
--- Name: mail_tags_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_tags_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX mail_tags_idx ON mail_tags USING btree (mail_id, tag);
 
 
 --
--- Name: mail_thread_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mail_thread_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX mail_thread_idx ON mail USING btree (thread_id);
 
 
 --
--- Name: mailboxes_mbox_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mailboxes_mbox_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX mailboxes_mbox_idx ON mailboxes USING btree (mbox_id);
 
 
 --
--- Name: mailboxes_mbox_name; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: mailboxes_mbox_name; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX mailboxes_mbox_name ON mailboxes USING btree (name);
 
 
 --
--- Name: notes_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: notes_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX notes_idx ON notes USING btree (mail_id);
 
 
 --
--- Name: pk_body_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: pk_body_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX pk_body_idx ON body USING btree (mail_id);
 
 
 --
--- Name: pk_header_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: pk_header_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX pk_header_idx ON header USING btree (mail_id);
 
 
 --
--- Name: pk_mail_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: pk_mail_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX pk_mail_idx ON mail USING btree (mail_id);
 
 
 --
--- Name: pk_mail_status_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: pk_mail_status_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX pk_mail_status_idx ON mail_status USING btree (mail_id);
 
 
 --
--- Name: runtime_info_pk; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: runtime_info_pk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX runtime_info_pk ON runtime_info USING btree (rt_key);
 
 
 --
--- Name: tag_id_pk; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: tag_id_pk; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX tag_id_pk ON tags USING btree (tag_id);
 
 
 --
--- Name: tags_words_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: tags_words_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE INDEX tags_words_idx ON tags_words USING btree (word_id);
 
 
 --
--- Name: user_queries_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: user_queries_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX user_queries_idx ON user_queries USING btree (title);
 
 
 --
--- Name: users_login_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: users_login_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX users_login_idx ON users USING btree (login);
 
 
 --
--- Name: wordtext_idx; Type: INDEX; Schema: public; Owner: ivan; Tablespace: 
+-- Name: wordtext_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
 --
 
 CREATE UNIQUE INDEX wordtext_idx ON words USING btree (wordtext);
 
 
 --
--- Name: delete_mail; Type: TRIGGER; Schema: public; Owner: ivan
+-- Name: delete_mail; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER delete_mail
@@ -1450,7 +1450,7 @@ CREATE TRIGGER delete_mail
 
 
 --
--- Name: insert_mail; Type: TRIGGER; Schema: public; Owner: ivan
+-- Name: insert_mail; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER insert_mail
@@ -1460,7 +1460,7 @@ CREATE TRIGGER insert_mail
 
 
 --
--- Name: update_mail; Type: TRIGGER; Schema: public; Owner: ivan
+-- Name: update_mail; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER update_mail
@@ -1470,7 +1470,7 @@ CREATE TRIGGER update_mail
 
 
 --
--- Name: update_note; Type: TRIGGER; Schema: public; Owner: ivan
+-- Name: update_note; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER update_note
@@ -1480,7 +1480,7 @@ CREATE TRIGGER update_note
 
 
 --
--- Name: attachment_contents_attachment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: attachment_contents_attachment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY attachment_contents
@@ -1488,7 +1488,7 @@ ALTER TABLE ONLY attachment_contents
 
 
 --
--- Name: attachments_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: attachments_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY attachments
@@ -1496,7 +1496,7 @@ ALTER TABLE ONLY attachments
 
 
 --
--- Name: body_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: body_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY body
@@ -1504,7 +1504,7 @@ ALTER TABLE ONLY body
 
 
 --
--- Name: filter_action_expr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: filter_action_expr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY filter_action
@@ -1512,7 +1512,7 @@ ALTER TABLE ONLY filter_action
 
 
 --
--- Name: header_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: header_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY header
@@ -1520,7 +1520,7 @@ ALTER TABLE ONLY header
 
 
 --
--- Name: inverted_word_index_word_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: inverted_word_index_word_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY inverted_word_index
@@ -1528,7 +1528,7 @@ ALTER TABLE ONLY inverted_word_index
 
 
 --
--- Name: mail_addresses_addr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: mail_addresses_addr_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY mail_addresses
@@ -1536,7 +1536,7 @@ ALTER TABLE ONLY mail_addresses
 
 
 --
--- Name: mail_addresses_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: mail_addresses_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY mail_addresses
@@ -1544,7 +1544,7 @@ ALTER TABLE ONLY mail_addresses
 
 
 --
--- Name: mail_mbox_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: mail_mbox_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY mail
@@ -1552,7 +1552,7 @@ ALTER TABLE ONLY mail
 
 
 --
--- Name: mail_tags_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: mail_tags_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY mail_tags
@@ -1560,7 +1560,7 @@ ALTER TABLE ONLY mail_tags
 
 
 --
--- Name: mail_tags_tag_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: mail_tags_tag_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY mail_tags
@@ -1568,7 +1568,7 @@ ALTER TABLE ONLY mail_tags
 
 
 --
--- Name: notes_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: notes_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY notes
@@ -1576,7 +1576,7 @@ ALTER TABLE ONLY notes
 
 
 --
--- Name: parent_tag_fk; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: parent_tag_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY tags
@@ -1584,7 +1584,7 @@ ALTER TABLE ONLY tags
 
 
 --
--- Name: raw_mail_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: raw_mail_mail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY raw_mail
@@ -1592,7 +1592,7 @@ ALTER TABLE ONLY raw_mail
 
 
 --
--- Name: tags_words_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: tags_words_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY tags_words
@@ -1600,7 +1600,7 @@ ALTER TABLE ONLY tags_words
 
 
 --
--- Name: tags_words_word_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ivan
+-- Name: tags_words_word_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY tags_words
