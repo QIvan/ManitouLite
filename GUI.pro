@@ -11,15 +11,13 @@ TARGET = GUI
 
 TEMPLATE = app
 
-INCLUDEPATH += ../ ../DB e:/PostgreSQL/include/ c:/sqlite/
-
-DEPENDPATH += ../ ../DB
-#DEFINES += NO_PG
-DEFINES += NO_SQLITE
-DEFINES += WITH_PGSQL
-
+INCLUDEPATH += ../ , ../DB , c:/cppunit/include/ , e:/PostgreSQL/include/ , c:/sqlite/
 DEPENDPATH += ../
 
+#DEFINES += NO_PG
+#DEFINES += WITH_SQLITE
+DEFINES += NO_SQLITE
+DEFINES += WITH_PGSQL
 
 CONFIG(debug) {
     LIBS += ../DB/debug/libDB.a
@@ -28,7 +26,6 @@ CONFIG(debug) {
  }
 LIBS += e:/PostgreSQL/lib/libpq.a
 LIBS += c:/sqlite/libsqlite3.dll.a
-
 #LIBS += -L/usr/lib/ -lpq
 #LIBS += -L/usr/lib/ -lsqlite3
 #LIBS += -L../DB -lDB

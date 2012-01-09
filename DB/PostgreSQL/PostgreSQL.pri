@@ -1,6 +1,6 @@
 #PostgreSQL
 INCLUDEPATH += ./PostgreSQL
-LIBS += -L/usr/lib/ -lpq
+LIBS += e:/PostgreSQL/lib/libpq.a
 DEFINES += WITH_PGSQL=1
 DEFINES += NO_SQLITE
 

@@ -3,7 +3,7 @@ QT += core
 TARGET = test
 TEMPLATE = app
 
-INCLUDEPATH += ../ ../DB c:/cppunit/include/ e:/PostgreSQL/include/ c:/sqlite/
+INCLUDEPATH += ../ , ../DB , c:/cppunit/include/ , e:/PostgreSQL/include/, c:/sqlite/
 DEPENDPATH += ../
 
 CPPUNIT_LIB_DIR = c:/cppunit/src/cppunit/.libs

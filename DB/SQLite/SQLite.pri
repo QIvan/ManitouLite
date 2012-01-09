@@ -1,8 +1,9 @@
 #SQLite
 
-INCLUDEPATH += ./SQLite
-LIBS += -L/usr/lib/ -lsqlite3
+INCLUDEPATH += ./SQLite e:/PostgreSQL/include/
+LIBS += c:/sqlite/libsqlite3.dll.a
 DEFINES += NO_PG
+DEFINES += WITH_SQLITE=1
 
 SOURCES +=  \
     SQLite/sqlite_stream.cpp \

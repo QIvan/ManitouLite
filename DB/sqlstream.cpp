@@ -121,7 +121,7 @@ void
 sql_stream::execute()
 {
   if (m_nArgPos < m_nArgCount)
-    throw db_excpt(m_query, "Not all variables bound");
+    throw new db_excpt(m_query, "Not all variables bound");
 
   DBG_PRINTF(5,"execute: %s", m_query.toLocal8Bit().constData());
 
@@ -170,7 +170,7 @@ bool isBetweenQuote(QString str, int pos)
   {
     int firstQuote = quoteList.takeFirst();
     if (quoteList.isEmpty())
-      throw db_excpt(str, "bad query!");
+      throw new db_excpt(str, "bad query!");
     int secondQuote = quoteList.takeFirst();
     if ((firstQuote < pos) && (pos < secondQuote))
       result = true;
@@ -220,7 +220,7 @@ void
 sql_stream::check_params() const
 {
   if (m_nArgPos >= m_nArgCount)
-    throw db_excpt(m_query, "Mismatch between bound variables and query");
+    throw new db_excpt(m_query, "Mismatch between bound variables and query");
 }
 
 sql_stream&
@@ -238,7 +238,7 @@ void
 sql_stream::check_end_of_stream()
 {
   if (isEmpty())
-    throw db_excpt(m_query, "End of stream reached");
+    throw new db_excpt(m_query, "End of stream reached");
 }
 
 QString

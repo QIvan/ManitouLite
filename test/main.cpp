@@ -22,7 +22,7 @@ CPPUNIT_REGISTRY_ADD_TO_DEFAULT(TestNames::db_api());
 
 //int global_debug_level;
 
-int main()
+int main(int argn, char** args)
 {
   //global_debug_level=1;
     //global_debug_level = 3;

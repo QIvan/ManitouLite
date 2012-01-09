@@ -10,11 +10,11 @@ CONFIG += staticlib
 TARGET = DB
 TEMPLATE = lib
 
-INCLUDEPATH += e:/PostgreSQL/include/ e:/PostgreSQL/include/
+INCLUDEPATH += e:/PostgreSQL/include/
 
 CONFIG(debug, debug|release) {
  } else {
-    SOURCES +=
+    SOURCES += main.cpp
  }
 
 SOURCES +=  \
@@ -24,8 +24,6 @@ SOURCES +=  \
     database.cpp \
     sqlquery.cpp \
     creatorConnection.cpp \
-    sqlstream.cpp \
-    mainfunc.cpp
 
 HEADERS += \
     main.h \
@@ -39,16 +37,9 @@ HEADERS += \
     database.h \
     creatorConnection.h \
     connection.h \
-    db_excpt.h \
-    IStreamExec.h
-
 
 
 include(PostgreSQL/PostgreSQL.pri)
 #include(SQLite/SQLite.pri)
 
-OTHER_FILES += \
-    ../createDB/createSQLite_DB.sql \
-    ../createDB/createPostgreSQL_DB.sql \
-    ../createDB/test/Create_Test_DataBase_SQLite.sql \
-    ../createDB/test/Create_Test_DataBase_PostgreSQL.sql
+
