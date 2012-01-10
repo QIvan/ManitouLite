@@ -19,7 +19,6 @@
 
 #ifndef INC_SQLITE_SQLSTREAM_H
 #define INC_SQLITE_SQLSTREAM_H
-#include <libpq-fe.h>
 #include <QVector>
 #include <QPair>
 #include <QString>

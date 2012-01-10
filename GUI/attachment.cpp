@@ -21,7 +21,7 @@
 #include "attachment.h"
 #include "app_config.h"
 #include <fstream>
-
+#include <postgresql/libpq-fe.h>
 #include <QFile>
 #include <QDir>
 #include <QRegExp>

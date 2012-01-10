@@ -25,6 +25,7 @@
 #include "config.h"
 #include "mailheader.h"
 #include "sqlstream.h"
+#include "postgresql/libpq-fe.h"
 
 #include <time.h>
 #include <qtextcodec.h>
