@@ -19,6 +19,7 @@
 
 #include <string>
 #include <iostream>
+#include <unistd.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <QMessageBox>
@@ -81,7 +82,7 @@ sqlite_stream::execute(QString query)
     m_status = sqlite3_step(m_sqlRes);
     isLocked = (rc == SQLITE_BUSY) || (m_status == SQLITE_LOCKED);
     if (isLocked)
-      sleep(1);
+      usleep(1000000);
   } while (isLocked);
   check_results(query, rc, errmsg);
   m_affected_rows = sqlite3_changes(m_db.connection()->m_db->connection());

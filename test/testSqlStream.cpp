@@ -38,7 +38,7 @@ void testSqlStream::withVariable()
         long nLong = 1;
         unsigned long nUnLong = 1;
         query_int << nInt << nUnInt << nShort << nUnShort << nLong << nUnLong;
-        //CPPUNIT_ASSERT_THROW(query_int << 1, db_excpt);
+        CPPUNIT_ASSERT_THROW(query_int << 1, db_excpt);
         CheckText_(query_int);
 
         sql_stream query_text("   SELECT test_int_not_null FROM test_table WHERE test_text=:p1",
@@ -58,7 +58,7 @@ void testSqlStream::withVariable()
 
         sql_stream query_big_param ("Select * from test_table where test_id=:verybigtestparam", *m_DB);
         query_big_param << 1;
-        CPPUNIT_ASSERT(query_big_param.isEmpty());
+        CPPUNIT_ASSERT(!query_big_param.isEmpty());
 
     }
     catch(db_excpt e)

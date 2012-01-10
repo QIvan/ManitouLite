@@ -44,8 +44,8 @@ HEADERS += \
 
 
 
-include(PostgreSQL/PostgreSQL.pri)
-#include(SQLite/SQLite.pri)
+#include(PostgreSQL/PostgreSQL.pri)
+include(SQLite/SQLite.pri)
 
 OTHER_FILES += \
     ../createDB/createSQLite_DB.sql \

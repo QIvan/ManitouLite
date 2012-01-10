@@ -1,6 +1,6 @@
 #SQLite
 
-INCLUDEPATH += ./SQLite e:/PostgreSQL/include/
+INCLUDEPATH += ./SQLite c:/sqlite/ e:/PostgreSQL/include/
 LIBS += c:/sqlite/libsqlite3.dll.a
 DEFINES += NO_PG
 DEFINES += WITH_SQLITE=1

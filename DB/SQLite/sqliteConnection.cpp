@@ -17,6 +17,9 @@ sqliteConnection::logon(const char* conninfo)
   QString db_name = service_f::GetNameDb(conninfo);
   int isErorr = sqlite3_open(db_name.toLocal8Bit().constData(), &m_pSQLiteObj);
   set_encoding("UTF8");
+  QString tmp("Connection error: ");
+  tmp.append(QString("%1").arg(isErorr));
+  qDebug() << tmp.toUtf8().constData();
   return isErorr ? 0 : 1;
 }
 
